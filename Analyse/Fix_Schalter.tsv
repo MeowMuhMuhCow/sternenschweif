@@ -1,0 +1,269 @@
+nr	schalter	titel	kategorie	exploit	stufe	umgesetzt	grund	dateien
+1	FIX_0001	Verzauberte Gegner patzen im Angriff ohne Folgen	mittel	nein	wichtig	ja		OVL160.CPP
+2	FIX_0002	Automatisches Steigern ignoriert die Grenze je Talent	mittel	nein	wichtig	ja		OVL087.CPP
+3	FIX_0003	Klickflächen-Prüfung tauscht falsche Werte	egal	nein	alles	nein	im residenten Segment SEG012 kein Platz - die richtige Vertauschung kostet 2 Bytes (y2 liegt auf dem Stapel, y1 im Register), das Segment darf nicht laenger werden; der Zweig wird nie betreten (alle Aufrufer uebergeben geordnete y)	
+4	FIX_0004	Nächtlicher Dieb bestiehlt nur den ersten Helden	mittel	nein	wichtig	ja		OVL179.CPP
+5	FIX_0005	Wegereignisse lösen an zufälligen Stellen aus	mittel	nein	wichtig	ja		OVL210.CPP
+6	FIX_0006	Orks werfen abgenommene Ausrüstung weg (wie Nr. 212)	kritisch	nein	wichtig	ja		OVL263.CPP
+7	FIX_0007	Karte aufdecken: Grenzprüfung doppelt	egal	nein	alles	ja		SEG008.C
+8	FIX_0008	Zufallsbegegnungen in einer Geländeart falsch	mittel	nein	wichtig	ja		OVL212.CPP
+9	FIX_0009	Bild-Entpacker liefert Zufallswert zurück	egal	nein	alles	ja		OVL098.CPP
+10	FIX_0010	Heldenvorauswahl steht manchmal auf leerem Platz	egal	nein	alles	ja		OVL058.CPP
+11	FIX_0011	Marktstand mit unbekanntem Feld	egal	nein	alles	ja		OVL183.CPP
+12	FIX_0012	Orkgefängnis: bei Alarm zwei Kämpfe hintereinander	mittel	nein	wichtig	ja		OVL266.C
+13	FIX_0013	Höhlenspinnen kommen bis zur Nestzerstörung wieder	mittel	nein	wichtig	ja		OVL266.C
+14	FIX_0014	Absturz beim Schlüsselbund mit 18 oder mehr Schlüsseln	kritisch	nein	wichtig	ja		OVL048.CPP
+15	FIX_0015	Schlüsselbund/Rezeptbuch: falsche „schon drin“-Meldung	egal	nein	alles	ja		OVL048.CPP
+16	FIX_0016	Einzelne Pixel in falscher Farbe	egal	nein	alles	ja		OVL096.C
+17	FIX_0017	Speicherleck beim Verlassen der 3D-Ansicht	egal	nein	alles	ja		OVL096.C
+18	FIX_0018	Flucht vom Randfeld wird manchmal verweigert	mittel	nein	wichtig	ja		OVL150.C
+19	FIX_0019	NSC aufnehmen: Hilfsvariable doppelt benutzt	egal	nein	alles	nein	x ist nur ein Dummy-Ziel fuer Breite und Hoehe, wird nie gelesen (wie Nr. 96) - ohne Wirkung	
+20	FIX_0020	Fahrender Händler: Ware bezahlt, aber nicht erhalten	kritisch	nein	wichtig	ja		OVL069.CPP
+21	FIX_0021	Händler-Warenliste überlappt bei riesigem Sortiment	egal	nein	alles	ja		OVL069.CPP
+22	FIX_0022	Automap findet sehr weite Wege nicht	egal	nein	alles	ja		OVL053.CPP
+23	FIX_0023	Versiegelte Schlösser: Erleichterung wirkungslos	egal	nein	alles	nein	die Halbierung nach dem Oeffnen ist toter Code ohne Wirkung; ob ein zugezaubertes Schloss leichter sein sollte, ist eine Designfrage (Vorziehen vor try_open wuerde das Spiel aendern)	
+24	FIX_0024	Warenauswahl: Pfeil links springt an den Anfang	egal	nein	alles	ja		OVL069.CPP OVL229.C OVL230.CPP
+25	FIX_0025	Geld ins Minus: Millionen durch Gruppenteilung	kritisch	ja	wichtig	ja		OVL200.CPP
+26	FIX_0026	Gruppe entfernen ändert fremdes Byte	egal	nein	alles	ja		OVL200.CPP
+27	FIX_0027	Texteingabe: fehlende Endnull	egal	nein	alles	ja		OVL111.CPP
+28	FIX_0028	Texteingabe: Rückgabewert fehlt	egal	nein	alles	nein	die gemeinte Bedingung ist unklar (unsicher), und der einzige Aufrufer (O110) wertet die Rueckgabe nicht aus - keine Wirkung	
+29	FIX_0029	Kampfbewegung: Animationsfolge ohne Längengrenze	egal	nein	alles	ja		OVL149.CPP
+30	-	Reiseereignis Weg 136: gewollter Durchlauf	egal	nein	-	kein Fehler	gewollt: bewusstes Durchfallen (case 1 -> case 2)	
+31	FIX_0031	Ortswechsel überschreibt den gemerkten alten Ort	egal	nein	alles	ja		OVL019.C
+32	FIX_0032	Absturz im versteckten Entwicklerbildschirm	mittel	nein	wichtig	teilweise	Eingabelaenge begrenzt (Stapelueberlauf behoben); die Indizes der Anzeige-/Setzbefehle bleiben ungeprueft - die Merkerfelder sind Fenster ins Datensegment ohne festgelegte Laenge (Entwicklerbildschirm)	OVL011.CPP
+33	FIX_0033	Kalender: falscher Tagesüberlauf	egal	nein	alles	ja		OVL250.CPP
+34	FIX_0034	Kalender: Tick-Überlauf verliert Restzeit	egal	nein	alles	ja		OVL250.CPP
+35	FIX_0035	Kalender: Jahreswechsel ergibt Monat 13	egal	nein	alles	nein	die beiden Ueberlaufzweige stellen die Namenlosen Tage verschieden dar (Tick-Zweig: Monat 13 mit Tag -5..0, Jahreswechsel erst bei Tag 0; Tageszweig: sofort Monat 1 und Jahr + 1) - welche Darstellung gilt, ist nicht belegbar; der Zweig ist ausserdem unerreichbar (einziger Aufrufer mit ticks = 0)	
+36	FIX_0036	Reisekarte: Richtungswahl ohne Rückgabewert	egal	nein	alles	ja		OVL214.C
+37	FIX_0037	Absturz-Tagebucheintrag auch ohne Absturz	mittel	nein	wichtig	ja		OVL121.CPP
+38	FIX_0038	Kampffeld: Belegt-Prüfung ohne Wirkung	egal	nein	alles	ja		OVL147.CPP
+39	FIX_0039	Hänger bei völlig zugestelltem Kampffeld	mittel	nein	wichtig	ja		OVL147.CPP
+40	-	Parade Held gegen Held (kein Fehler)	egal	nein	-	kein Fehler	kein Fehler: hero_mr_target liefert den Verteidiger	
+41	FIX_0041	Paradepatzer nennt den falschen Helden	egal	nein	alles	ja		OVL158.CPP
+42	FIX_0042	Patzerfolge ohne Schaden geprüft	egal	nein	alles	ja		OVL158.CPP
+43	FIX_0043	Steinbock frisst die letzte Süßigkeit umsonst	mittel	nein	wichtig	ja		OVL119.CPP
+44	FIX_0044	Zahleneingabe zeigt falsche erste Ziffer	egal	nein	alles	ja		OVL197.CPP
+45	FIX_0045	Kräuterstelle an Weg 165 beliebig oft ernten	mittel	ja	wichtig	ja		OVL122.CPP
+46	FIX_0046	Reisekarte: Wegsuche liest hinter der Tabelle	egal	nein	alles	ja		OVL209.CPP
+47	FIX_0047	Reisekarte: Wegzeichnung im Randfall falsch	egal	nein	alles	ja		OVL209.CPP
+48	FIX_0048	Brenne toter Stoff ohne Fackel: Meldung zufällig	egal	nein	alles	ja		OVL237.CPP
+49	FIX_0049	Sonderkampf: Lesen vor dem Nulltest	egal	nein	alles	ja		OVL021.CPP
+50	FIX_0050	Phex-Tempel: nur eine von vier Flächen animiert	egal	nein	alles	ja		OVL198.C
+51	FIX_0051	Herbergsdieb stiehlt nie Proviant, sondern Geld	mittel	nein	wichtig	ja		OVL201.CPP
+52	FIX_0052	Gegenstandssuche über alle Plätze kaputt	egal	nein	alles	ja		OVL201.CPP
+53	FIX_0053	Porträtleiste einer Teilgruppe zu breit/schmal	egal	nein	alles	ja		OVL201.CPP
+54	FIX_0054	Gegnerzauber bei leerer Zauberliste	egal	nein	alles	ja		OVL152.CPP
+55	FIX_0055	Fähre Hilvalla: zu wenig Geld zeigt Begrüßung erneut	egal	nein	alles	ja		OVL126.CPP
+56	FIX_0056	Tagebuch drucken: Überlauf bei langen Zeilen	egal	nein	alles	ja		OVL105.C
+57	FIX_0057	Tagebuch-Heldennamen: Lesen hinter dem Feld	egal	nein	alles	ja		OVL105.C
+58	FIX_0058	Ortssymbole: unvollständige Änderungsprüfung	egal	nein	alles	ja		OVL188.CPP
+59	FIX_0059	NSC verlässt die Gruppe ohne Abschiedstext	mittel	nein	wichtig	ja		OVL129.CPP
+60	FIX_0060	Teleport mit unbekannter Herkunft	egal	nein	alles	ja		OVL129.CPP
+61	FIX_0061	Gruppe teilen bei sechs Gruppen	egal	nein	alles	ja		OVL075.CPP
+62	FIX_0062	Porträt ziehen liest vor der Tabelle	egal	nein	alles	ja		OVL075.CPP
+63	FIX_0063	Wirselkraut an Weg 201 beliebig oft ernten	mittel	ja	wichtig	ja		OVL123.CPP
+64	FIX_0064	Eine Gegner-Animation wird nie gezeigt	egal	nein	alles	nein	der tote Zweig TARGET_SPECIAL benutzt seinerseits enemy_target_enemy, das Ziele ab 30 falsch abbildet (g_enemies[id - 10]); eine Korrektur muesste O192 und alle Aufrufer mitziehen - Entfernen des toten Zweigs aendert nichts	
+65	FIX_0065	Genitiv-s bei Namen mit Sonderzeichen falsch	egal	nein	alles	ja		OVL076.CPP
+66	FIX_0066	DSA-1-Import: doppelte Prüfung	egal	nein	alles	nein	doppelter Block und wirkungslose Teilbedingung aendern nichts; ob im zweiten Block ein anderer Gegenstand gemeint war, ist nicht belegbar (unsicher)	
+67	FIX_0067	Dialogskript: Zeiger nicht genullt	egal	nein	alles	ja		OVL260.CPP
+68	FIX_0068	Klangtreiber: kleines Speicherleck	egal	nein	alles	teilweise	der Treiberpuffer wird nur freigegeben, wenn AIL beendet ist (davor kann der Treiber noch registriert sein - Freigeben waere gefaehrlich); drvname begrenzt	OVL042.CPP
+69	FIX_0069	Kartenrätsel: toter Programmcode	egal	nein	alles	nein	toter Code ohne sichtbare Folge (doppelter Zweig, last_sel nie -1) - eine Bereinigung aendert kein Verhalten	
+70	-	Heiler nennt Krankheit vor der Zahlung (gewollt)	egal	nein	-	kein Fehler	gewollt: Diagnose im Fragetext genannt	
+71	FIX_0071	Lagerhaus beim ersten Besuch manchmal gesperrt	mittel	nein	wichtig	ja		OVL012.CPP
+72	FIX_0072	Boron-Wunder: Totenerweckung viel zu häufig	mittel	ja	wichtig	ja		OVL033.CPP
+73	FIX_0073	Kampfanimation: über 40 Animationen gleichzeitig	egal	nein	alles	ja		OVL016.CPP OVL112.CPP
+74	FIX_0074	Bildklasse: Randfehler ohne Aufrufweg	egal	nein	alles	teilweise	nur das Archivobjekt im Konstruktor gesetzt; read_data/check bleiben (decode liefert keinen Erfolgswert, der Pruefkopf im Objekt ist eher gewollt; kein Aufrufweg gefunden)	OVL269.CPP
+75	FIX_0075	Meldung „versteckte Gegner“ zählt manchmal falsch	egal	nein	alles	ja		OVL162.CPP
+76	FIX_0076	Sumpfrantzendokument gegen Gegner ohne Meldung	egal	nein	alles	ja		OVL162.CPP
+77	FIX_0077	Vorratslager: Debugtext als Mengenfrage	mittel	nein	wichtig	ja		OVL116.CPP
+78	FIX_0078	Lagerhaus: Verderb nach einem Jahr verkehrt herum	mittel	nein	wichtig	ja		OVL100.CPP
+79	FIX_0079	Kampf: Figur läuft selten in Zufallsrichtung	mittel	nein	wichtig	ja		OVL146.CPP
+80	FIX_0080	Reisekarte: Position im Randfall falsch	egal	nein	alles	ja		OVL213.CPP
+81	FIX_0081	Zufälliger Gegenstandsverlust fehlerhaft	egal	nein	alles	ja		OVL202.CPP
+82	FIX_0082	Gegenstand an jeden Helden: Restmenge falsch	egal	nein	alles	ja		OVL202.CPP
+83	FIX_0083	Gruppenverwaltung schreibt hinter das Feld	egal	nein	alles	ja		OVL202.CPP
+84	FIX_0084	Laden: Ware bezahlt, aber nicht erhalten	kritisch	nein	wichtig	ja		OVL226.CPP
+85	FIX_0085	Laden-Warenliste überlappt bei riesigem Sortiment	egal	nein	alles	ja		OVL226.CPP
+86	FIX_0086	CD-Zwischenspeicher bei Lesefehlern kaputt	egal	nein	alles	ja		OVL003.CPP
+87	FIX_0087	Gegenstände scheinen durch Wände	egal	nein	alles	ja		OVL255.C
+88	FIX_0088	Wegetexte: hängende Zeiger	egal	nein	alles	ja		OVL211.C
+89	FIX_0089	Kobold Mumpitz: Auswahl liest außerhalb	egal	nein	alles	teilweise	dng11_kobold_send_away liest bei mehr Einzelgruppen weiter in die folgenden Zieltabellen (split/far) - diese Ziele sind im Original de facto festgelegt, eine Grenze wuerde das Verhalten aendern; nur die Auswahlschleife behoben	OVL062.CPP
+90	FIX_0090	Kampf-Figurenliste: mehrere Randfehler	egal	nein	alles	teilweise	clear() und hide/show behoben; add() mit prio -1, die fehlende Kopfknoten-id, getpos und die Spalte x = 24 bleiben - kein Aufrufer erreicht diese Faelle, die Liste ist Teil des Kampfablaufs	OVL153.CPP
+91	FIX_0091	Dateizugriff: Handle-Leck und späte Fehlerprüfung	egal	nein	alles	teilweise	Namenslisten ueber 64 KB (find) bleiben abgeschnitten - die Listen der Spieldaten sind klein; Handle, Lesefehler, exists und open_in_arc behoben	OVL037.CPP
+92	FIX_0092	Hintergrundanimation zeigt evtl. falsches Teilbild	egal	nein	alles	ja		OVL054.CPP
+93	FIX_0093	Absturz beim Bauern mit dem gebrochenen Rad	kritisch	nein	wichtig	ja		OVL118.CPP
+94	FIX_0094	Laden: Gepäckwarnung fehlt oder falsch	mittel	nein	wichtig	teilweise	Platzwarnung und Menge behoben; der Geldvergleich bleibt - mit Nr. 25 kann das Gruppengeld nicht mehr negativ werden, der Vergleich ist dann gleichwertig	OVL228.CPP
+95	FIX_0095	Leeres Zunderkästchen: doppelte oder alte Meldung	egal	nein	alles	ja		OVL252.CPP
+96	-	Kampfbeginn: Hilfsvariable doppelt benutzt	egal	nein	-	kein Fehler	kein Fehler: Dummy-Ziel (+0x1a1 waere old_dlg_mode)	
+97	FIX_0097	Kompassrose verschwindet im Randfall	egal	nein	alles	ja		OVL220.CPP
+98	FIX_0098	Schlafender NSC steht wach im Kampf	mittel	nein	wichtig	ja		OVL140.CPP
+99	FIX_0099	Dialogfenster: Randfälle ohne Wirkung	egal	nein	alles	ja		OVL190.CPP
+100	FIX_0100	Schenke: Andrang nach Mitternacht (unklar)	egal	nein	alles	nein	die Absicht ist offen (Andrang nach Mitternacht oder harmloser Rest) - die zweite Teilbedingung ist wirkungslos, eine geratene Aenderung wuerde das Schankverhalten aendern	
+101	FIX_0101	Kräuterstelle an Weg 41: Zähler ohne Grenze	egal	nein	alles	ja		OVL115.CPP
+102	FIX_0102	Gewölbe des Namenlosen: Ereignisse zufällig	mittel	nein	wichtig	ja		OVL131.CPP
+103	FIX_0103	Tagebuchsuche: Esc sucht statt abzubrechen	egal	nein	alles	ja		OVL103.CPP
+104	FIX_0104	Altsvellt-Sumpf: alte Ebene überschrieben	egal	nein	alles	ja		OVL195.CPP
+105	FIX_0105	Spinnennetze: Schreiben nach Adresse 0	egal	nein	alles	ja		OVL265.CPP
+106	FIX_0106	Sonderkampf: Flächenangriff trifft niemanden	mittel	nein	wichtig	ja		OVL141.CPP
+107	FIX_0107	Heldenerschaffung: uninitialisierte Werte	egal	nein	alles	teilweise	chargen_save_bg/restore_bg fuer Seiten ausserhalb 0..10 bleiben ohne Vorbelegung - g->page kommt nur aus 0..10	OVL169.CPP
+108	FIX_0108	Auswahlliste ohne Grenzprüfung	egal	nein	alles	ja		OVL225.CPP
+109	FIX_0109	Texteingabefeld: Grafikfehler und Zeichenmüll	mittel	nein	wichtig	teilweise	die toten Zweige in wrap (l >= nlines, Zweig nach memset) bleiben - der Ueberlauf landet bestimmungsgemaess in der Reservezeile lines[nlines]; Hintergrund, Mausbereich und s[-1] behoben	OVL110.CPP
+110	FIX_0110	Stabzauber prüft eine Eigenschaft doppelt	mittel	nein	wichtig	ja		OVL091.CPP
+111	FIX_0111	Gegnerischer Heilzauber verletzt Schwerverwundete	mittel	nein	wichtig	teilweise	mon_spell_verwandlung_beenden verbraucht bei zu wenig AE weiterhin die ganze AE ohne Wirkung - das kann ein gewollter Fehlschlag sein; der Raster-Fix betrifft nur Balsam	OVL194.CPP
+112	FIX_0112	Kriegerhüne: Wegetexte unnötig neu geladen	egal	nein	alles	ja		OVL113.CPP
+113	FIX_0113	Gegnerpatzer gegen bewusstlose Helden entfallen	egal	nein	alles	nein	unsicher - Patzer gegen einen nicht handlungsfaehigen Helden auszulassen kann Absicht sein; Patzer 12 ist (wie in O160) ein leerer Zweig	
+114	FIX_0114	Lorenfahrt: Abspringen gefahrlos, aber ohne AP	mittel	nein	wichtig	ja		OVL063.CPP
+115	FIX_0115	Lore: Lesen vor der Gültigkeitsprüfung	egal	nein	alles	ja		OVL063.CPP
+116	FIX_0116	Auto-Erschaffung: Akademiezauber doppelt bedacht	egal	nein	alles	ja		OVL167.CPP
+117	FIX_0117	Heilkunde Wunden: Probe doppelt gewürfelt	mittel	nein	wichtig	nein	Doppelte Heilprobe und Schaden LE-1 sind in DSA 1 (seg103 skill_heal_wounds) identisch, also Spielregel; case -1 nur toter Code ohne Wirkung	
+118	FIX_0118	Wasserfall-Spende: Vollheilung fast umsonst	mittel	ja	wichtig	ja		OVL114.CPP
+119	FIX_0119	Warzennashorn-Schaden und Kräuterprobe Weg 36 falsch	mittel	nein	wichtig	ja		OVL114.CPP
+120	FIX_0120	Automatischer Kampf: Helden zaubern auf falsches Ziel	mittel	nein	wichtig	ja		OVL156.CPP
+121	FIX_0121	Sehr lange Reiseetappen dauern zu kurz	mittel	nein	wichtig	ja		OVL217.CPP
+122	FIX_0122	Ingerimms Schmiede: Meldung fehlt, „und“ falsch	mittel	nein	wichtig	ja		OVL002.C
+123	FIX_0123	Unendlich Geld aus Truhen	kritisch	ja	wichtig	ja		OVL078.CPP
+124	FIX_0124	Reisetempo im Randfall falsch	mittel	nein	wichtig	ja		OVL216.CPP
+125	FIX_0125	Zwischensequenz: Überblendung zufällig	egal	nein	alles	ja		OVL040.CPP
+126	FIX_0126	Großer AP-Bonus im Gespräch wird nie vergeben	mittel	nein	wichtig	ja		OVL013.CPP
+127	FIX_0127	Klangeinstellung: Port/IRQ-Eingabe verworfen	mittel	nein	wichtig	ja		OVL043.CPP
+128	FIX_0128	Fahrender Händler: falsche Menge beim Zurücklegen	mittel	nein	wichtig	ja		OVL068.CPP
+129	FIX_0129	Speicherfehler löscht die falsche Datei	mittel	nein	wichtig	ja		OVL106.CPP
+130	FIX_0130	Gulmondblatt: Spieltext durch Heldennamen ersetzt	mittel	nein	wichtig	ja		OVL254.CPP
+131	FIX_0131	Starker Zaubertrank nennt Lebenspunkte	egal	nein	alles	ja		OVL254.CPP
+132	FIX_0132	Ortsszene: Musikwahl zufällig	egal	nein	alles	ja		OVL259.CPP
+133	FIX_0133	Binge: Position doppelt gesetzt	egal	nein	alles	ja		OVL061.CPP
+134	FIX_0134	Schwarzmagier-Szene: Abschlusstext und Ton fehlen	mittel	nein	wichtig	teilweise	nur das fehlende ani_halt ergaenzt. Die leeren Rumpfe (Text/Sprache) bleiben leer: die passenden Texte (SEQUENCE.LTX 38-40 sind unbenutzt), Sprachnummern und Animationsschritte sind nicht belegbar; ein geratener Sprach- oder Animationsindex koennte die Endsequenz aufhaengen	OVL007.C
+135	FIX_0135	Gespräch mit Gegenstandswahl lässt sich nicht abbrechen	mittel	nein	wichtig	ja		OVL102.CPP
+136	FIX_0136	Fenster springt beim Verschieben	egal	nein	alles	ja		OVL205.CPP
+137	-	Eolan-Ereignis (kein Fehler)	egal	nein	-	kein Fehler	kein Fehler: Zustand wird im Dialog gesetzt	
+138	FIX_0138	Shurinknollen-Gift: Erholung extrem langsam	mittel	nein	wichtig	ja		OVL089.CPP
+139	FIX_0139	Kellertür: Wandbild bei nicht quadratischer Karte	egal	nein	alles	ja		OVL130.CPP
+140	FIX_0140	Pelzwand: Abzug beim falschen Gegenstand	mittel	nein	wichtig	ja		OVL065.CPP
+141	FIX_0141	Animation: hängender Zeiger bei fehlender Datei	egal	nein	alles	ja		OVL050.CPP
+142	FIX_0142	Lagerplatz: Suche liest hinter der Tabelle	egal	nein	alles	ja		OVL067.CPP
+143	FIX_0143	Zwergenbinge: Portal versetzt andere Teilgruppe	mittel	nein	wichtig	ja		OVL060.CPP
+144	FIX_0144	Tagebuch: Seitenzählung falsch, Überlauf möglich	mittel	nein	wichtig	teilweise	nur die Steuerzeichen der Zeilenzaehlung an Anzeige/Druck angeglichen; die fehlende Laengenpruefung der 1000-Byte-Puffer bleibt - die Seitenentscheidung (20 Zeilen) faellt vor dem Zusammensetzen, ein sauberer Seitenumbruch an dieser Stelle braeuchte einen Umbau von append	OVL104.CPP
+145	FIX_0145	Erschaffung: Eigenschaften verschieben falsch geprüft	mittel	nein	wichtig	ja		OVL026.CPP
+146	FIX_0146	Spendenschrein: falscher Text, Zufallswert	mittel	nein	wichtig	ja		OVL164.CPP
+147	FIX_0147	Heldenaktion mit unbekannter Zielart	egal	nein	alles	ja		OVL159.CPP
+148	FIX_0148	Nichtzauberer können das Zaubermenü öffnen	egal	nein	alles	ja		OVL093.CPP
+149	FIX_0149	Ankunft in Lowangen: erster Textteil fehlt	mittel	nein	wichtig	ja		OVL185.CPP
+150	FIX_0150	Fähre: Zufallswert an unbekanntem Ort	egal	nein	alles	ja		OVL163.CPP
+151	FIX_0151	Zwergengrab: Frevel ohne Kriegsaxt	mittel	nein	wichtig	ja		OVL064.CPP
+152	FIX_0152	Alchimie/Schätzen: kleine Randfehler	egal	nein	alles	ja		OVL090.CPP
+153	FIX_0153	Reise bricht unvermittelt ab	mittel	nein	wichtig	ja		OVL038.CPP
+154	FIX_0154	Blaue Keuche steckt mit Dumpfschädel an	mittel	nein	wichtig	ja		OVL081.CPP
+155	FIX_0155	Herberge: Abbruch löscht die alte Zimmerbuchung	mittel	nein	wichtig	ja		OVL178.CPP
+156	-	Hafen-Feilschen (kein Fehler)	egal	nein	-	kein Fehler	gewollt: -1 passt zum anderen Menue	
+157	FIX_0157	Orkfestung Ebene 3: ausgewürfelte Gegner fehlen	mittel	nein	wichtig	teilweise	die Rueckgaben der Kaempfe (Halle, Orkveteran, Mumie) behoben; an 0x1516/0x1615 wird c in diesem Block nie gesetzt (immer 0) - die dritte Gruppe -1/0 hat dadurch keine Wirkung, Art und Zahl der gemeinten dritten Gegnergruppe sind nicht belegbar	OVL268.CPP
+158	FIX_0158	Schenke: leerer Text, merkwürdiger Rundenzähler	egal	nein	alles	teilweise	nur der Test auf leeren Text; die rounds-Behandlung nach "bezahlen" bleibt (ohne sichtbare Folge, Absicht nicht belegbar)	OVL241.C
+159	FIX_0159	Armatrutz eine Stufe höher als die AE erlaubt	mittel	ja	wichtig	ja		OVL236.CPP
+160	FIX_0160	Zwergenbinge: Gruppe falsch, fremder Gegenstand weg	mittel	nein	wichtig	ja		OVL000.CPP
+161	FIX_0161	Automatische Zaubersteigerung lückenhaft	mittel	nein	wichtig	ja		OVL086.CPP
+162	FIX_0162	Reisekarte: Ortssuche ohne Grenze	egal	nein	alles	teilweise	nur das Lesen hinter der Wegtabelle (route_find/route_first) abgefangen; die Ortssuchen ohne Grenze bleiben (alle abgefragten Orte stehen in g_places, ein Abbruch braeuchte einen Fehlerwert bei allen Aufrufern), place_last_dest nimmt weiter die letzte Richtung (welche gemeint war, ist nicht belegbar)	OVL219.CPP
+163	FIX_0163	Heldenzauber: Lesen hinter der Tabelle	egal	nein	alles	teilweise	nur der Lesezugriff hinter der Tabelle behoben; &w als Breite und Hoehe in heal_ani bleibt (Hoehe wird nie gelesen, ohne Wirkung - wie Nr. 19/96)	OVL233.CPP
+164	FIX_0164	Ingerimms Schmiede: Schreiben hinter das Feld	egal	nein	alles	ja		OVL001.C
+165	FIX_0165	DSA-1-Import: Gegenstände gehen verloren	mittel	nein	wichtig	ja		OVL177.CPP
+166	FIX_0166	Nihilatio Gravitas über die AE hinaus	mittel	ja	wichtig	ja		OVL234.CPP
+167	FIX_0167	Sonderkampf-Sequenzen: doppeltes Freigeben	egal	nein	alles	ja		OVL020.CPP
+168	FIX_0168	Kampfaufbau: leere Prüfung	egal	nein	alles	ja		OVL022.CPP
+169	FIX_0169	Gegenstand benutzen: fehlende Standardfälle	egal	nein	alles	ja		OVL047.CPP
+170	FIX_0170	Routenplanung ergibt falsche Route	mittel	nein	wichtig	ja		OVL218.CPP
+171	FIX_0171	Heldensuche: ungenutzte fehlerhafte Funktion	egal	nein	alles	ja		OVL088.CPP
+172	FIX_0172	Intro: Speicher-Merker nicht gesetzt	egal	nein	alles	ja		OVL027.CPP
+173	FIX_0173	Hexenspeichel heilt mehr, als die AE bezahlt	mittel	ja	wichtig	ja		OVL235.CPP
+174	FIX_0174	Unmut eines Gesprächspartners wird vergessen	mittel	nein	wichtig	ja		OVL257.CPP
+175	FIX_0175	Zwergenskelett: falsches Pronomen	egal	nein	alles	nein	kein Fehler - in BLUT1.LTX[42] ("%s versucht, %s gut zuzureden, doch %s scheint ...") steht das zweite %s fuer den Helden, dem zugeredet wird (h, Dativ "ihm/ihr"); im Erfolgstext [43] bezieht sich das Pronomen dagegen auf h2 - beide Aufrufe sind richtig	
+176	FIX_0176	Reisekarte: Grafikfehler beim Hochscrollen	egal	nein	alles	ja		OVL187.CPP
+177	FIX_0177	Wegliste: eine Meldung erscheint nie	mittel	nein	wichtig	nein	die unerreichbare Meldung ist FEATURE.LTX[30] "Ihr habt den Endpunkt der geplanten Route erreicht" - sie passt nicht in diesen Zweig (route[i + 1] ist dort gerade nicht das Routenende); welche Bedingung gemeint war, ist nicht belegbar, ein Umordnen zeigte die Meldung an Kreuzungen falsch an	
+178	FIX_0178	Erschaffung: Grenzwerte uneinheitlich verglichen	egal	nein	alles	ja		OVL170.CPP
+179	FIX_0179	Kein Hunger und Durst beim Rasten	mittel	nein	wichtig	ja		OVL005.CPP
+180	FIX_0180	Sieg über die Schwarzmagier wird nicht gemerkt	mittel	nein	wichtig	teilweise	der fehlende Merker an Ort 100 ist behoben; die Erweiterung (fight_result liefert nie 2, ein Sieg setzt g_blackmage_done nirgends) bleibt offen - g_blackmage_done = 1 bedeutet "die Magier haben den Stein" (O264 laesst dann die Leiche mit dem Stein finden); nach einem Sieg den Merker zu setzen ergaebe einen zweiten Stein, welche Folge ein Sieg haben sollte, ist nicht belegbar	OVL017.CPP
+181	FIX_0181	Kampf: einige Klänge fehlen	egal	nein	alles	ja		OVL144.CPP
+182	FIX_0182	Orkfestung Ebene 1: Ereignisse zufällig	mittel	nein	wichtig	ja		OVL261.CPP
+183	FIX_0183	Kampffeld: falsche Wände und Blockaden	mittel	nein	wichtig	teilweise	Zeilengrenze und vertauschte Koordinaten behoben; "G[1][x - 1]" bleibt (die Schleife beginnt bei x = 1, der Versatz wirkt beabsichtigt), fight_wall_shape findet n in den Spieldaten immer	OVL139.CPP
+184	FIX_0184	Straßenüberfall: Lesen hinter der Liste	egal	nein	alles	ja		OVL046.CPP
+185	FIX_0185	Gegenstände weitergeben: falscher Held geprüft	mittel	nein	wichtig	teilweise	Rueckgabe 1 bei leerem bzw. nicht ablegbarem Quellplatz bleibt (Aufrufer werten sie als 'erledigt' aus, eine Aenderung wuerde die Bedienung aendern)	OVL085.CPP
+186	FIX_0186	Stadtereignisse: Text fehlt, gleiche Antworten	mittel	nein	wichtig	teilweise	rematch zeigt fuer Antwort 2 und 3 weiterhin txt[0x43] - der gemeinte zweite Text ist nicht belegbar	OVL166.CPP
+187	FIX_0187	„Sichern“ im Kampf wirkt erst eine Runde später	mittel	nein	wichtig	ja		OVL155.CPP
+188	FIX_0188	Zauberziel gegen Sondergegner falsch geprüft	mittel	nein	wichtig	ja		OVL155.CPP
+189	FIX_0189	Sonderkampf-Animation läuft falsch	egal	nein	alles	teilweise	nur das zweite Feld (9, 8) korrigiert; die Vorbelegung fuer unbekannte Schluessel (alle Positionen sind in der Sonderkampfkarte belegt) und das doppelte &w bleiben	OVL142.CPP
+190	FIX_0190	Abspann: eine Zeile fehlt mit Sprachausgabe	egal	nein	alles	teilweise	nur das Lesen hinter dem Feld in voice() behoben; die angeblich fehlende 9. Abspannzeile ist ein Leertext " " (alle 8 echten Zeilen werden gezeigt)	OVL041.CPP
+191	FIX_0191	Lager: Wachen und Diebstahl fehlerhaft	mittel	nein	wichtig	teilweise	mode = -5 bei unbekannter Wachenzahl bleibt (Vorgabe ohne sichtbaren Fehler); Wurf, d, found, Diebstahlschleife und last behoben	OVL072.CPP
+192	FIX_0192	Bolzenfalle im Phex-Tempel tötet hintere Helden	kritisch	nein	wichtig	ja		OVL204.CPP
+193	FIX_0193	Lager: Entscheidung zufällig	mittel	nein	wichtig	ja		OVL071.CPP
+194	FIX_0194	Orkfestung Ebene 3: Schaden bei jedem Betreten	mittel	nein	wichtig	teilweise	nur die ueberschriebene Rueckgabe behoben; der doppelte Zweig 0x1308 ist toter Code (Entfernen aendert nichts), der Schaden an 0x213 bei jedem Betreten kann gewollt sein	OVL267.CPP
+195	FIX_0195	Abblenden: Palette nur teilweise gelöscht	egal	nein	alles	ja		OVL055.CPP
+196	FIX_0196	Treffen mit Teilgruppen unterwegs unzuverlässig	mittel	nein	wichtig	teilweise	Gruppentreffen behoben (Lage je Durchlauf, Antwort getrennt); der leere Zweig bei hurry == 0xff und der Vergleich "speed >= route_pos" bleiben - was dort gemeint war, ist nicht belegbar (ein geratener Inhalt wuerde das Reisetempo bzw. die Lage beim Nachtlager aendern)	OVL215.CPP
+197	FIX_0197	Spielstand laden: eine Einstellung geht verloren	mittel	nein	wichtig	ja		OVL107.CPP
+198	FIX_0198	Ohne EMS: falsche Pixel im Bildschirmrahmen	egal	nein	alles	ja		OVL010.CPP
+199	FIX_0199	Unrathaufen im Orkgefängnis: endlos Gegenstände	kritisch	ja	wichtig	ja		OVL264.CPP
+200	FIX_0200	Automatische Zielwahl bevorzugt eine Seite	egal	nein	alles	teilweise	das verworfene Ergebnis von fig_list_add im Verschiebezweig bleibt - es steht in einem mehrzeiligen Makro, in das kein #if passt; ohne sichtbare Folge	OVL145.CPP
+201	FIX_0201	Startausrüstung: Lesen hinter dem Eintrag	egal	nein	alles	ja		OVL084.CPP
+202	FIX_0202	3D-Objekte: eine Palettenfarbe zu viel	egal	nein	alles	teilweise	Typ 6 setzt den Bildzeiger der Objekte 16/17 auf sich selbst - wirkungslos, die eigentliche Absicht ist nicht belegbar; Palettenschleife behoben	OVL097.CPP
+203	FIX_0203	Flammenschlüssel beliebig oft holbar	mittel	ja	wichtig	ja		OVL132.CPP
+204	FIX_0204	Hesinde-Statue: geschwächter Held entgeht der Strafe	mittel	nein	wichtig	ja		OVL132.CPP
+205	FIX_0205	Totenkopf-Ornament: „%s“ statt Heldenname	egal	nein	alles	nein	kein Fehler - FINAL.LTX[79] enthaelt keinen Platzhalter %s (geprueft an spieltexte/texte/FINAL.txt), die Meldung ist ohne sprintf richtig	
+206	FIX_0206	Absturz bei der Bengram-Verwechslung in Tjolmar	kritisch	nein	wichtig	ja		OVL239.CPP
+207	FIX_0207	Gruppentrennung mit den falschen Helden	mittel	nein	wichtig	ja		OVL034.CPP
+208	FIX_0208	Automap ohne XMS/EMS kaputt, Notizreste	mittel	nein	wichtig	teilweise	open() ohne XMS und ohne EMS bleibt ohne Fehlerbehandlung - die Automap braucht den Auslagerungsspeicher, ein sauberer Abbruch braeuchte Aenderungen bei allen Aufrufern; Notiztext, Zeiger und doppeltes Auslagern behoben	OVL052.CPP
+209	FIX_0209	Speicherfehler bei über 160 MB XMS	egal	nein	alles	ja		SEG005.CPP
+210	FIX_0210	Textdateien laden ohne Fehlerprüfung	egal	nein	alles	nein	die Pruefungen (open, Suchgrenze) kosten 21 Bytes im residenten Segment SEG005 - kein Platz (das Segment darf nicht laenger werden, der freigeraeumte Totcode reicht nur fuer Nr. 209/230/231); nur bei kaputten Dateien	
+211	FIX_0211	Bild laden mit zu kleinem Puffer (ungenutzt)	egal	nein	alles	ja		SEG042.C
+212	FIX_0212	Orkgefängnis: beschlagnahmte Ausrüstung für immer weg	kritisch	nein	wichtig	ja		OVL263.CPP
+213	FIX_0213	Arax-Gift lähmt Gegner völlig	mittel	ja	wichtig	ja		OVL079.CPP
+214	FIX_0214	Tanzen für Geld nutzt Musizieren	mittel	ja	wichtig	ja		OVL006.CPP
+215	FIX_0215	Tollwut-Anfall: Beruhigen gelingt verkehrt herum	mittel	nein	wichtig	ja		OVL082.CPP
+216	FIX_0216	Lowangen, zweites Stadttor: Unsinnstext	mittel	nein	wichtig	ja		OVL185.CPP
+217	FIX_0217	Bild-Entpacker im Speicher: Zufallswert	egal	nein	alles	nein	im residenten Segment SEG041 kein Platz (die Laengenberechnung kostet 17 Bytes); die Rueckgabe von nvf_process wird nirgends ausgewertet - folgenlos	
+218	FIX_0218	Unratfund heißt immer „einen Dolch“	egal	nein	alles	ja		OVL264.CPP
+219	FIX_0219	Gruppenwechsel überspringt NSC-Gruppen nicht	egal	nein	alles	ja		OVL075.CPP
+220	FIX_0220	Meditation mit wenig LE kostet AE	mittel	nein	wichtig	ja		OVL091.CPP
+221	FIX_0221	Finale: Überblendung von Schwarz (gewollt)	egal	nein	alles	nein	pal_from kommt aus genulltem Speicher (schwarze Palette) - Ueberblenden von/nach Schwarz ist wahrscheinlich gewollt (unsicher), kein Flackern	
+222	FIX_0222	Steinschlag: danach evtl. falsche Wegtexte	egal	nein	alles	ja		OVL165.CPP
+223	-	Orkschützen an Weg 250 (kein Fehler)	egal	nein	-	kein Fehler	kein Fehler: get_next_hero liefert nie 0	
+224	FIX_0224	Kampffiguren am Rand ungleich abgeschnitten	egal	nein	alles	ja		OVL112.CPP
+225	FIX_0225	Absturzbericht liest über den Speicherblock	egal	nein	alles	nein	der Absturzbericht kennt die Groesse des Blocks hinter ptr nicht; im Real Mode ist das Lesen ueber Blockgrenzen ungefaehrlich (der Auszug wird nur gelesen und in die Datei geschrieben)	
+226	FIX_0226	Wasserfall über Weg 25 mit falschen Texten	egal	nein	alles	nein	unerreichbar (Weg 25 hat in SECTION.DAT kein Ereignis 25, tevent_025 laeuft nur ueber Weg 178 mit den richtigen Texten) - Verteiler und Texte bleiben	
+227	FIX_0227	Dialogskript: Vergleich mit leerem Feld	egal	nein	alles	ja		OVL260.CPP
+228	-	Handbuchabfrage in der CD-Fassung ohne Wirkung	egal	nein	-	kein Fehler	gewollt: Schutz ueber cd_check, Rest der Disketten-Fassung	
+229	-	Zeitgeber prüft denselben Wert doppelt	egal	nein	-	kein Fehler	ohne Wirkung: doppelter Test, Absicht nicht belegbar	
+230	FIX_0230	CD-Prüfung bei leerer PATH.CFG	egal	nein	alles	ja		SEG005.CPP
+231	FIX_0231	CD-Prüfung bricht ohne Aufräumen ab	egal	nein	alles	ja		SEG005.CPP
+232	FIX_0232	Speichern: Existenzprüfung mit > statt >=	egal	nein	alles	ja		SEG001.CPP
+233	FIX_0233	Kriegerhüne: Abschiedstext erscheint nie	mittel	nein	wichtig	nein	in welchem Zweig (bzw. bei welchem Gespraechsausgang von Dialog 0x82) der Merker ds:2595 gesetzt werden sollte, ist nicht belegbar - vermutlich setzte ihn eine Dialogaktion; ein geratener Zweig zeigte den Text womoeglich an der falschen Stelle	
+300	FIX_0300	DIGPAK-Klangtreiber: Stapelfehler (ungenutzt)	egal	nein	alles	ja		SEG022.ASM
+301	FIX_0301	Zeichenart „Oder“ kopiert falsch (ungenutzt)	egal	nein	alles	ja		SEG046.ASM
+302	FIX_0302	Rückwärtskopieren versetzt (ungenutzt)	egal	nein	alles	nein	eine richtige Rueckwaertskopie braucht Zeigerkorrekturen zwischen movsb/movsw/movsd und ein cld - zusaetzliche Befehle in einem residenten Segment (es darf nicht laenger werden, sonst verschieben sich alle folgenden residenten Adressen); kein Aufrufer benutzt das Rueckwaertsflag	
+303	-	Debug-Wächter zeigt immer Rot (toter Code)	egal	nein	-	kein Fehler	toter Debug-Code (Waechter nie eingehaengt)	
+304	FIX_0304	XMS-Vorgabe ohne Rücksprung	egal	nein	alles	ja		SEG039.ASM
+305	FIX_0305	XMS-Kopie liest Einsprung aus falschem Segment	egal	nein	alles	nein	der Einsprung muesste ueber den Stapel gerufen werden (8 Bytes mehr im residenten Segment SEG039, kein Platz); alle Aufrufer uebergeben &g_xms_move im Datensegment - folgenlos	
+306	FIX_0306	Flat-Modus ohne Fehlerprüfung	egal	nein	alles	nein	unerreichbar - flat_enter laeuft nur im Realmodus (im V86-Modus nimmt SEG005 immer den EMS-Zweig); eine Auswertung in den Aufrufern braeuchte zusaetzlichen residenten Code	
+307	FIX_0307	Kopierroutine verliert ungerades Byte	egal	nein	alles	ja		SEG035.ASM
+350	FIX_0350	Ohne EMS vereinzelt falsche Bodenpixel	egal	nein	alles	nein	der Pixelschritt ist VIEW_W-fach abgerollt; "adc esi,edx" ist 1 Byte laenger als "adc si,dx" - SEG024 wuerde um mehrere hundert Bytes wachsen und alle folgenden residenten Adressen und das Datensegment verschieben; Folge im Original nur einzelne falsche Bodenpixel ohne EMS	
+351	FIX_0351	Tiefensortierung bei 129 Flächen	egal	nein	alles	ja		SEG025.ASM
+352	FIX_0352	Lagerhaus: Waren kehren zurück, Lagerkosten explodieren	kritisch	nein	wichtig	teilweise	Einlagern (Warenwert nicht verdoppeln, NSC ueber group_get_npc), Gebuehr wirklich abbuchen und Zeitstempel setzen, Abholen (Restwert, verlorene Plaetze entfernen) behoben; die Anzeige in store_fetch_fill (nur die ersten count Plaetze) und der Klick auf ein leeres Portraet bleiben	OVL012.CPP OVL099.CPP OVL100.CPP
+353	FIX_0353	Holzfällerlager: Abbrechen legt ein Stück dazu	mittel	ja	wichtig	ja		OVL116.CPP
+354	FIX_0354	Phexhelm und Phexschild vervielfachen	mittel	ja	wichtig	ja		OVL204.CPP
+355	FIX_0355	Gefangennahme: Ringe und Amulette vervielfacht	egal	nein	alles	nein	die Ablage speichert je Gegenstand nur Kennung und Anzahl (struct stash_entry, im Spielstand) - Ladungen und Zustand gesondert zu speichern aendert das Spielstandformat	
+356	FIX_0356	Geld verschwindet beim Vereinen von Gruppen	mittel	nein	wichtig	teilweise	Anteil ohne NSC gerechnet, der NSC bekommt beim Umzug kein Gruppengeld und behaelt sein eigenes; die NSC-Abgabe in add_money beim Einbuchen eines Helden bleibt (Abgabe auf Einnahmen ist so gewollt, Einbuchen ist davon nicht zu unterscheiden)	OVL200.CPP OVL202.CPP
+357	FIX_0357	Asthenilschwert per ESC behalten	mittel	ja	wichtig	ja		OVL001.C
+358	FIX_0358	Schlüsselbund und Rezeptbuch verlieren im Lagerhaus den Inhalt	mittel	ja	wichtig	nein	es gibt keine Funktion, die einen ganzen Inventarplatz (mit Bits, Ladungen, Bruchfaktor) an die Gruppe uebergibt; eine eigene Verteilung mit Platzsuche, Traglast und Ablage-Abfrage waere ein Neubau von group_give_item	
+359	FIX_0359	Geweihte Waffen verlieren „magisch“	mittel	nein	wichtig	nein	wie Nr. 358 (Schmiede und Lager geben neue Gegenstaende aus); Teil (3) in O263 ist im Original folgenlos und haengt mit Nr. 355 zusammen	
+360	FIX_0360	Kaputte und heile Gegenstände im selben Stapel	mittel	ja	wichtig	nein	offen fuer die naechste Runde (Stelle in move_item kommt zweimal vor, Einbau nicht mehr abgeschlossen)	
+361	FIX_0361	Volles Inventar: Asthenilring oder magischer Wasserschlauch weg	kritisch	nein	wichtig	ja		OVL060.CPP OVL066.C
+362	FIX_0362	Schlüssel verschwindet beim Abnehmen vom Bund	kritisch	nein	wichtig	ja		OVL048.CPP
+363	FIX_0363	Leere Gruppe hängt das Spiel auf	kritisch	nein	wichtig	ja		OVL059.CPP OVL074.CPP OVL239.CPP
+364	FIX_0364	Horriphobus: Kampf endet nie	kritisch	nein	wichtig	ja		OVL128.CPP
+365	FIX_0365	MR der NSC falsch (Korima, Thurazz)	egal	nein	alles	nein	die MR steht in den NSC-Dateien (Spieldaten); eine Neuberechnung beim Aufnehmen aenderte gespeicherte Werte laufender Spielstaende - egal	
+366	FIX_0366	Tierkunde an den Spinnennetzen invertiert	egal	nein	alles	ja		OVL264.CPP
+367	FIX_0367	Hesinde-Wunder 8 und 9 bewirken nichts	mittel	nein	wichtig	nein	der Wuerfel steht im Datensegment (g_temple_miracle_dice, darf nicht geaendert werden), und welche Wunder fuer 8 und 9 gedacht waren, ist nicht belegbar	
+368	FIX_0368	Hesinde-Statue als AP-Quelle	mittel	ja	wichtig	ja		OVL132.CPP
+369	FIX_0369	Kräuterwirkungen verfallen nicht, Werte kippen	kritisch	ja	wichtig	ja		SEG002.C
+370	FIX_0370	Kräutersuche über „Alte Einstellungen“ ohne Malus	mittel	ja	wichtig	ja		OVL071.CPP
+371	FIX_0371	Stufenanstieg: Kampftalent steigert immer die Attacke	mittel	nein	wichtig	nein	unsicher - ob AT oder PA steigen soll, ist eine Regelfrage (DSA: Spielerwahl); eine Abfrage waere neue Bedienung, eine feste Verteilung eine Spielaenderung	
+372	FIX_0372	Nichtzauberer bekommen Zaubersteigerungen angeboten	egal	nein	alles	ja		OVL167.CPP
+373	FIX_0373	Weitere Importfehler (toter Held, Kampfwerte)	mittel	nein	wichtig	nein	unsicher - tote Helden und Kampfwerte beim DSA-1-Import; die Neuberechnung von RS/BE und AT/PA aus der Ausruestung braucht Funktionen, die der Import nicht kennt; ohne DSA-1-Spielstand nicht pruefbar	
+374	FIX_0374	Markthalle Lowangen: Ereignis bleibt hängen	mittel	ja	wichtig	ja		OVL184.CPP
+375	FIX_0375	Agdan-Quest: kein Lowangen-Schlüssel	kritisch	nein	wichtig	ja		OVL013.CPP
+376	FIX_0376	Textfehler „Rechstschritt“	egal	nein	alles	nein	Tippfehler in der Spieldatei BLUT3.LTX - kein Programmcode	

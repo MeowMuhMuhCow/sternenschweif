@@ -1,0 +1,648 @@
+/* OVL257 - Overlay O257 (Segment 0x2490 in SCHWEIF.EXE): Dialog-Objekt (ds:b86e, 0x53a Bytes; Gespraechsfuehrung in
+ * O049, Szenen in O259). Felder wie OVL049 struct dlg, dazu +356 Menuezeilen (5), +36a Zeilenzahl, +370 Themen-
+ * merker (100 Bytes), +3d4 "eben freigeschaltet" (100), +438 Themenliste (100 Worte), +500 Zaehlertabelle (10 x 3
+ * Bytes {id, Stufe}), +51e Skript (O260), +522 Bmp, +52c Merker, +532/+536 Textbloecke.
+ * Dlg()/~Dlg(): Themen 0..6/97 frei, Satztabelle Datei ds:35fe (0x1f2, R06) nach +352 laden / freigeben.
+ * f_0164/f_020a: Abschluss-/Begruessungstext (+346/+34a oder Zufallstext O049_10EF 0x62/0x61; id 0xa3 -> fc = 0x62;
+ *   f_020a nur ohne O259_0931). f_0281(v): Thema einsortieren (ab 7). f_031d: erledigte Themen (+370[t] == 1)
+ *   entfernen. f_03a2: Skriptthemen 7..41 freischalten, Texte 0x61..0x63 aus den Skriptabschnitten nach +34a/+346/
+ *   +34e. f_059e: Freischaltungen zuruecknehmen. f_05c8: Themen je Ort (ds:c4c5 +20, Faelle 1..19, Merker
+ *   ds:256b..2578, 25a6..2746). f_0bb3/f_0c1a: Spielstand schreiben/lesen ("XDIA", 0x82, +370, +500; ds:c68d).
+ * f_0c8b/f_0cc5/f_0d4e/f_0d89/f_0dd0: Zaehlertabelle lesen/setzen/verringern/nullen/aufraeumen (memmove).
+ * f_0e49(k, v): Merker setzen (2 -> einsortieren), alter Wert. f_0e93: Merker = 1. f_0ea4(k): Thema freischalten,
+ *   bei ds:b666 == 0x4f einsortieren und Texte nach Satz +352[k] (9 Bytes, SCOPY@) per O248_02E3, O049_0FEF.
+ * f_102b: Liste neu aufbauen, Texte laden. f_110c: Abschied (Bmp 32 x 32 auf ds:c4fb, O190_037F). f_11db(n, ...):
+ *   Menuezeilen. f_1261(n): Menue (ds:8bed/8bad/8bb5/8bc3, Notizfrage O190_01C6 -> f_164d), Rueckgabe Zeile + 1.
+ * f_1538: Menue zeichnen (Fenster ds:3303 kurz 0xe1). f_164d: Notiz ins Tagebuch (sprintf/strcat, O103_04E1).
+ *
+ * BCC -mlarge -3 -Ot -Og -Oi -c -Y OVL257.CPP   -> 6102/6102 Bytes GLEICH (18.10.2026), cobjfix laeuft.
+ *   Ohne -Og 4203 Abweichungen; -Oi fuer memset/strcat (memmove bleibt Aufruf).
+ * - Zusammengesetzt aus OVL257.HDR + gen/sw257.txt per gen/mk257.py; der switch in f_05c8 ist mit gen/g257.py aus
+ *   Sprungtabelle und ASM erzeugt (Rumpfreihenfolge 1-4, 7, 5, 6, 8/9, 10 -> faellt in 11/12, 13..19, default).
+ * - f_0dd0: "(10 - i - 1) * sizeof(struct t3)" (unsigned) behaelt mov ax,10 / sub / dec ax; mit "* 3" faltet BCC
+ *   das -1 zu add dx,-3.
+ * - Ketten: "f370[0] = .. = f370[6] = f370[0x61] = 1" (mov al,1, +3d1 zuerst), "f3d4[i] = f370[i] = 1",
+ *   "f34a = f346 = f34e = 0" (xor eax,eax / mov dword), "g_8bed = g_8bb5 = 0".
+ * - f_0c8b: Parameter und Zaehler mit register (CX/DX, keine Aufrufe); f_059e: Zaehler in AX.
+ * - f_0ea4: j im Block hinter dem -Og-Zwischenwert this + k ([bp-2]), t/a/b im inneren Block.
+ * - f_1261: Fensterwerte/col/r als Block-Locals hinter dem -Og-Zwischenwert (int)f36a ([bp-6]); "f36a <= sel".
+ * - Member-far-Zeiger = 0: einfache Mitglieder (f532/f536) mov dword, Feldelemente f356[i] zwei Wort-Stores.
+ * Originalfehler: f_031d setzt nach dem Verschieben "list[100] = 0" (+0x500) - hinter der Themenliste; das loescht
+ *   die id des ersten Eintrags der Zaehlertabelle.
+ */
+#include <io.h>
+#include <mem.h>
+#include <stdarg.h>
+#include <string.h>
+
+class Bmp {				/* 10 Bytes (R42) */
+	char raw[10];
+public:
+	Bmp();
+	Bmp(signed short w, signed short h, void far *p);
+	~Bmp();
+	void put(void far *dst, signed short x, signed short y);
+};
+
+struct ent {				/* 10 Bytes */
+	signed char n;			/* +0 */
+	signed char cur;		/* +1 */
+	signed char far *b;		/* +2 */
+	signed short far *w;		/* +6 */
+};
+
+struct sec {				/* 8 Bytes */
+	unsigned char n;		/* +0 */
+	char pad1;
+	signed short cnt;		/* +2 */
+	struct ent far * far *list;	/* +4 */
+};
+
+class Script {				/* O260, 0xb4 Bytes */
+public:
+	char pad0[0xa0];
+	signed short fa0;		/* +0xa0 */
+	signed short fa2;		/* +0xa2 */
+	char far *fa4;			/* +0xa4 */
+	struct sec far *secs;		/* +0xa8 */
+	char far * far *titles;		/* +0xac */
+	char far * far *b0;		/* +0xb0 */
+};
+
+struct t9 {				/* 9 Bytes */
+	signed short w0;		/* +0 */
+	signed short w2;		/* +2 */
+	signed short w4;		/* +4 */
+	signed char c6;			/* +6 */
+	signed char c7;			/* +7 */
+	signed char c8;			/* +8 */
+};
+
+struct t3 {				/* 3 Bytes */
+	signed short id;
+	signed char v;
+};
+
+struct rect {
+	signed short x, y, w, h;
+};
+
+struct grp {
+	char pad0[0x20];
+	signed char f20;		/* +0x20 */
+};
+
+class Dlg {
+public:
+	signed short f0;		/* +0x000 */
+	signed short f2;		/* +0x002 */
+	signed short f4;		/* +0x004 */
+	signed short f6;		/* +0x006 */
+	signed short f8;		/* +0x008 */
+	signed short id;		/* +0x00a */
+	signed short fc;		/* +0x00c */
+	char far *bufe;			/* +0x00e */
+	char far * far *txt12;		/* +0x012 */
+	char far *buf16;		/* +0x016 */
+	char far * far *txt1a;		/* +0x01a */
+	void far *f1e[100];		/* +0x01e */
+	char far * far *f1ae[100];	/* +0x1ae */
+	char far *f33e;			/* +0x33e */
+	void far *f342;			/* +0x342 */
+	char far *f346;			/* +0x346 */
+	char far *f34a;			/* +0x34a */
+	char far *f34e;			/* +0x34e */
+	struct t9 far *f352;		/* +0x352 */
+	char far *f356[5];		/* +0x356 */
+	signed char f36a;		/* +0x36a */
+	signed short f36b;		/* +0x36b */
+	signed short f36d;		/* +0x36d */
+	signed char f36f;		/* +0x36f */
+	signed char f370[100];		/* +0x370 */
+	signed char f3d4[100];		/* +0x3d4 */
+	signed short list[100];		/* +0x438 */
+	struct t3 tab[10];		/* +0x500 */
+	Script far *script;		/* +0x51e */
+	Bmp bmp;			/* +0x522 */
+	signed short f52c;		/* +0x52c */
+	void far *f52e;			/* +0x52e */
+	void far *f532;			/* +0x532 */
+	char far * far *f536;		/* +0x536 */
+
+	Dlg();
+	~Dlg();
+	void f_0164();
+	void f_020a();
+	void f_0281(signed short v);
+	void f_031d();
+	void f_03a2();
+	void f_059e();
+	void f_05c8();
+	signed short f_0bb3();
+	signed short f_0c1a();
+	signed char f_0c8b(signed short id);
+	void f_0cc5(signed short id);
+	void f_0d4e(signed short k);
+	void f_0d89(signed short id);
+	void f_0dd0();
+	signed char f_0e49(signed short k, signed short v);
+	void f_0e93(signed short k);
+	void f_0ea4(signed short k);
+	void f_102b();
+	void f_110c();
+	void f_11db(signed short n, ...);
+	signed short f_1261(signed short n);
+	void f_1538();
+	void f_164d();
+};
+
+extern unsigned char g_35fe[];
+extern unsigned char g_37e4[];
+extern unsigned char g_b59a[];
+extern unsigned char g_c0c3[];
+extern char g_7784[];
+extern char g_7789[];
+extern struct grp far *g_c4c5;
+extern signed short g_c68d;
+extern signed short g_b666;
+extern signed short g_7710[];
+extern void far *g_c4fb;
+extern void far *g_b668;
+extern char far *g_b670;
+extern char far *g_b674;
+extern signed short g_8bc3;
+extern signed short g_c696;
+extern signed short g_8bed;
+extern signed short g_8bb5;
+extern signed short g_8bad;
+extern signed short g_8bef;
+extern struct rect g_3303;
+@FLAGS@
+
+void R06_0398(void far *f, signed short id);
+signed long R06_0c4d(void far *f);
+void R06_0789(void far *f, void far *buf);
+void R06_0c16(void far *f);
+void far *R07_0002(unsigned long n);
+void far *R07_0140(void far *p);
+void R20_0407(void far *t, signed short a, signed short b);
+void R20_031c(void far *t, signed short v);
+signed short R20_0350(void far *t);
+void R20_03ce(void far *t, signed short far *a, signed short far *b, signed short far *c, signed short far *d);
+void R20_04d8(void far *t, signed short a, signed short b, signed short c, signed short d);
+void R20_075b(void far *t, char far *s, signed short x, signed short y);
+void R20_059c(void far *t);
+void O049_0ae7(Dlg far *o, char far *s, signed short mode);
+char far *O049_10ef(Dlg far *o, signed short t, signed short k);
+void O049_0fef(Dlg far *o, signed short f);
+void O049_1546(Dlg far *o);
+void O049_158e(Dlg far *o);
+signed short O259_0931(Dlg far *o);
+signed short O260_0944(Script far *s, signed short k);
+void O248_02e3(void far *a, signed short b, signed short c, void far *d, void far *e);
+void O034_1a89(signed short n);
+void O190_037f(void far *p, Bmp far *b, char far *s, char far *t, signed short n);
+signed short O190_01c6(void far *p, char far *t, signed short n, ...);
+void O103_04e1(void far *a, char far *b, signed short c);
+void R18_001a(signed short v);
+void R18_0009(signed short v);
+void R18_057d(void);
+void R18_0ae4(void);
+void R18_0afb(void);
+void R18_0b12(void);
+void R45_007e(void far *p, signed short a, signed short b, signed short c, signed short d, signed short e);
+
+Dlg::Dlg()
+{
+	register signed short i;
+
+	f370[0] = f370[1] = f370[2] = f370[3] = f370[4] = f370[5] = f370[6] = f370[0x61] = 1;
+	R06_0398(g_35fe, 0x1f2);
+	f352 = (struct t9 far *)R07_0002(R06_0c4d(g_35fe));
+	R06_0789(g_35fe, f352);
+	R06_0c16(g_35fe);
+	for (i = 0; i < 5; i++)
+		f356[i] = 0;
+	f532 = 0;
+	f536 = 0;
+}
+
+Dlg::~Dlg()
+{
+	R07_0140(f352);
+}
+
+void Dlg::f_0164()
+{
+	R20_0407(g_37e4, 0xff, -1);
+	R20_031c(g_37e4, 0x2e);
+	if (f346 != 0) {
+		if (id == 0xa3) {
+			O049_0ae7(this, f346, 0);
+			fc = 0x62;
+		} else {
+			O049_0ae7(this, f346, 1);
+		}
+	} else {
+		O049_0ae7(this, O049_10ef(this, 0x62, 0), 1);
+	}
+}
+
+void Dlg::f_020a()
+{
+	if (O259_0931(this) == 0) {
+		R20_0407(g_37e4, 0xff, -1);
+		if (f34a != 0)
+			O049_0ae7(this, f34a, 1);
+		else
+			O049_0ae7(this, O049_10ef(this, 0x61, 0), 1);
+	}
+}
+
+void Dlg::f_0281(signed short v)
+{
+	register signed short i;
+	register signed short j;
+
+	i = 7;
+	if (f52c != 0)
+		f_031d();
+	if (f36f >= script->fa2)
+		f36f--;
+	while (list[i] < v)
+		i++;
+	for (j = 99; j >= i; j--)
+		list[j + 1] = list[j];
+	list[i] = v;
+	f52c = 2;
+}
+
+void Dlg::f_031d()
+{
+	register signed short i;
+	register signed short j;
+
+	i = 7;
+	do {
+		while (list[i] != 0 && f370[list[i]] == 1)
+			i++;
+		for (j = i; j < 100; j++)
+			list[j] = list[j + 1];
+		list[100] = 0;
+	} while (list[i] != 0 && i < 100);
+}
+
+void Dlg::f_03a2()
+{
+	struct sec far *s;
+	struct ent far *e;
+	register signed short i;
+
+	f34a = f346 = f34e = 0;
+	for (i = 7; i < 0x2a; i++) {
+		if (O260_0944(script, i) && !f370[i])
+			f3d4[i] = f370[i] = 1;
+	}
+	if (O260_0944(script, 0x61)) {
+		s = &script->secs[0x61];
+		e = *s->list;
+		f34a = script->b0[e->w[e->cur]];
+	}
+	if (O260_0944(script, 0x62)) {
+		s = &script->secs[0x62];
+		e = *s->list;
+		f346 = script->b0[e->w[e->cur]];
+	}
+	if (O260_0944(script, 0x63)) {
+		s = &script->secs[0x63];
+		e = *s->list;
+		f34e = script->b0[e->w[e->cur]];
+	}
+}
+
+void Dlg::f_059e()
+{
+	register signed short i;
+
+	for (i = 7; i < 0x2a; i++)
+		if (f3d4[i] != 0)
+			f370[i] = 0;
+}
+
+void Dlg::f_05c8()
+{
+	memset(&f370[7], 0, 14);
+	memset(&f370[0x2a], 0, 30);
+	switch (g_c4c5->f20) {
+@SWITCH@
+	}
+	if (g_25a8 != 0)
+		f370[0x2b] = 1;
+	if (g_25aa != 0)
+		f370[0x2d] = 1;
+}
+
+signed short Dlg::f_0bb3()
+{
+	signed short v = 0x82;
+
+	_write(g_c68d, g_7784, 4);
+	_write(g_c68d, &v, 2);
+	_write(g_c68d, f370, 100);
+	_write(g_c68d, tab, 30);
+	return 1;
+}
+
+signed short Dlg::f_0c1a()
+{
+	signed long magic;
+	signed short v;
+
+	_read(g_c68d, &magic, 4);
+	if (magic == 0x41494458L) {
+		_read(g_c68d, &v, 2);
+		_read(g_c68d, f370, 100);
+		_read(g_c68d, tab, 30);
+		return 1;
+	}
+	return 0;
+}
+
+signed char Dlg::f_0c8b(register signed short id)
+{
+	register signed short i;
+
+	for (i = 0; i < 10; i++)
+		if (tab[i].id == id)
+			return tab[i].v;
+	return 0;
+}
+
+void Dlg::f_0cc5(register signed short id)
+{
+	signed short found;
+	register signed short i;
+
+	found = 0;
+	for (i = 0; i < 10; i++) {
+		if (tab[i].id == id) {
+			tab[i].v = f36f;
+			found = 1;
+		}
+	}
+	if (found == 0) {
+		memmove(&tab[1], &tab[0], 27);
+		tab[0].id = id;
+		tab[0].v = f36f;
+	}
+}
+
+void Dlg::f_0d4e(register signed short k)
+{
+	if (tab[k].v > 0)
+		tab[k].v--;
+	f_0dd0();
+}
+
+void Dlg::f_0d89(register signed short id)
+{
+	register signed short i;
+
+	for (i = 0; i < 10; i++)
+		if (tab[i].id == id)
+			tab[i].v = 0;
+	f_0dd0();
+}
+
+void Dlg::f_0dd0()
+{
+	register signed short i;
+
+	for (i = 0; i < 10; i++) {
+		if (!tab[i].v) {
+			if (i < 9)
+				memmove(&tab[i], &tab[i + 1], (10 - i - 1) * sizeof(struct t3));
+			tab[9].id = 0;
+			tab[9].v = 0;
+		}
+	}
+}
+
+signed char Dlg::f_0e49(register signed short k, signed short v)
+{
+	signed char old;
+
+	old = f370[k];
+	if (v != -1) {
+		f370[k] = v;
+		if (v == 2)
+			f_0281(k);
+	}
+	return old;
+}
+
+void Dlg::f_0e93(signed short k)
+{
+	f370[k] = 1;
+}
+
+void Dlg::f_0ea4(register signed short k)
+{
+	register signed short i;
+
+	if (O260_0944(script, k)) {
+		if (!f370[k]) {
+			f3d4[k] = f370[k] = 1;
+			if (g_b666 == 0x4f) {
+				signed short j;
+
+				for (j = 0; list[j] < k; j++)
+					;
+				for (i = 99; i >= j; i--)
+					list[i + 1] = list[i];
+				list[j] = k;
+				if (((k >= 7 && k < 0x2a) || k == 0x39) && f1e[k] == 0 && f1ae[k] == 0) {
+					struct t9 t;
+					signed short a;
+					signed short b;
+
+					t = f352[k];
+					a = g_7710[k];
+					b = t.c6 + t.c7 + t.c8;
+					O248_02e3(g_37e4, a, b, &f1e[k], &f1ae[k]);
+				}
+				O049_0fef(this, 1);
+			}
+		}
+	}
+}
+
+void Dlg::f_102b()
+{
+	register signed short i;
+	register signed short n;
+	signed short a;
+	signed short b;
+
+	for (i = n = 0; i < 100; i++) {
+		list[i] = 0;
+		if (f370[i] != 0) {
+			list[n++] = i;
+			if ((i >= 7 && i < 0x2a) || i == 0x39) {
+				a = g_7710[i];
+				b = f352[i].c6 + f352[i].c7 + f352[i].c8;
+				O248_02e3(g_37e4, a, b, &f1e[i], &f1ae[i]);
+			}
+		}
+	}
+}
+
+void Dlg::f_110c()
+{
+	char far *s;
+	Bmp b(0x20, 0x20, g_c4fb);
+
+	O034_1a89(script->fa0 - 1);
+	if (script->fa2 == 0) {
+		if (f34a != 0)
+			s = f34a;
+		else
+			s = O049_10ef(this, 0x61, 0);
+	} else {
+		s = O049_10ef(this, 0x66, 0);
+	}
+	O190_037f(g_b59a, &b, script->fa4, s, 0);
+}
+
+void Dlg::f_11db(signed short n, ...)
+{
+	va_list ap;
+	register signed short i;
+
+	for (i = 0; i < 5; i++)
+		f356[i] = 0;
+	if (n > 5)
+		f36a = 5;
+	else
+		f36a = n;
+	va_start(ap, n);
+	for (i = 0; i < f36a; i++)
+		f356[i] = va_arg(ap, char far *);
+}
+
+signed short Dlg::f_1261(signed short n)
+{
+	signed short done = 0;
+	signed short last;
+	register signed short old = -1;
+	register signed short sel = 0;
+
+	last = g_8bc3;
+	f_1538();
+	O049_1546(this);
+	g_c696 = 0;
+	R18_0ae4();
+	R18_0afb();
+	do {
+		R18_057d();
+		if (g_8bc3 != last) {
+			last = g_8bc3;
+			sel = g_c696 - 1;
+		}
+		if (g_8bed == 0x11b) {
+			done = 1;
+			sel = n - 1;
+		} else if (g_8bed == 0x4800) {
+			sel--;
+		} else if (g_8bed == 0x5000) {
+			sel++;
+		} else if (g_8bb5 != 0 || g_8bed == 0x4900) {
+			signed short x, y, w, h;
+			signed short col;
+
+			R20_03ce(g_37e4, &x, &y, &w, &h);
+			col = R20_0350(g_37e4);
+			if (fc != -1 && *f33e != 0) {
+				signed short r;
+
+				r = O190_01c6(g_b59a, txt1a[0], 2, txt1a[1], txt1a[3]);
+				if (r == 1)
+					f_164d();
+			}
+			R20_04d8(g_37e4, x, y, w, h);
+			R20_031c(g_37e4, col);
+			g_8bed = g_8bb5 = 0;
+			O049_1546(this);
+		} else if ((g_8bad != 0 && g_8bed == 0x81) || g_8bed == 0x5200 || g_8bed == 0x3f00 || g_8bed == 0x240a) {
+			f_164d();
+			g_8bed = g_8bad = 0;
+		} else if ((g_8bad != 0 && g_8bed != 0) || g_8bed == 0x1c0d) {
+			done = 1;
+			g_8bed = g_8bad = 0;
+		}
+		if (sel < 0)
+			sel = 0;
+		if (f36a <= sel)
+			sel = f36a - 1;
+		if (f36a > 1 && sel != old) {
+			if (old != -1) {
+				R20_0407(g_37e4, 0xaa, -1);
+				R20_075b(g_37e4, f356[old], 0xe1, old * 8 + 3);
+				R20_059c(g_37e4);
+			}
+			old = sel;
+			R20_0407(g_37e4, 0xf9, -1);
+			R20_075b(g_37e4, f356[sel], 0xe1, sel * 8 + 3);
+			R20_059c(g_37e4);
+		}
+	} while (done == 0);
+	g_8bef = 0;
+	O049_158e(this);
+	R18_0b12();
+	R18_0ae4();
+	R18_0afb();
+	return sel + 1;
+}
+
+void Dlg::f_1538()
+{
+	struct rect save;
+	register signed short i;
+
+	R18_001a(0);
+	save = g_3303;
+	g_3303.x = 0xe1;
+	bmp.put(g_b668, 0, 0);
+	if (f36a > 1) {
+		R20_0407(g_37e4, 0xaa, -1);
+		for (i = 0; i < f36a; i++)
+			R20_075b(g_37e4, f356[i], 0xe1, i * 8 + 3);
+		R20_059c(g_37e4);
+	} else {
+		R20_0407(g_37e4, 0xf9, -1);
+		R20_075b(g_37e4, f356[0], 0xe1, 3);
+		R20_059c(g_37e4);
+	}
+	g_3303 = save;
+	R18_0009(0);
+}
+
+void Dlg::f_164d()
+{
+	signed short col;
+
+	if (fc != -1 && *f33e != 0) {
+		col = R20_0350(g_37e4);
+		R18_001a(0);
+		R45_007e(g_b668, 0xab, 7, 0x27, 0x1a, 0xfd);
+		sprintf(g_b674, txt1a[5], script->fa4);
+		sprintf(g_b670, txt1a[6], script->titles[fc]);
+		strcat(g_b674, g_b670);
+		sprintf(g_b670, g_7789, g_b674, f33e);
+		O103_04e1(g_c0c3, g_b670, 0);
+		memset(f33e, 0, 1000);
+		R45_007e(g_b668, 0xab, 7, 0x27, 0x1a, 0x0c);
+		R20_031c(g_37e4, col);
+		R18_0009(0);
+	}
+}

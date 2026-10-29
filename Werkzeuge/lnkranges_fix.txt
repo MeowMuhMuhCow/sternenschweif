@@ -1,0 +1,3 @@
+Korrekturen an lnk_ranges.json nach lnkranges.py:
+- R04 Start +11 (snd_pmode gehoert zu seg003)
+- R25, R27, R34, R36, R43: Start +1, Segment word-ausgerichtet (Fuellbyte 00 von TLINK)

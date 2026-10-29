@@ -1,0 +1,14 @@
+Quelle/ - der rekonstruierte Quelltext von SCHWEIF.EXE, aufgebaut wie bei Attic:
+
+  SEGnnn.C / .CPP          32 residente Module, die Attic in C/C++ geschrieben hat (mit ihren Daten)
+  SEGnnn.ASM               14 residente Module, die Attic selbst in Assembler geschrieben hat
+                           (SEG022 = zugekaufte Miles Audio Interface Library)
+  Overlays/OVLnnn.C/.CPP   269 Overlays in C/C++ (mit ihren Daten)
+  Overlays/OVL191.ASM, OVL270.ASM   2 Overlays in Attics Assembler
+  inc/                     schweif.h und die Teil-Header (Konstanten, Strukturen, Klassen, Daten, Prototypen)
+  werkbank_stand.tar.gz    kompletter Arbeitsstand fuer den bytegleichen Neubau (siehe WIEDERAUFBAU.md)
+
+Nicht hier, sondern unter Referenz/: die Assembler-Fassungen (Disassembly) aller C-Module,
+das alte Datensegment als Assembler (DATSEG), Borland-Bibliotheken (SEG000 = C-Laufzeit, SEG047 = Overlay-Manager),
+die Linkfassungen vom 18.10. und Archivstaende. Das sind Pruef- und Vergleichsvorlagen, kein Quelltext.
+Der leere Ordner Quelle/ASM kann geloescht werden.

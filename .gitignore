@@ -1,0 +1,15 @@
+# Nie ins Repo: Originalprogramm, Compiler, Spieldaten, gebaute EXEs
+*.EXE
+*.exe
+*.OBJ
+*.obj
+*.MAP
+Compiler/*
+!Compiler/HIER_COMPILER_REIN.txt
+Original/*
+!Original/HIER_SCHWEIF_EXE_REIN.txt
+Build/
+SPIELPFAD.txt
+__pycache__/
+*.pyc
+GITHUB_HOCHLADEN.sh

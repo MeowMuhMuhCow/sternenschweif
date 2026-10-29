@@ -1,0 +1,23 @@
+/* OVL255 - Overlay O255 (Segment 0x2489 in SCHWEIF.EXE): 3D-Ansicht - Verdeckung. Eine einzige Funktion f_0000
+ * (von O198_0000 zwischen den beiden Durchlaeufen gerufen): prueft die Verdeckungsflags der 9x9 Nachbarzellen
+ * ds:b4f7[r*9+c] (Gruppe steht bei 4,4) und loescht in der Objekttabelle ds:b4a6[r*9+c] (Objekt-Nr. + 1) die
+ * Eintraege der Zellen, die dahinter liegen und daher nicht gezeichnet werden. Zuerst die vier Diagonalen
+ * (3,3/2,2/1,1 usw.) und Achsen in je drei Stufen, dann die vier Quadranten, zuletzt die Randzellen;
+ * Merker l01..l21 und rd/rb/rc halten fest, welche Bereiche schon ganz verdeckt sind.
+ *
+ * BCC -mlarge -3 -Ot -Og -c -Y OVL255.C   -> 4224/4224 Bytes GLEICH (18.10.2026), cobjfix laeuft.
+ *   -2 statt -3 und zusaetzlich -Oi ebenfalls GLEICH; ohne -Og 20 Bytes zu kurz, mit -O 48 Bytes zu lang.
+ * - Funktion ohne Aufrufe: 36 char-Merker in EINER Zuweisungskette "l01 = ... = 0" (rechts->links gespeichert,
+ *   daher [bp-21h] zuerst). Die drei Merker in CL/BL/DL sind "register signed char rd, rb, rc;" - die
+ *   Deklarationsreihenfolge bestimmt die Register: erste -> DL, zweite -> BL, dritte -> CL. Ohne register
+ *   sucht BCC sich selbst drei (andere) Variablen fuer DL/BL/CL aus und der Stack verschiebt sich.
+ * - "!merker" -> mov al / cbw / or ax,ax; mehrfach im selben Block -> -Og-Zwischenwert (int)merker in SI
+ *   (l11), DI (rd), danach auf dem Stack [bp-24h] (rb) und [bp-26h] (rc): "or si,si" bzw. "cmp word [bp-24h],0".
+ *   "if (a && b)" mit char-Merkern bzw. Tabellenfeldern -> cmp byte ..,0.
+ * - Loeschen mehrerer Zellen = Zuweisungskette (mov al,0 / mov [..],al), einzelne Zelle mov byte [..],0.
+ * - else-if-Kette am Funktionsende -> mit -Og Epilogkopien (pop di / pop si / leave / retf).
+ * Auffaellig (Original): die vier Quadranten sind sonst spiegelbildlich gleich (per Skript geprueft), nur im
+ *   Abschnitt "!rc" (Quadrant 2,6/3,5) steht ein zusaetzlicher else-Zweig, der b4a6[0*9+7] und [1*9+6]
+ *   loescht (Kopie aus dem Abschnitt "!l10", dort zusaetzlich mit Zelle 2,5 in der Bedingung) - in den
+ *   anderen drei Quadranten ("!l11", "!rd", "!rb") fehlt das Gegenstueck.
+ */

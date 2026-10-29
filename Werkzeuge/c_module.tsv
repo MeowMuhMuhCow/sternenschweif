@@ -1,0 +1,302 @@
+# fertige C/C++-Module (Onnn = Overlay OVLnnn) (SEGnnn.CPP hat Vorrang vor .C): Segment<TAB>BCC-Optionen (zusaetzlich immer -mlarge -c -Y -E..\bc\BIN\TASM.EXE)
+001	-3 -Ot	D
+002	-3 -Ot -Og
+003	-3 -Ot -Og	D
+004	-3 -Ot
+005	-3 -Ot	D
+006	-3 -Ot -Og	D
+007	-3 -Ot	D
+008	-3 -Ot	D
+010	-3 -Ot -Og
+011	-3 -Ot
+012	-3 -Ot	D
+013	-3 -Ot -Og	D
+014	-3 -Oi -Ot	D
+015	-3 -Ot
+016	-3 -Oi -Oe -Ot
+017	-3 -Ot -Oi -Og
+018	-3 -Ot -Oi	D
+019	-3 -Ot
+020	-3 -Ot -Og -Oi	D
+021	-3 -Ot	D
+023	-3 -Ot	D
+028	-1 -O -Ot -Z
+029	-1 -O -Ot -Z
+030	-O -Oe -Ot -Og
+032	-Oe
+037	-O -3 -Oe -Ot -Ol -Z	D
+038	-3 -O -Oc -Ol -Om -Ot -Ov -Z
+040	-3 -Oe -Ot -Og
+041	-3 -Oe -Ot -Og
+042	-3 -O -Oe -Og -Oi -Ol -Om -Op -Ov -Ot -Z
+044	-3 -Ot -Ol -Ov -Z
+045	-3 -O -Oe -Ot
+O000	-3 -Ot -Og
+O001	-3 -Ot
+O002	-3 -Ot -Og	D
+O003	-3 -Ot -Og	D
+O004	-3 -Ot -Og	D
+O005	-3 -Ot -Og	D
+O006	-3 -Ot -Og	D
+O007	-3 -Ot	D
+O008	-3 -Ot -Og	DI
+O009	-3 -Ot -Og	D
+O010	-3 -Ot -Og	D
+O011	-3 -Ot -Og	D
+O012	-3 -Ot -Og	D
+O013	-3 -Ot -Og	D
+O014	-3 -Ot -Og	D
+O015	-3 -Ot	D
+O016	-3 -Ot -Og	D
+O017	-3 -Ot -Og	D
+O018	-3 -Ot	D
+O019	-3 -Ot
+O020	-3 -Ot	D
+O021	-3 -Ot	D
+O022	-3 -Ot -Og	D
+O023	-3 -Ot
+O024	-3 -Ot -Og	D
+O025	-3 -Ot	D
+O026	-3 -Ot -Og	D
+O027	-3 -Ot -Og	D
+O028	-3 -Ot	D
+O029	-3 -Ot -Og	D
+O030	-3 -Ot -Og
+O031	-3 -Ot -Og
+O032	-3 -Ot -Og	D
+O033	-3 -Ot -Og	D
+O034	-3 -Ot -Og	D
+O035	-3 -Ot	D
+O036	-3 -Ot	D
+O037	-3 -Ot -Og	D
+O038	-3 -Ot -Og	D
+O039	-3 -Ot	D
+O040	-3 -Ot -Og	D
+O041	-3 -Ot -Og	D
+O042	-3 -Ot	D
+O043	-3 -Ot -Og	D
+O044	-3 -Ot -Og	D
+O045	-3 -Ot
+O046	-3 -Ot -Og	D
+O047	-3 -Ot -Og
+O048	-3 -Ot -Og	D
+O049	-3 -Ot -Og	D
+O050	-3 -Ot -Og -Oi	D
+O051	-3 -Ot
+O052	-3 -Ot -Og -Oi	D
+O053	-3 -Ot -Og -Oi	D
+O054	-3 -Ot -Og -Oi
+O055	-3 -Ot -Og -Oi	D
+O056	-3 -Ot -Og -Oi	D
+O057	-3 -Ot -Og
+O058	-3 -Ot -Og	D
+O059	-3 -Ot	D
+O060	-3 -Ot -Og -Oi	D
+O061	-3 -Ot -Og	D
+O062	-3 -Ot -Og -Oi	D
+O063	-3 -Ot -Og	D
+O064	-3 -Ot -Og	D
+O065	-3 -Ot -Og	D
+O066	-3 -Ot	D
+O067	-3 -Ot -Og	D
+O068	-3 -Ot -Og -Oi	D
+O069	-3 -Ot -Og	D
+O070	-3 -Ot
+O071	-3 -Ot -Og -Oi	D
+O072	-3 -Ot -Og -Oi	D
+O073	-3 -Ot -Oi
+O074	-3 -Ot -Og -Oi
+O075	-3 -Ot -Og -Oi	D
+O076	-3 -Ot -Og -Oi	D
+O077	-3 -Ot -Og -Oi	D
+O078	-3 -Ot -Og -Oi	D
+O079	-3 -Ot -Og
+O080	-3 -Ot -Og
+O081	-3 -Ot -Og
+O082	-3 -Ot
+O083	-3 -Ot -Og -Oi
+O084	-3 -Ot -Og -Oi	D
+O085	-3 -Ot -Og -Oi
+O086	-3 -Ot -Og	D
+O087	-3 -Ot -Og
+O088	-3 -Ot -Og -Oi	D
+O089	-3 -Ot -Og
+O090	-3 -Ot -Og -Oi	D
+O091	-3 -Ot -Og -Oi	D
+O092	-3 -Ot
+O093	-3 -Ot -Og -Oi
+O094	-3 -Ot -Og	D
+O095	-3 -Ot -Og -Oi	D
+O096	-3 -Ot -Og -Oi	D
+O097	-3 -Ot -Og -Oi	D
+O098	-3 -Ot -Og
+O099	-3 -Ot -Og -Oi
+O100	-3 -Ot -Og
+O101	-3 -Ot -Og -Oi	D
+O102	-3 -Ot -Og
+O103	-3 -Ot -Og -Oi	D
+O104	-3 -Ot -Og -Oi	D
+O105	-3 -Ot -Og -Oi	D
+O106	-3 -Ot -Oi	D
+O107	-3 -Ot -Og -Oi	D
+O108	-3 -Ot -Og	D
+O109	-3 -Ot
+O110	-3 -Ot -Og -Oi
+O111	-3 -Ot -Oi -Og	D
+O112	-3 -Ot -Og
+O113	-3 -Ot -Og -Oi
+O114	-3 -Ot -Og
+O115	-3 -Ot -Og -Oi
+O116	-3 -Ot -Og -Oi	D
+O117	-3 -Ot -Og
+O118	-3 -Ot -Og -Oi
+O119	-3 -Ot -Og
+O120	-3 -Ot -Og
+O121	-3 -Ot -Og
+O122	-3 -Ot -Og
+O123	-3 -Ot -Og
+O124	-3 -Ot -Og
+O125	-3 -Ot -Og	D
+O126	-3 -Ot -Og	D
+O127	-3 -Ot -Og
+O128	-3 -Ot -Og	D
+O129	-3 -Ot -Og
+O130	-3 -Ot -Og
+O131	-3 -Ot -Og -Oi	D
+O132	-3 -Ot -Og	D
+O133	-3 -Ot
+O134	-3 -Ot -Og -Oi
+O135	-3 -Ot -Og -Oi
+O136	-3 -Ot -Og -Oi
+O137	-3 -Ot -Og -Oi
+O138	-3 -Ot -Og -Oi
+O139	-3 -Ot -Og -Oi	D
+O140	-3 -Ot -Og -Oi -rd	D
+O141	-3 -Ot -Og -Oi	D
+O142	-3 -Ot -Oi	D
+O143	-3 -Ot -Og -Oi	D
+O144	-3 -Ot -Og -Oi	D
+O145	-3 -Ot -Og -Oi
+O146	-3 -Ot -Og -Oi
+O147	-3 -Ot -Og -Oi
+O148	-3 -Ot -Og
+O149	-3 -Ot -Oi -Og	D
+O150	-3 -Ot -Og -Oi
+O151	-3 -Ot -Og
+O152	-3 -Ot
+O153	-3 -Ot -Og -Oi
+O154	-3 -Ot -Og -Oi
+O155	-3 -Ot -Og -Oi	D
+O156	-3 -Ot -Og
+O157	-3 -Ot -Og
+O158	-3 -Ot -Og -Oi
+O159	-3 -Ot -Og -Oi
+O160	-3 -Ot -Og -Oi
+O161	-3 -Ot -Og -Oi
+O162	-3 -Ot -Oi -Og
+O163	-3 -Ot -Og -Oi	D
+O164	-3 -Ot -Og -Oi	D
+O165	-3 -Ot -Og
+O166	-3 -Ot -Og -Oi
+O167	-3 -Ot -Og -Oi	D
+O168	-3 -Ot -Og
+O169	-3 -Ot -Og -Oi
+O170	-3 -Ot -Og
+O171	-3 -Ot -Og -Oi
+O172	-3 -Ot -Og
+O173	-3 -Ot -Og -Oi	D
+O174	-3 -Ot -Og
+O175	-3 -Ot -Oi
+O176	-3 -Ot -Og -Oi
+O177	-3 -Ot -Og -Oi	D
+O178	-3 -Ot -Og -rd
+O179	-3 -Ot -Og
+O180	-3 -Ot -Og -Oi
+O181	-3 -Ot
+O182	-3 -Ot -Og
+O183	-3 -Ot -Og
+O184	-3 -Ot -Og
+O185	-3 -Ot -Og -Oi
+O186	-3 -Ot
+O187	-3 -Ot -Og -Oi	D
+O188	-3 -Ot -Oi
+O189	-3 -Ot -Og -Oi	D
+O190	-3 -Ot -Og
+O192	-3 -Ot -Og -Oi
+O193	-3 -O -Ot
+O194	-3 -Ot -Og -Oi
+O195	-3 -Ot
+O196	-3 -Ot -Og -Oi
+O197	-3 -Ot -Og
+O198	-3 -Ot -Og -Oi
+O199	-3 -Ot -Og -Oi	D
+O200	-3 -Ot -Oi
+O201	-3 -Ot -Og -Oi
+O202	-3 -Ot -Og -Oi	D
+O203	-3 -Ot
+O204	-3 -Ot -Og -Oi	D
+O205	-3 -Ot -Og -Oi
+O206	-3 -Ot -Og -Oi	D
+O207	-3 -Ot -Og -Oi	D
+O208	-3 -Ot -Og -Oi
+O209	-3 -Ot -Og
+O210	-3 -Ot -Og
+O211	-3 -Ot
+O212	-3 -Ot	D
+O213	-3 -Ot -Og -Oi
+O214	-3 -Ot -Og -Oi	D
+O215	-3 -Ot -Og
+O216	-3 -Ot -Og -Oi	D
+O217	-3 -Ot -Og -Oi	D
+O218	-3 -Ot -Og
+O219	-3 -Ot -Og -Oi
+O220	-3 -Ot -Og
+O221	-3 -Ot
+O222	-3 -Ot	D
+O223	-3 -Ot -Og
+O224	-3 -Ot -Og -Oi	DI
+O225	-3 -Ot -Og -Oi	D
+O226	-3 -Ot -Og
+O227	-3 -Ot -Og -Oi
+O228	-3 -Ot -Og -Oi	D
+O229	-3 -Ot
+O230	-3 -Ot	D
+O231	-3 -Ot -Og -Oi
+O232	-3 -Ot -Og -Oi	D
+O233	-3 -Ot -Og -Oi	D
+O234	-3 -Ot -Og -Oi
+O235	-3 -Ot -Og -Oi	D
+O236	-3 -Ot -Og -Oi	D
+O237	-3 -Ot -Og -Oi
+O238	-3 -Ot -Oi -Og	D
+O239	-3 -Ot -Og	D
+O240	-3 -Ot -Og
+O241	-3 -Ot -Og	D
+O242	-3 -Ot
+O243	-3 -Ot -Og
+O244	-3 -Ot
+O245	-3 -Ot
+O246	-3 -Ot
+O247	-3 -Ot
+O248	-3 -Ot
+O249	-3 -Ot -Og -Oi
+O250	-3 -Ot -Oi	D
+O251	-3 -Ot -Oi
+O252	-3 -Ot -Og -Oi
+O253	-3 -Ot -Og
+O254	-3 -Ot -Oi	D
+O255	-3 -Ot -Og
+O256	-3 -Ot
+O257	-3 -Ot -Og -Oi	D
+O258	-3 -Ot	D
+O259	-3 -Ot
+O260	-3 -Ot -Og -Oi	D
+O261	-3 -Ot -Og
+O262	-3 -Ot -Og -Oi
+O263	-3 -Ot -Og	D
+O264	-3 -Ot -Oi
+O265	-3 -Ot -Og -Oi
+O266	-3 -Ot
+O267	-3 -Ot -Og -Oi	D
+O268	-3 -Ot
+O269	-3 -Ot -Og -Oe	D

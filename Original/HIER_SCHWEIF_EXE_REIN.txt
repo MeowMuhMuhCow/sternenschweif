@@ -1,0 +1,2 @@
+Hier SCHWEIF.EXE aus der Sternenschweif-Installation (GOG, deutsch, C1.02) hineinkopieren.
+Sie dient nur zum Vergleich: MD5 da3b59ce86a82e4b8bb14d36ed37d4d0.

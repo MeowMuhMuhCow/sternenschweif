@@ -1,0 +1,137 @@
+	O206_1580(h, h->txt[3]);
+	O206_1580(h, g_706a);
+	/* ?? 023b or ax,ax */
+	/* ?? 023d jnz short L_0253 */
+	/* ?? 0247 mov dx,es:[bx+01d2h] */
+	/* ?? 024c mov ax,es:[bx+01d0h] */
+	/* ?? 0251 jmp short L_0265 */
+	/* ?? 025b mov dx,es:[bx+01d6h] */
+	/* ?? 0260 mov ax,es:[bx+01d4h] */
+	/* ?? 0265 push dx */
+	/* ?? 0266 push ax */
+	/* ?? 0273 cmp byte ptr es:[bx+034h],0 */
+	/* ?? 0278 jz short L_027f */
+	/* ?? 027a mov ax,03eh */
+	/* ?? 027d jmp short L_0282 */
+	/* ?? 027f mov ax,032h */
+	/* ?? 0282 pop dx */
+	/* ?? 0283 add ax,dx */
+	/* ?? 0285 shl ax,2 */
+	/* ?? 0288 les bx,ds:[0b67ch] */
+	/* ?? 028c add bx,ax */
+	/* ?? 0292 push word ptr es:[bx] */
+	/* ?? 0295 mov ax,[bp+6] */
+	/* ?? 0298 add ax,022h */
+	/* ?? 029b push word ptr [bp+8] */
+	/* ?? 029e push ax */
+	/* ?? 02b7 call far ptr _sprintf */
+	O206_1580(h, g_b674);
+	O206_1580(h, g_706c);
+	/* ?? 02ef shl ax,2 */
+	/* ?? 02f2 mov es,ds:[0b67eh] */
+	/* ?? 02f6 add ax,ds:[0b67ch] */
+	/* ?? 02fa mov bx,ax */
+	sprintf(g_b674, h->txt[5], h->u35, h->f36, h->f10, h->f12);
+	O206_1580(h, g_b674);
+	O206_1580(h, g_706e);
+	sprintf(g_b674, h->txt[6], h->f3a, h->f39);
+	O206_1580(h, g_b674);
+	O206_1580(h, g_7070);
+	sprintf(g_b674, h->txt[7], (signed char)(h->f47 + h->f48), h->f46, (signed char)(h->f5c + h->f5d), h->f5b, h->f79);
+	O206_1580(h, g_b674);
+	sprintf(g_b674, h->txt[8], (signed char)(h->f4a + h->f4b), h->f49, (signed char)(h->f5f + h->f60), h->f5e);
+	O206_1580(h, g_b674);
+	sprintf(g_b674, h->txt[9], (signed char)(h->f4d + h->f4e), h->f4c, (signed char)(h->f62 + h->f63), h->f61, O077_0471(h, 0), O077_04ab(h, 0));
+	O206_1580(h, g_b674);
+	sprintf(g_b674, h->txt[10], (signed char)(h->f50 + h->f51), h->f4f, (signed char)(h->f65 + h->f66), h->f64, O077_0471(h, 1), O077_04ab(h, 1));
+	O206_1580(h, g_b674);
+	sprintf(g_b674, h->txt[11], (signed char)(h->f53 + h->f54), h->f52, (signed char)(h->f68 + h->f69), h->f67, O077_0471(h, 2), O077_04ab(h, 2));
+	O206_1580(h, g_b674);
+	sprintf(g_b674, h->txt[12], (signed char)(h->f56 + h->f57), h->f55, (signed char)(h->f6b + h->f6c), h->f6a, O077_0471(h, 3), O077_04ab(h, 3));
+	O206_1580(h, g_b674);
+	sprintf(g_b674, h->txt[13], (signed char)(h->f59 + h->f5a), h->f58, (signed char)(h->f6e + h->f6f), h->f6d, O077_0471(h, 4), O077_04ab(h, 4));
+	O206_1580(h, g_b674);
+	sprintf(g_b674, h->txt[14], O077_0471(h, 5), O077_04ab(h, 5));
+	O206_1580(h, g_b674);
+	sprintf(g_b674, h->txt[15], h->f70, h->f74, O077_0471(h, 6), O077_04ab(h, 6));
+	O206_1580(h, g_b674);
+	O206_1580(h, g_7072);
+	/* ?? 0830 mov dx,ax */
+	/* ?? 0832 pop ax */
+	/* ?? 0833 add ax,dx */
+	/* ?? 0838 push ax */
+	/* ?? 0845 mov dx,ax */
+	/* ?? 0847 pop ax */
+	/* ?? 0848 add ax,dx */
+	/* ?? 084a mov bx,4 */
+	/* ?? 084d cwd */
+	/* ?? 084e idiv bx */
+	/* ?? 0850 mov [bp-4],ax */
+	O006_0000(h, 7);
+	/* ?? 0863 cbw */
+	/* ?? 0864 add ax,[bp-4] */
+	/* ?? 0867 push ax */
+	/* ?? 089a call far ptr _sprintf */
+	O206_1580(h, g_b674);
+	O006_0000(h, 8);
+	/* ?? 08c8 cbw */
+	/* ?? 08c9 add ax,[bp-4] */
+	/* ?? 08cc push ax */
+	/* ?? 08ee mov dx,es:[bx+072h] */
+	/* ?? 08f2 add dx,ax */
+	/* ?? 08f4 push dx */
+	/* ?? 090d call far ptr _sprintf */
+	O206_1580(h, g_b674);
+	/* ?? 0942 mov dx,064h */
+	/* ?? 0945 imul dx */
+	/* ?? 0947 push ax */
+	/* ?? 0960 call far ptr _sprintf */
+	O206_1580(h, g_b674);
+	O206_1580(h, h->txt[19]);
+	O206_1580(h, g_7074);
+	O206_1580(h, h->txt[20]);
+	sprintf(g_b674, h->txt[21], O006_0000(h, 0), O006_0000(h, 0x29), O006_0000(h, 0x20));
+	O206_1580(h, g_b674);
+	sprintf(g_b674, h->txt[22], O006_0000(h, 1), O006_0000(h, 0x2a), O006_0000(h, 0x21));
+	O206_1580(h, g_b674);
+	sprintf(g_b674, h->txt[23], O006_0000(h, 2), O006_0000(h, 0x2b), O006_0000(h, 0x22));
+	O206_1580(h, g_b674);
+	sprintf(g_b674, h->txt[24], O006_0000(h, 3), O006_0000(h, 0x2c), O006_0000(h, 0x23));
+	O206_1580(h, g_b674);
+	sprintf(g_b674, h->txt[25], O006_0000(h, 4), O006_0000(h, 0x2d), O006_0000(h, 0x24));
+	O206_1580(h, g_b674);
+	sprintf(g_b674, h->txt[26], O006_0000(h, 5), O006_0000(h, 0x2e), O006_0000(h, 0x25));
+	O206_1580(h, g_b674);
+	sprintf(g_b674, h->txt[27], O006_0000(h, 6), O006_0000(h, 0x2f), O006_0000(h, 0x26));
+	O206_1580(h, g_b674);
+	sprintf(g_b674, h->txt[28], O006_0000(h, 7), O006_0000(h, 0x30), O006_0000(h, 0x27));
+	O206_1580(h, g_b674);
+	sprintf(g_b674, h->txt[29], O006_0000(h, 8), O006_0000(h, 0x31), O006_0000(h, 0x28));
+	O206_1580(h, g_b674);
+	O206_1580(h, g_7076);
+	O206_1580(h, h->txt[30]);
+	sprintf(g_b674, h->txt[31], O006_0000(h, 9), O006_0000(h, 0x13), O006_0000(h, 0x1a));
+	O206_1580(h, g_b674);
+	sprintf(g_b674, h->txt[32], O006_0000(h, 0xa), O006_0000(h, 0x14), O006_0000(h, 0x1b));
+	O206_1580(h, g_b674);
+	sprintf(g_b674, h->txt[33], O006_0000(h, 0xb), O006_0000(h, 0x15), O006_0000(h, 0x1c));
+	O206_1580(h, g_b674);
+	sprintf(g_b674, h->txt[34], O006_0000(h, 0xc), O006_0000(h, 0x16), O006_0000(h, 0x1d));
+	O206_1580(h, g_b674);
+	sprintf(g_b674, h->txt[35], O006_0000(h, 0xd), O006_0000(h, 0x17), O006_0000(h, 0x1e));
+	O206_1580(h, g_b674);
+	sprintf(g_b674, h->txt[36], O006_0000(h, 0xe), O006_0000(h, 0x18), O006_0000(h, 0x1f));
+	O206_1580(h, g_b674);
+	sprintf(g_b674, h->txt[37], O006_0000(h, 0xf), O006_0000(h, 0x19));
+	O206_1580(h, g_b674);
+	sprintf(g_b674, h->txt[38], O006_0000(h, 0x11), O006_0000(h, 0x10));
+	O206_1580(h, g_b674);
+	sprintf(g_b674, h->txt[39], O006_0000(h, 0x12));
+	O206_1580(h, g_b674);
+	sprintf(g_b674, h->txt[40], O006_0000(h, 0x32));
+	O206_1580(h, g_b674);
+	sprintf(g_b674, h->txt[41], h->u14e, O006_0000(h, 0x33));
+	O206_1580(h, g_b674);
+	O206_1580(h, h->txt[42]);
+	O206_1580(h, h->txt[43]);
+	O206_1580(h, g_7078);

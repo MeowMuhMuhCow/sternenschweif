@@ -1,0 +1,244 @@
+nr	titel	bereich	exploit	anleitung	spieler
+1	Verzauberte Gegner patzen im Angriff ohne Folgen	Kampf	nein		Greift ein verzauberter Gegner einen anderen Gegner an und patzt, verletzt er sich nie selbst.
+2	Automatisches Steigern ignoriert die Grenze je Talent	Helden & Werte	nein		Beim automatischen Stufenanstieg kann ein Talent in einer Stufe öfter steigen als erlaubt.
+3	Klickflächen-Prüfung tauscht falsche Werte	Oberfläche	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+4	Nächtlicher Dieb bestiehlt nur den ersten Helden	Städte & Orte	nein		Bei einem nächtlichen Diebstahl im Schlafsaal fehlen nur Sachen aus dem Rucksack des ersten Helden.
+5	Wegereignisse lösen an zufälligen Stellen aus	Reise & Ereignisse	nein		Manche Wegereignisse treten unterwegs an unerwarteten Stellen oder zusätzlich auf.
+6	Orks werfen abgenommene Ausrüstung weg (wie Nr. 212)	Dungeons	nein	Wie Nr. 212: 1. Unterwegs vom Orkheer gefangen nehmen lassen. 2. Am ersten Tag im Orkgefängnis nehmen die Orks Kräuter, Tränke, Magisches, Rüstungen und Waffen ab. 3. Nach dem Ausbruch die Truhen mit der Ausrüstung öffnen: leer.	Was die Orks bei der Gefangennahme abnehmen, ist für immer weg, die Truhen mit der Ausrüstung sind leer.
+7	Karte aufdecken: Grenzprüfung doppelt	Oberfläche	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+8	Zufallsbegegnungen in einer Geländeart falsch	Reise & Ereignisse	nein		In einer Geländeart fällt jede sechste Zufallsbegegnung aus, und eine Gegnerart kommt öfter als gedacht.
+9	Bild-Entpacker liefert Zufallswert zurück	Klang & Grafik	nein		Nichts Sichtbares.
+10	Heldenvorauswahl steht manchmal auf leerem Platz	Oberfläche	nein		In manchen Heldenauswahlen steht der Cursor auf einem leeren Platz statt auf dem passenden Helden.
+11	Marktstand mit unbekanntem Feld	Städte & Orte	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+12	Orkgefängnis: bei Alarm zwei Kämpfe hintereinander	Dungeons	nein		Auf einem Feld im Orkgefängnis folgt nach einem Alarm-Kampf sofort ein zweiter, auch nach Flucht oder Niederlage.
+13	Höhlenspinnen kommen bis zur Nestzerstörung wieder	Dungeons	nein		Die Höhlenspinnen im Orkgefängnis greifen bei jedem Betreten des Feldes erneut an, bis das Nest zerstört ist.
+14	Absturz beim Schlüsselbund mit 18 oder mehr Schlüsseln	Gruppe & Inventar	nein	1. Mindestens 18 verschiedene Schlüssel sammeln und an den Schlüsselbund hängen (Schlüssel mit dem Schlüsselbund benutzen). 2. Den Schlüsselbund allein benutzen, um einen Schlüssel abzunehmen. 3. Beim Aufbau der Auswahlliste läuft der Speicher über: Absturz oder Datenmüll. Ebenso, wenn ein Held 18 oder mehr noch nicht eingehängte Schlüssel trägt und den Schlüsselbund mit einem Schlüssel benutzt.	Hängen 18 oder mehr verschiedene Schlüssel am Schlüsselbund, stürzt das Spiel beim Benutzen ab.
+15	Schlüsselbund/Rezeptbuch: falsche „schon drin“-Meldung	Gruppe & Inventar	nein		Kombiniert man einen unpassenden Gegenstand mit Schlüsselbund oder Rezeptbuch, heißt es manchmal fälschlich, er sei schon darin.
+16	Einzelne Pixel in falscher Farbe	Klang & Grafik	nein		Vereinzelt erscheinen Bildpunkte in einer leicht falschen Farbe.
+17	Speicherleck beim Verlassen der 3D-Ansicht	Technik & Speicher	nein		Nichts Sichtbares; bei jedem Verlassen geht ein wenig Speicher verloren.
+18	Flucht vom Randfeld wird manchmal verweigert	Kampf	nein		Steht ein Held schon am Rand des Kampffelds, scheitert die Flucht gelegentlich mit „kein Weg“.
+19	NSC aufnehmen: Hilfsvariable doppelt benutzt	Gruppe & Inventar	nein		Nichts Sichtbares.
+20	Fahrender Händler: Ware bezahlt, aber nicht erhalten	Händler & Dienste	nein		Kauft man beim fahrenden Händler mehr, als ins Gepäck passt, zahlt man alles, bekommt aber nur einen Teil.
+21	Händler-Warenliste überlappt bei riesigem Sortiment	Händler & Dienste	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+22	Automap findet sehr weite Wege nicht	Oberfläche	nein		Ein Klick auf ein sehr weit entferntes Ziel der Automap ergibt „kein Weg“.
+23	Versiegelte Schlösser: Erleichterung wirkungslos	Dungeons	nein		Nichts Spürbares; eine vorgesehene Erleichterung bei zugezauberten Schlössern greift nie.
+24	Warenauswahl: Pfeil links springt an den Anfang	Oberfläche	nein		In der Warenauswahl springt der Cursor mit Pfeil links aus der ersten Spalte nach oben links.
+25	Geld ins Minus: Millionen durch Gruppenteilung	Gruppe & Inventar	ja	1. Gruppengeld unter 1 Dukat (100 Heller) bringen. 2. In einer Stadt außer Gashok umherlaufen, bis ein Bettler, eine Bettlerin oder ein Krüppel um eine Gabe bittet, und „Ja“ wählen (alternativ: in einer einfachen Herberge in Lowangen im Schlafsaal übernachten, bis ein Dieb Geld stiehlt). 3. Die Anzeige springt auf rund 42,9 Mio. Dukaten, Läden melden aber „zu wenig Geld“. 4. Gruppe teilen und mindestens einen Helden abspalten: die neue Gruppe hat mehrere Millionen Dukaten und kann frei einkaufen. 5. Danach die Gruppen wieder vereinen (das Geld wird verrechnet, die gekaufte Ware bleibt).	Muss die Gruppe mehr zahlen, als sie hat, zeigt die Geldanzeige rund 42,9 Millionen Dukaten, und abgespaltene Helden bringen echte Millionen mit.
+26	Gruppe entfernen ändert fremdes Byte	Gruppe & Inventar	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+27	Texteingabe: fehlende Endnull	Oberfläche	nein		Nichts Sichtbares.
+28	Texteingabe: Rückgabewert fehlt	Oberfläche	nein		Nichts Sichtbares.
+29	Kampfbewegung: Animationsfolge ohne Längengrenze	Kampf	nein		Praktisch nichts; nur ein konstruierter Laufweg könnte die Kampfanimation stören.
+30	Reiseereignis Weg 136: gewollter Durchlauf	Reise & Ereignisse	nein		Nichts, das Verhalten ist gewollt.
+31	Ortswechsel überschreibt den gemerkten alten Ort	Dungeons	nein		Nichts Sichtbares.
+32	Absturz im versteckten Entwicklerbildschirm	Technik & Speicher	nein		Im versteckten Entwicklerbildschirm (beide Umschalttasten) stürzt das Spiel ab, wenn man mehr als 40 Zeichen eintippt.
+33	Kalender: falscher Tagesüberlauf	Technik & Speicher	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+34	Kalender: Tick-Überlauf verliert Restzeit	Technik & Speicher	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+35	Kalender: Jahreswechsel ergibt Monat 13	Technik & Speicher	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+36	Reisekarte: Richtungswahl ohne Rückgabewert	Oberfläche	nein		Nichts Sichtbares.
+37	Absturz-Tagebucheintrag auch ohne Absturz	Reise & Ereignisse	nein		Auf einem Weg steht bei jeder Durchreise im Tagebuch, ein Held sei knapp einem Absturz entgangen – oft mit Unsinnsnamen, auch wenn nichts passiert ist.
+38	Kampffeld: Belegt-Prüfung ohne Wirkung	Kampf	nein		Nichts Sichtbares.
+39	Hänger bei völlig zugestelltem Kampffeld	Kampf	nein		Bei einem ungewöhnlich vollen Kampffeld kann das Spiel beim Aufstellen einer Figur hängen bleiben.
+40	Parade Held gegen Held (kein Fehler)	Kampf	nein		Nichts, die Parade rechnet richtig.
+41	Paradepatzer nennt den falschen Helden	Kampf	nein		Patzt ein verzauberter Held bei der Parade gegen einen anderen Helden, nennt der Kampftext den Angreifer.
+42	Patzerfolge ohne Schaden geprüft	Kampf	nein		Nichts Sichtbares.
+43	Steinbock frisst die letzte Süßigkeit umsonst	Reise & Ereignisse	nein		Bietet man dem Steinbock die letzte Lakritze oder das letzte Bonbon an, ist es weg, aber er nimmt das Angebot nicht an.
+44	Zahleneingabe zeigt falsche erste Ziffer	Oberfläche	nein		In manchen Zahlenfeldern erscheint bei großen Vorgabewerten ein unsinniges Zeichen als erste Ziffer.
+45	Kräuterstelle an Weg 165 beliebig oft ernten	Reise & Ereignisse	ja	1. Weg 165 der Reisekarte (nicht weit von Lowangen) bereisen; der beste Pflanzenkundige der Gruppe würfelt eine leichte Probe. 2. Bei Erfolg gibt es 2 Wirselkraut, 3 Einbeeren und 1 Alraune. 3. Den Weg hin und zurück wiederholen – die Probe wird hier nie schwerer. 4. Die Kräuterstelle an Weg 153 (bei Tiefhusen) dabei möglichst nicht abernten: ihr Zähler bestimmt die Schwierigkeit an Weg 165.	An einer Kräuterstelle nahe Lowangen findet man bei jeder Durchreise erneut Wirselkraut, Einbeeren und eine Alraune, ohne dass es schwerer wird.
+46	Reisekarte: Wegsuche liest hinter der Tabelle	Oberfläche	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+47	Reisekarte: Wegzeichnung im Randfall falsch	Oberfläche	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+48	Brenne toter Stoff ohne Fackel: Meldung zufällig	Magie	nein		Ohne Fackel oder Lampe erscheint beim Zauber mal die Hinweismeldung, mal passiert gar nichts.
+49	Sonderkampf: Lesen vor dem Nulltest	Kampf	nein		Nichts Sichtbares.
+50	Phex-Tempel: nur eine von vier Flächen animiert	Klang & Grafik	nein		Im Phex-Tempel bewegt sich von vier animierten Wandflächen nur eine.
+51	Herbergsdieb stiehlt nie Proviant, sondern Geld	Städte & Orte	nein		In einfachen Herbergen nimmt der Dieb nie Proviantpakete, sondern morgens immer Geld.
+52	Gegenstandssuche über alle Plätze kaputt	Gruppe & Inventar	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+53	Porträtleiste einer Teilgruppe zu breit/schmal	Oberfläche	nein		Bei geteilter Gruppe wird die Porträtleiste einer nicht aktiven Gruppe manchmal in falscher Breite gezeichnet.
+54	Gegnerzauber bei leerer Zauberliste	Kampf	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+55	Fähre Hilvalla: zu wenig Geld zeigt Begrüßung erneut	Städte & Orte	nein		Hat man an der Fährstation in Hilvalla zu wenig Geld, erscheint beim nächsten Mal wieder der lange Begrüßungstext.
+56	Tagebuch drucken: Überlauf bei langen Zeilen	Oberfläche	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+57	Tagebuch-Heldennamen: Lesen hinter dem Feld	Oberfläche	nein		Nichts Sichtbares.
+58	Ortssymbole: unvollständige Änderungsprüfung	Oberfläche	nein		Höchstens ein überflüssiges Neuzeichnen der Symbolleiste.
+59	NSC verlässt die Gruppe ohne Abschiedstext	Dungeons	nein		Ist ein NSC im Gewölbe des Namenlosen-Kults unter Tjolmar nicht handlungsfähig, verlässt er die Gruppe kommentarlos.
+60	Teleport mit unbekannter Herkunft	Dungeons	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+61	Gruppe teilen bei sechs Gruppen	Gruppe & Inventar	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+62	Porträt ziehen liest vor der Tabelle	Oberfläche	nein		Nichts Sichtbares.
+63	Wirselkraut an Weg 201 beliebig oft ernten	Reise & Ereignisse	ja	1. Weg 201 der Reisekarte bereisen; der beste Pflanzenkundige der Gruppe würfelt. 2. Bei Erfolg gibt es 1 Wirselkraut. 3. Hin und zurück wiederholen – die Schwierigkeit hängt an der Kräuterstelle bei Kvirasim (Weg 3) und steigt hier nie. 4. Den Fund bei Kvirasim vorher nicht oft abernten. Gleich verhalten sich die Kräuterstellen an den Wegen 63, 84, 127 und 140.	An einer Kräuterstelle findet man bei jeder Durchreise wieder Wirselkraut, die Probe wird nie schwerer.
+64	Eine Gegner-Animation wird nie gezeigt	Klang & Grafik	nein		Eine Schuss- bzw. Zauberanimation der Gegner fehlt.
+65	Genitiv-s bei Namen mit Sonderzeichen falsch	Oberfläche	nein		Bei Heldennamen mit Sonderzeichen (außer ä, ö, ü) steht das Genitiv-s falsch oder fehlt.
+66	DSA-1-Import: doppelte Prüfung	Helden & Werte	nein		Nichts Sichtbares.
+67	Dialogskript: Zeiger nicht genullt	Dialoge	nein		Nichts Sichtbares.
+68	Klangtreiber: kleines Speicherleck	Klang & Grafik	nein		Nichts Sichtbares; beim Neuanlegen der Klänge geht etwas Speicher verloren.
+69	Kartenrätsel: toter Programmcode	Oberfläche	nein		Nichts Sichtbares.
+70	Heiler nennt Krankheit vor der Zahlung (gewollt)	Händler & Dienste	nein		Nichts Fehlerhaftes; der Heiler nennt Krankheit oder Gift, auch wenn man danach ablehnt.
+71	Lagerhaus beim ersten Besuch manchmal gesperrt	Städte & Orte	nein		Beim ersten Besuch eines Lagerhauses ist es mit etwa 4 % Wahrscheinlichkeit sofort für Monate geschlossen bzw. ausgeraubt.
+72	Boron-Wunder: Totenerweckung viel zu häufig	Städte & Orte	ja	1. In einem Borontempel Borons Ansehen durch Spenden erhöhen (jede Wunderbitte kostet 10 Punkte Ansehen). 2. Um ein Wunder bitten, bis „Boron gewährt Euch Schutz vor Untoten“ erscheint. 3. In den folgenden drei Tagen mit einem toten Helden in der Gruppe weiter um Wunder bitten: jedes gewährte Wunder (5 von 6 statt 2 von 6) holt ihn ins Leben zurück.	Nach dem Boron-Wunder „Schutz vor Untoten“ erwecken weitere Boron-Wunder drei Tage lang fast immer einen toten Helden.
+73	Kampfanimation: über 40 Animationen gleichzeitig	Klang & Grafik	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+74	Bildklasse: Randfehler ohne Aufrufweg	Klang & Grafik	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+75	Meldung „versteckte Gegner“ zählt manchmal falsch	Kampf	nein		Selten fehlt ein Gegner in der Meldung über versteckte Gegner.
+76	Sumpfrantzendokument gegen Gegner ohne Meldung	Kampf	nein		Benutzt man das Sumpfrantzendokument im Kampf gegen einen Gegner, fehlt der Hinweis, dass es nichts nützt.
+77	Vorratslager: Debugtext als Mengenfrage	Reise & Ereignisse	nein		Im Vorratslager erscheint bei zwei Funden statt der Mengenfrage ein Text wie „k=3, i=2“.
+78	Lagerhaus: Verderb nach einem Jahr verkehrt herum	Städte & Orte	nein		Wer Waren knapp über ein Jahr einlagert, verliert fast alles, wer knapp 15 Monate wartet, fast nichts.
+79	Kampf: Figur läuft selten in Zufallsrichtung	Kampf	nein		Selten macht eine Figur im Kampf einen Schritt in eine zufällige Richtung oder bleibt einen Schritt zu früh stehen.
+80	Reisekarte: Position im Randfall falsch	Oberfläche	nein		In einem Randfall wird die Gruppe auf der Reisekarte an einer falschen Stelle gezeigt.
+81	Zufälliger Gegenstandsverlust fehlerhaft	Gruppe & Inventar	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+82	Gegenstand an jeden Helden: Restmenge falsch	Gruppe & Inventar	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+83	Gruppenverwaltung schreibt hinter das Feld	Gruppe & Inventar	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+84	Laden: Ware bezahlt, aber nicht erhalten	Händler & Dienste	nein		Kauft man im Laden mehr, als ins Gepäck passt, zahlt man alles, bekommt aber nur einen Teil.
+85	Laden-Warenliste überlappt bei riesigem Sortiment	Händler & Dienste	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+86	CD-Zwischenspeicher bei Lesefehlern kaputt	Technik & Speicher	nein		Nur bei einer fehlerhaften CD kann eine kaputte Zwischenspeicher-Datei entstehen.
+87	Gegenstände scheinen durch Wände	Klang & Grafik	nein		In der 3D-Ansicht sieht man in drei von vier Blickrichtungen manchmal Objekte durch Wände.
+88	Wegetexte: hängende Zeiger	Technik & Speicher	nein		Nichts Sichtbares.
+89	Kobold Mumpitz: Auswahl liest außerhalb	Dungeons	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+90	Kampf-Figurenliste: mehrere Randfehler	Kampf	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+91	Dateizugriff: Handle-Leck und späte Fehlerprüfung	Technik & Speicher	nein		Nur bei Lesefehlern der Spieldaten können falsche Daten geladen werden.
+92	Hintergrundanimation zeigt evtl. falsches Teilbild	Klang & Grafik	nein		Höchstens ein falsches Einzelbild in einer Hintergrundanimation.
+93	Absturz beim Bauern mit dem gebrochenen Rad	Reise & Ereignisse	nein	1. Mit weniger als sieben handlungsfähigen Helden (also fast immer) Weg 97 der Reisekarte bereisen (Gegend zwischen Finsterkoppen und Lowangen). 2. Am Wegesrand sitzt ein Bauer neben seinem schiefen Wagen: „dem Mann Eure Hilfe anbieten“ wählen. 3. Je nach Speicherinhalt erscheinen Meldungen mit Unsinnsnamen, oder das Spiel stürzt kurz darauf ab (z. B. beim nächsten Klang). Das Ereignis kommt nur einmal, also vorher speichern.	Hilft man dem Bauern mit dem gebrochenen Rad, kann das Spiel abstürzen oder Unsinnsnamen zeigen, und der Text nennt nur drei Helden.
+94	Laden: Gepäckwarnung fehlt oder falsch	Händler & Dienste	nein		Die Kaufmaske warnt nicht zuverlässig, wenn die Ware nicht mehr ins Gepäck passt.
+95	Leeres Zunderkästchen: doppelte oder alte Meldung	Gruppe & Inventar	nein		Benutzt man ein leeres Zunderkästchen, erscheint die Meldung doppelt oder ein alter, unpassender Text.
+96	Kampfbeginn: Hilfsvariable doppelt benutzt	Kampf	nein		Nichts Sichtbares.
+97	Kompassrose verschwindet im Randfall	Oberfläche	nein		In seltenen Fällen ist die Kompassrose nicht zu sehen.
+98	Schlafender NSC steht wach im Kampf	Kampf	nein		Schläft ein NSC bei einem Überfall, steht er bei kleiner Gruppe trotzdem wach im Kampf.
+99	Dialogfenster: Randfälle ohne Wirkung	Oberfläche	nein		Nichts Sichtbares.
+100	Schenke: Andrang nach Mitternacht (unklar)	Städte & Orte	nein		Zwischen Mitternacht und 2 Uhr gelten Schenken als ruhig.
+101	Kräuterstelle an Weg 41: Zähler ohne Grenze	Reise & Ereignisse	nein		Der Wirselkraut-Fund an einem Weg bei Finsterkoppen wird mit jeder Durchreise schwerer, nach sehr vielen Durchreisen schwankt die Schwierigkeit.
+102	Gewölbe des Namenlosen: Ereignisse zufällig	Dungeons	nein		Im Gewölbe des Namenlosen-Kults unter Tjolmar werden Zufallsbegegnungen und Kartenereignisse manchmal zufällig ausgelöst oder unterdrückt.
+103	Tagebuchsuche: Esc sucht statt abzubrechen	Oberfläche	nein		Drückt man in der Tagebuchsuche Esc, startet eine Suche, statt abzubrechen.
+104	Altsvellt-Sumpf: alte Ebene überschrieben	Dungeons	nein		Nichts Sichtbares.
+105	Spinnennetze: Schreiben nach Adresse 0	Dungeons	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+106	Sonderkampf: Flächenangriff trifft niemanden	Kampf	nein		In einem Sonderkampf bleibt ein Angriff des Gegners auf alle Helden wirkungslos – der Kampf ist leichter als gedacht.
+107	Heldenerschaffung: uninitialisierte Werte	Helden & Werte	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+108	Auswahlliste ohne Grenzprüfung	Oberfläche	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+109	Texteingabefeld: Grafikfehler und Zeichenmüll	Oberfläche	nein		In Texteingabefeldern (z. B. Notizen) gibt es Grafikfehler, und Enter am Zeilenanfang kann ein Zeichen der Vorzeile verändern.
+110	Stabzauber prüft eine Eigenschaft doppelt	Magie	nein		Die Probe für Stabzauber prüft eine Eigenschaft doppelt und eine andere gar nicht.
+111	Gegnerischer Heilzauber verletzt Schwerverwundete	Kampf	nein		Gegnerische Heiler verletzen ihre schwer verwundeten Verbündeten, statt sie zu heilen.
+112	Kriegerhüne: Wegetexte unnötig neu geladen	Reise & Ereignisse	nein		Nichts Sichtbares.
+113	Gegnerpatzer gegen bewusstlose Helden entfallen	Kampf	nein		Patzt ein Gegner gegen einen bewusstlosen Helden, hat das keine Folgen.
+114	Lorenfahrt: Abspringen gefahrlos, aber ohne AP	Dungeons	nein		Beim Abspringen von der Lore in der Binge gibt es nie Schaden, aber auch nie Abenteuerpunkte.
+115	Lore: Lesen vor der Gültigkeitsprüfung	Dungeons	nein		Nichts Sichtbares.
+116	Auto-Erschaffung: Akademiezauber doppelt bedacht	Helden & Werte	nein		Bei der automatischen Heldenerschaffung werden manche Akademiezauber bevorzugt gesteigert.
+117	Heilkunde Wunden: Probe doppelt gewürfelt	Helden & Werte	nein		Heilkunde Wunden gelingt seltener als vorgesehen.
+118	Wasserfall-Spende: Vollheilung fast umsonst	Reise & Ereignisse	ja	1. Auf Weg 178 der Reisekarte zum Wasserfall reisen. 2. „Spenden“ wählen. 3. Statt der Hälfte des Gruppengelds werden höchstens 63 Heller abgezogen, je nach Geldbetrag gibt es sogar bis zu 64 Heller dazu; alle Helden werden voll geheilt. 4. Das Ereignis bleibt bestehen und lässt sich bei jeder Durchreise wiederholen.	Die Spende am Wasserfall kostet statt der Hälfte des Geldes höchstens 63 Heller, manchmal bringt sie sogar Geld – und die Gruppe wird voll geheilt.
+119	Warzennashorn-Schaden und Kräuterprobe Weg 36 falsch	Reise & Ereignisse	nein		Das Warzennashorn richtet manchmal weniger als den vorgesehenen Mindestschaden an; an der Kräuterstelle bei Tjolmar ändert sich für die meisten Gruppen nichts Spürbares.
+120	Automatischer Kampf: Helden zaubern auf falsches Ziel	Kampf	nein		Im automatischen Kampf zaubern Helden manchmal auf ein falsches Ziel oder Feld.
+121	Sehr lange Reiseetappen dauern zu kurz	Reise & Ereignisse	nein		Sehr lange Etappen auf der Reisekarte können viel zu schnell vorbei sein.
+122	Ingerimms Schmiede: Meldung fehlt, „und“ falsch	Dungeons	nein		In Ingerimms Schmiede fehlt eine Meldung, und Aufzählungen von Heldennamen setzen das „und“ manchmal falsch.
+123	Unendlich Geld aus Truhen	Dungeons	ja	1. Im Keller unter dem Haus des Namenlosen-Dieners in Tjolmar eine der vier Truhen mit 100 Dukaten öffnen (Schloss knacken, aufbrechen oder Foramen). 2. In der Liste die Dukaten wählen und als Menge 1 eingeben. 3. Die Gruppe erhält den ganzen Stapel (100 Dukaten), in der Truhe bleiben 99. 4. Immer wieder 1 eingeben, bis die Truhe leer ist: zusammen 5050 statt 100 Dukaten je Truhe. Klappt bei jeder Truhe mit einem Dukatenstapel.	Nimmt man aus einem Geldstapel in einer Truhe nur einen Teil, bekommt man trotzdem den ganzen Stapel gutgeschrieben – immer wieder.
+124	Reisetempo im Randfall falsch	Reise & Ereignisse	nein		In Randfällen stimmt das Reisetempo nicht, oder die Zahl der Wegpunkte wird nicht aktualisiert.
+125	Zwischensequenz: Überblendung zufällig	Klang & Grafik	nein		In einer Zwischensequenz ist die Überblendung mal schneller, mal langsamer.
+126	Großer AP-Bonus im Gespräch wird nie vergeben	Dialoge	nein		Bei zwei Gesprächsbelohnungen gibt es immer nur den kleinen Abenteuerpunkte-Bonus, nie den großen.
+127	Klangeinstellung: Port/IRQ-Eingabe verworfen	Klang & Grafik	nein		In der Klangeinstellung wird bei manchen Sound-Blaster-Treibern der eingegebene Port bzw. IRQ nicht übernommen.
+128	Fahrender Händler: falsche Menge beim Zurücklegen	Händler & Dienste	nein		Beim fahrenden Händler stimmt beim Zurücklegen stapelbarer Ware manchmal die Menge nicht, und die Gepäckwarnung fehlt.
+129	Speicherfehler löscht die falsche Datei	Technik & Speicher	nein		Ist der Datenträger beim Speichern voll, bleibt der kaputte Spielstand stehen, und eine andere Datei wird gelöscht.
+130	Gulmondblatt: Spieltext durch Heldennamen ersetzt	Gruppe & Inventar	nein		Benutzt ein Held ein Gulmondblatt, erscheint eine alte, falsche Meldung, und ein Spieltext wird durch seinen Namen überschrieben.
+131	Starker Zaubertrank nennt Lebenspunkte	Gruppe & Inventar	nein		Beim starken Zaubertrank spricht die Meldung von Lebens- statt Astralpunkten, und beim Lotosgift bleibt keine leere Flasche zurück.
+132	Ortsszene: Musikwahl zufällig	Klang & Grafik	nein		In einer Ortsszene kann die falsche Musik laufen.
+133	Binge: Position doppelt gesetzt	Dungeons	nein		Nichts Sichtbares.
+134	Schwarzmagier-Szene: Abschlusstext und Ton fehlen	Reise & Ereignisse	nein		In einem Zweig der Schwarzmagier-Szene fehlen Abschlusstext und Klang.
+135	Gespräch mit Gegenstandswahl lässt sich nicht abbrechen	Dialoge	nein		In einem Gespräch, das einen Gegenstand verlangt, lässt sich die Auswahl nicht abbrechen; trägt niemand etwas, hängt das Spiel.
+136	Fenster springt beim Verschieben	Oberfläche	nein		Beim Ziehen eines Fensters springt es an eine falsche Stelle.
+137	Eolan-Ereignis (kein Fehler)	Dialoge	nein		Nichts, das Ereignis funktioniert.
+138	Shurinknollen-Gift: Erholung extrem langsam	Helden & Werte	nein		Nach einer Vergiftung mit Shurinknolle kehren Körperkraft und Gewandtheit extrem langsam zurück.
+139	Kellertür: Wandbild bei nicht quadratischer Karte	Klang & Grafik	nein		Nur auf nicht quadratischen Karten erscheint ein Türbild im Keller versetzt.
+140	Pelzwand: Abzug beim falschen Gegenstand	Dungeons	nein		An der kalten Pelzwand in der Binge wird beim falschen Gegenstand abgezogen, im schlimmsten Fall an einem Zauberwert des Helden.
+141	Animation: hängender Zeiger bei fehlender Datei	Klang & Grafik	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+142	Lagerplatz: Suche liest hinter der Tabelle	Reise & Ereignisse	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+143	Zwergenbinge: Portal versetzt andere Teilgruppe	Dungeons	nein		Bei geteilter Gruppe kann das Portal in der Zwergenbinge eine andere Teilgruppe in eine falsche Zeile oder Wand versetzen.
+144	Tagebuch: Seitenzählung falsch, Überlauf möglich	Oberfläche	nein		Die Seitenzahlen im Tagebuch stimmen nicht immer, und sehr lange Einträge auf vollen Seiten können das Spiel stören.
+145	Erschaffung: Eigenschaften verschieben falsch geprüft	Helden & Werte	nein		Das Verschieben von Eigenschaftspunkten in der Heldenerschaffung wird manchmal verweigert, obwohl es ginge, oder angeboten, obwohl es nicht geht.
+146	Spendenschrein: falscher Text, Zufallswert	Reise & Ereignisse	nein		Am Spendenschrein erscheint ein Text im falschen Moment, und Folgeereignisse fallen teils zufällig aus.
+147	Heldenaktion mit unbekannter Zielart	Kampf	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+148	Nichtzauberer können das Zaubermenü öffnen	Magie	nein		Auch Helden ohne Magie können im Heldenbogen das Zaubermenü öffnen, scheitern dann aber.
+149	Ankunft in Lowangen: erster Textteil fehlt	Städte & Orte	nein		Bei einer Ankunft in Lowangen fehlt der erste Teil des Begrüßungstexts.
+150	Fähre: Zufallswert an unbekanntem Ort	Reise & Ereignisse	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+151	Zwergengrab: Frevel ohne Kriegsaxt	Dungeons	nein		Nimmt man im Zwergengrab der Binge die Kriegsaxt bei vollem Gepäck, zürnt Ingerimm, obwohl man die Axt gar nicht bekommt.
+152	Alchimie/Schätzen: kleine Randfehler	Helden & Werte	nein		Kaum sichtbar; Schätzen kann einen Preis von 0 nennen.
+153	Reise bricht unvermittelt ab	Reise & Ereignisse	nein		Eine Reise wird gelegentlich ohne Grund unterbrochen, als hätte man Rast befohlen.
+154	Blaue Keuche steckt mit Dumpfschädel an	Helden & Werte	nein		Wer an Blauer Keuche erkrankt, steckt die anderen mit Dumpfschädel an.
+155	Herberge: Abbruch löscht die alte Zimmerbuchung	Städte & Orte	nein		Bricht man in der Herberge eine Umbuchung ab, ist die alte Zimmerbuchung weg (das Geld kommt zurück).
+156	Hafen-Feilschen (kein Fehler)	Städte & Orte	nein		Nichts, die Menüs des Feilschens stimmen.
+157	Orkfestung Ebene 3: ausgewürfelte Gegner fehlen	Dungeons	nein		Auf zwei Feldern der dritten Ebene der Orkfestung erscheinen ausgewürfelte Zusatzgegner nie, und nach manchen Kämpfen lösen Ereignisse zufällig aus.
+158	Schenke: leerer Text, merkwürdiger Rundenzähler	Städte & Orte	nein		Nichts Sichtbares.
+159	Armatrutz eine Stufe höher als die AE erlaubt	Magie	ja	1. Mit einem Zauberkundigen Armatrutz wirken, wenn seine AE keine Quadratzahl ist (z. B. AE 5, 10 oder 17). 2. Die angebotene Höchststufe wählen (bei AE 5: Stufe 3 für eigentlich 9 AE). 3. Gelingt die Probe, wirkt der volle Rüstungsschutz, die AE sinkt nur auf 0.	Armatrutz bietet eine Stufe an, die mehr AE kostet, als der Held hat; der Zauber wirkt trotzdem voll und verbraucht nur die vorhandene AE.
+160	Zwergenbinge: Gruppe falsch, fremder Gegenstand weg	Dungeons	nein		Nach der Altarvision in der Zwergenbinge passen aktive Gruppe und Gruppennummer nicht zusammen, und an der morschen Truhe kann ein fremder Gegenstand verloren gehen.
+161	Automatische Zaubersteigerung lückenhaft	Helden & Werte	nein		Beim automatischen Stufenanstieg werden manche Zauber übergangen oder doppelt bedacht.
+162	Reisekarte: Ortssuche ohne Grenze	Oberfläche	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+163	Heldenzauber: Lesen hinter der Tabelle	Magie	nein		Nichts Sichtbares.
+164	Ingerimms Schmiede: Schreiben hinter das Feld	Dungeons	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+165	DSA-1-Import: Gegenstände gehen verloren	Helden & Werte	nein		Beim Import von Helden aus der Schicksalsklinge verlieren manche Heldentypen Gegenstände, und ein Wert wird falsch auf 1000 gesetzt.
+166	Nihilatio Gravitas über die AE hinaus	Magie	ja	1. Einen Zauberkundigen hoher Stufe mit wenig AE Nihilatio Gravitas wirken lassen. 2. Die angebotene Höchststufe wählen – sie entspricht der Heldenstufe, auch wenn 5 AE je Stufe nicht reichen. 3. Gelingt die Probe, wirkt die volle Stufe, die AE sinkt nur auf 0.	Nihilatio Gravitas bietet Stufen bis zur Heldenstufe an, auch wenn die AE dafür nicht reicht; der Zauber wirkt trotzdem voll.
+167	Sonderkampf-Sequenzen: doppeltes Freigeben	Klang & Grafik	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+168	Kampfaufbau: leere Prüfung	Kampf	nein		Nichts Sichtbares.
+169	Gegenstand benutzen: fehlende Standardfälle	Gruppe & Inventar	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+170	Routenplanung ergibt falsche Route	Reise & Ereignisse	nein		Die geplante Route auf der Reisekarte ist in manchen Fällen falsch.
+171	Heldensuche: ungenutzte fehlerhafte Funktion	Gruppe & Inventar	nein		Nichts Sichtbares.
+172	Intro: Speicher-Merker nicht gesetzt	Klang & Grafik	nein		Nichts Sichtbares.
+173	Hexenspeichel heilt mehr, als die AE bezahlt	Magie	ja	1. Mit einem Helden, der Hexenspeichel beherrscht, den Zauber auf einen verwundeten Gefährten wirken. 2. Als Einsatz die gesamte vorhandene AE eingeben. 3. Gelingt die Probe, heilt der Zauber so viele LE wie eingegeben (bis zur vollen LE), obwohl er das Doppelte kosten müsste; die AE sinkt nur auf 0.	Hexenspeichel müsste doppelt so viel AE kosten, wie er heilt, wird aber nie durch die vorhandene AE begrenzt – man heilt für wenig AE viel.
+174	Unmut eines Gesprächspartners wird vergessen	Dialoge	nein		Hat man einen Gesprächspartner verärgert, kann sein Unmut später ohne Grund vergessen sein.
+175	Zwergenskelett: falsches Pronomen	Dungeons	nein		Bei einer misslungenen Probe am Zwergenskelett in der Orkfestung steht ein falsches Pronomen im Text.
+176	Reisekarte: Grafikfehler beim Hochscrollen	Klang & Grafik	nein		Beim Hochscrollen der Reisekarte entstehen Grafikfehler.
+177	Wegliste: eine Meldung erscheint nie	Reise & Ereignisse	nein		Beim Abgehen einer geplanten Route fehlt eine Hinweismeldung.
+178	Erschaffung: Grenzwerte uneinheitlich verglichen	Helden & Werte	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+179	Kein Hunger und Durst beim Rasten	Helden & Werte	nein		Während Rast und Schlaf bekommen die Helden weder Hunger noch Durst.
+180	Sieg über die Schwarzmagier wird nicht gemerkt	Reise & Ereignisse	nein		Besiegt man die Schwarzmagier an der zweiten Stelle, wird das Gesprächsthema „Reisende“ nie freigeschaltet.
+181	Kampf: einige Klänge fehlen	Klang & Grafik	nein		Bei einigen Kampfereignissen fehlen die Klänge.
+182	Orkfestung Ebene 1: Ereignisse zufällig	Dungeons	nein		Auf der ersten Ebene der Orkfestung werden Folgeereignisse und Zufallsbegegnungen falsch ausgelöst oder unterdrückt.
+183	Kampffeld: falsche Wände und Blockaden	Kampf	nein		Auf manchen Kampffeldern blockieren unsichtbare Hindernisse Wege, oder vorhandene fehlen.
+184	Straßenüberfall: Lesen hinter der Liste	Städte & Orte	nein		Nichts Sichtbares.
+185	Gegenstände weitergeben: falscher Held geprüft	Gruppe & Inventar	nein		Beim Weitergeben von Gegenständen wird manchmal der falsche Held geprüft, und die Traglast wird uneinheitlich berechnet.
+186	Stadtereignisse: Text fehlt, gleiche Antworten	Städte & Orte	nein		Bei einem Stadtereignis erscheint ein Text nie, und zwei Antworten führen zum selben Text.
+187	„Sichern“ im Kampf wirkt erst eine Runde später	Kampf	nein		Wählt man im Kampf „Sichern“, bekommt der Held in dieser Runde keinen Paradebonus, er wartet nur.
+188	Zauberziel gegen Sondergegner falsch geprüft	Magie	nein		Gegen besondere Gegner werden manche Zauber und Gegenstände im Kampf fälschlich erlaubt oder verweigert.
+189	Sonderkampf-Animation läuft falsch	Klang & Grafik	nein		Eine Animation im Sonderkampf zeigt ein falsches Feld.
+190	Abspann: eine Zeile fehlt mit Sprachausgabe	Klang & Grafik	nein		Mit Sprachausgabe fehlt im Abspann eine Zeile.
+191	Lager: Wachen und Diebstahl fehlerhaft	Reise & Ereignisse	nein		Beim Rasten im Lager gilt eine erfolgreiche Wache für alle folgenden, und ein Dieb überspringt Gegenstände.
+192	Bolzenfalle im Phex-Tempel tötet hintere Helden	Dungeons	nein	1. Im Phex-Tempel (in den Hensger die Gruppe lockt) nicht am Opferstock spenden. 2. Den Gang mit der Falle von der Seite betreten, auf der man zuerst das Auslösefeld überquert (von der anderen Seite ist sie entschärft). 3. Auf dem Fallenfeld verliert der erste Held etwa 21–36 LE, der zweite etwa 50–80, ab dem dritten ist sie sicher tödlich.	Die Bolzenfalle im Phex-Tempel trifft jeden weiteren Helden härter; ab dem dritten ist sie sicher tödlich.
+193	Lager: Entscheidung zufällig	Reise & Ereignisse	nein		Manche Entscheidungen im Lager fallen zufällig aus.
+194	Orkfestung Ebene 3: Schaden bei jedem Betreten	Dungeons	nein		Auf einem Feld der dritten Ebene der Orkfestung nehmen die Helden bei jedem Betreten Schaden, und Ereignisse lösen teils zufällig aus.
+195	Abblenden: Palette nur teilweise gelöscht	Klang & Grafik	nein		Nichts Sichtbares.
+196	Treffen mit Teilgruppen unterwegs unzuverlässig	Reise & Ereignisse	nein		Treffen geteilte Gruppen unterwegs aufeinander, wird das nicht zuverlässig erkannt.
+197	Spielstand laden: eine Einstellung geht verloren	Technik & Speicher	nein		Nach dem Laden eines Spielstands ist eine Spieleinstellung zurückgesetzt.
+198	Ohne EMS: falsche Pixel im Bildschirmrahmen	Klang & Grafik	nein		Ohne EMS-Speicher erscheinen nach dem Auslagern einige falsche Pixel unten links im Bildschirmrahmen.
+199	Unrathaufen im Orkgefängnis: endlos Gegenstände	Dungeons	ja	1. Im Orkgefängnis in den Blutzinnen (zweite Ebene der Orkfestung) einen der beiden Unrathaufen durchsuchen (Frage mit „Ja“ beantworten). 2. So oft wiederholen, bis die vier regulären Funde gemacht sind (je Suche 5 %). 3. Danach liefert jede Suche sofort einen unbestimmten Gegenstand, beliebig oft. Vorher speichern: Unsinnsgegenstände oder ein Absturz sind möglich.	Nach vier Funden im Unrathaufen des Orkgefängnisses bringt jede weitere Suche einen unbestimmten Gegenstand – beliebig oft, mit Absturzgefahr.
+200	Automatische Zielwahl bevorzugt eine Seite	Kampf	nein		Die automatische Zielwahl im Kampf bevorzugt leicht eine Seite.
+201	Startausrüstung: Lesen hinter dem Eintrag	Helden & Werte	nein		Nichts Sichtbares.
+202	3D-Objekte: eine Palettenfarbe zu viel	Klang & Grafik	nein		Nichts Sichtbares.
+203	Flammenschlüssel beliebig oft holbar	Dungeons	ja	1. Im Gewölbe unter dem Haus in Tjolmar (erste Ebene) den Eisblock mit der Kriegerin per „Hartes schmelze“ auftauen. 2. Bei der Frage, ob Ihr den flammendroten Schlüssel nehmen wollt, „Nein“ wählen (oder einige Zeit verstreichen lassen). 3. Danach den Brunnen erneut untersuchen und „Ja“ wählen: jedes Mal gibt es einen weiteren Flammenschlüssel. Ein Schlüssel ist allerdings nur rund 20 Heller wert.	Am aufgetauten Brunnen im Gewölbe unter Tjolmar kann man den Flammenschlüssel immer wieder nehmen.
+204	Hesinde-Statue: geschwächter Held entgeht der Strafe	Dungeons	nein		An der Hesinde-Statue im Gewölbe unter Tjolmar bricht ein ausgewählter Held mit weniger als 7 LE nicht zusammen, sondern bekommt die Belohnung.
+205	Totenkopf-Ornament: „%s“ statt Heldenname	Dungeons	nein		Am Totenkopf-Ornament im Gewölbe unter Tjolmar steht in einem Text „%s“ statt des Heldennamens.
+206	Absturz bei der Bengram-Verwechslung in Tjolmar	Städte & Orte	nein	1. Gruppe aus mindestens drei Helden mit einem männlichen Zwerg; von den übrigen ist höchstens einer handlungsfähig (die anderen tot oder bewusstlos). 2. In Tjolmar umherlaufen, bis jemand ruft „Das ist doch Bengram, einer der Verräter!“. 3. Mindestens ein Held scheitert an der Mutprobe: der Text zeigt Unsinnsnamen, ein Zeitgeber-Eintrag im Speicher wird verändert, und das Spiel stürzt kurz darauf ab. (Die Bettler-Spende derselben Datei treibt das Geld ins Minus, siehe Nr. 25.)	Wird ein Zwerg in Tjolmar für den Verräter Bengram gehalten und ist kaum noch ein Held einsatzfähig, kann das Spiel abstürzen; die Bettler-Spende zieht außerdem auch ohne Geld ab.
+207	Gruppentrennung mit den falschen Helden	Gruppe & Inventar	nein		Bei bestimmten Ereignissen, die die Gruppe aufteilen, landen die falschen Helden in der neuen Gruppe.
+208	Automap ohne XMS/EMS kaputt, Notizreste	Oberfläche	nein		Ohne XMS- oder EMS-Speicher funktioniert die Automap nicht richtig, und gelöschte Kartennotizen hinterlassen Reste im Spielstand.
+209	Speicherfehler bei über 160 MB XMS	Technik & Speicher	nein		Nur auf Rechnern mit mehr als 160 MB XMS-Speicher wird beim Start Speicher überschrieben.
+210	Textdateien laden ohne Fehlerprüfung	Technik & Speicher	nein		Nur bei beschädigten Spieldateien können Texte falsch geladen werden.
+211	Bild laden mit zu kleinem Puffer (ungenutzt)	Klang & Grafik	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+212	Orkgefängnis: beschlagnahmte Ausrüstung für immer weg	Dungeons	nein	1. Unterwegs auf das Orkheer treffen und sich ergeben oder kämpfen – beides führt in die Gefangenschaft. 2. Am ersten Tag in der Zelle des Orkgefängnisses (Blutzinnen) nehmen die Orks Kräuter, Tränke, magische Gegenstände, Rüstungen, Waffen und den Rest ab. 3. Nach dem Ausbruch die Truhen im Gefängnis bzw. die Ablage auf der dritten Ebene der Orkfestung öffnen: sie sind leer. Wer das vermeiden will, lagert Wichtiges vorher ein (z. B. im Lagerhaus).	Alles, was die Orks bei der Gefangennahme abnehmen (Kräuter, Tränke, Magisches, Rüstungen, Waffen), ist verloren – die Truhen damit sind leer.
+213	Arax-Gift lähmt Gegner völlig	Kampf	ja	1. Eine Waffe mit Araxgift vergiften. 2. Im Kampf denselben Gegner mehrmals treffen: jeder Treffer kostet ihn 2 Bewegungspunkte (dazu je 1 Punkt Attacke und Parade), ohne Untergrenze. 3. Nach einigen Treffern hat er keine Bewegungspunkte mehr und bleibt stehen – dann mit Fernkampf oder Zaubern erledigen oder in Ruhe fliehen.	Jeder Treffer mit einer Arax-vergifteten Waffe senkt die Bewegungspunkte des Gegners ohne Untergrenze – nach einigen Treffern kann er sich nicht mehr bewegen.
+214	Tanzen für Geld nutzt Musizieren	Helden & Werte	ja	1. Einen Helden mit hohem Musizieren-Wert wählen (der Tanzen-Wert ist egal, zum Tanzen braucht er kein Instrument). 2. Über „Talent anwenden“ erst Musizieren (mit Instrument), dann Tanzen einsetzen. 3. Beides wird auf Musizieren geprüft und bringt je 100–300 Heller; die Wartezeiten beider Talente laufen getrennt.	Beim Tanzen für Geld zählt nicht der Tanzen-Wert, sondern Musizieren – ein guter Musiker verdient doppelt.
+215	Tollwut-Anfall: Beruhigen gelingt verkehrt herum	Helden & Werte	nein		Bei einem Tollwut-Anfall gelingt das Beruhigen nur, wenn mindestens ein Held an seiner Charisma-Probe scheitert; bestehen alle, misslingt es.
+216	Lowangen, zweites Stadttor: Unsinnstext	Städte & Orte	nein		Bei der Ankunft am zweiten Stadttor von Lowangen erscheint ein unsinniger Text.
+217	Bild-Entpacker im Speicher: Zufallswert	Klang & Grafik	nein		Nichts Sichtbares.
+218	Unratfund heißt immer „einen Dolch“	Dungeons	nein		Im Unrathaufen des Orkgefängnisses heißt jeder Fund „einen Dolch“, obwohl man auch Schmuck, einen goldenen Schlüssel oder eine Bronzeflasche erhält.
+219	Gruppenwechsel überspringt NSC-Gruppen nicht	Gruppe & Inventar	nein		Beim Gruppenwechsel werden Teilgruppen, in denen nur noch der NSC handlungsfähig ist, nicht übersprungen.
+220	Meditation mit wenig LE kostet AE	Magie	nein		Meditiert ein Held mit weniger als 8 LE, verliert er Astralenergie, statt sie zu gewinnen.
+221	Finale: Überblendung von Schwarz (gewollt)	Klang & Grafik	nein		Nichts Fehlerhaftes; die Überblendungen im Finale laufen über Schwarz.
+222	Steinschlag: danach evtl. falsche Wegtexte	Reise & Ereignisse	nein		Nach dem Freigraben eines Steinschlags können weitere Ereignisse auf demselben Wegstück falsche Texte zeigen.
+223	Orkschützen an Weg 250 (kein Fehler)	Reise & Ereignisse	nein		Nichts; bei kleiner Gruppe werden dieselben Helden mehrfach getroffen, was gewollt sein kann.
+224	Kampffiguren am Rand ungleich abgeschnitten	Klang & Grafik	nein		Kampffiguren am Bildrand werden ungleichmäßig abgeschnitten.
+225	Absturzbericht liest über den Speicherblock	Technik & Speicher	nein		Nur nach einem Absturz kann der Absturzbericht einen Folgeabsturz auslösen.
+226	Wasserfall über Weg 25 mit falschen Texten	Reise & Ereignisse	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+227	Dialogskript: Vergleich mit leerem Feld	Dialoge	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+228	Handbuchabfrage in der CD-Fassung ohne Wirkung	Technik & Speicher	nein		Nichts; die CD-Fassung fragt nie nach dem Handbuch.
+229	Zeitgeber prüft denselben Wert doppelt	Technik & Speicher	nein		Nichts Sichtbares.
+230	CD-Prüfung bei leerer PATH.CFG	Technik & Speicher	nein		Bei leerer Konfigurationsdatei meldet das Spiel meist, es gebe kein CD-ROM-Laufwerk.
+231	CD-Prüfung bricht ohne Aufräumen ab	Technik & Speicher	nein		Nichts Sichtbares.
+232	Speichern: Existenzprüfung mit > statt >=	Technik & Speicher	nein		Nichts Sichtbares.
+233	Kriegerhüne: Abschiedstext erscheint nie	Reise & Ereignisse	nein		Nach der Begegnung mit dem Kriegerhünen fehlt der Text, wie sein Geschimpfe hinter der Biegung verklingt.
+300	DIGPAK-Klangtreiber: Stapelfehler (ungenutzt)	Klang & Grafik	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+301	Zeichenart „Oder“ kopiert falsch (ungenutzt)	Klang & Grafik	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+302	Rückwärtskopieren versetzt (ungenutzt)	Klang & Grafik	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+303	Debug-Wächter zeigt immer Rot (toter Code)	Technik & Speicher	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+304	XMS-Vorgabe ohne Rücksprung	Technik & Speicher	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+305	XMS-Kopie liest Einsprung aus falschem Segment	Technik & Speicher	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+306	Flat-Modus ohne Fehlerprüfung	Technik & Speicher	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+307	Kopierroutine verliert ungerades Byte	Technik & Speicher	nein		Nichts – der Fehler tritt im Spiel nicht auf.
+350	Ohne EMS vereinzelt falsche Bodenpixel	Klang & Grafik	nein		Ohne EMS-Speicher können in der 3D-Ansicht vereinzelt Bodenpixel falsch sein.
+351	Tiefensortierung bei 129 Flächen	Klang & Grafik	nein		Nichts – der Fehler tritt im Spiel nicht auf.

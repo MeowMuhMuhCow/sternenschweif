@@ -1,0 +1,7631 @@
+[
+ {
+  "modul": "SEG001",
+  "datei": "SEG001.CPP",
+  "sprache": "C++",
+  "bereich": "Start & System",
+  "titel": "Spielschleife",
+  "beschreibung": "Das Herz des Spiels: Reisemodus, Hauptschleife main_loop (verteilt auf Ort, Dungeon, Reise, Stadt, Tod, Nichtspielercharaktere, Stufenanstieg, Lowangen-Einbruch, Spielende), Leerlaufschritt game_idle (Klang, Zeitgeber, Anzeigen, Bildschirmschoner) und Speichern aus dem Spielstandmenü. Früher fälschlich als „Kopierschutz“ einsortiert: Es enthält nur die zwei markierten Aufrufe in die Handbuchprüfung, die der Kampf-Zeitgeber per Bytemuster überwacht.",
+  "funktionen": [
+   "do_travel_mode",
+   "main_loop",
+   "game_idle",
+   "savemenu_save",
+   "copyprot_idle_begin",
+   "copyprot_idle_end",
+   "copyprot_save_begin",
+   "copyprot_save_end"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   232
+  ],
+  "zeilen": 278,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG002",
+  "datei": "SEG002.C",
+  "sprache": "C",
+  "bereich": "Start & System",
+  "titel": "Grundfunktionen",
+  "beschreibung": "Eingabe-Warteschleifen, Palette, Bildschirmschoner, Heldenprüfungen, zeitlich begrenzte Wirkungen, Porträtleiste, EMS und Eingabeverteiler.",
+  "funktionen": [
+   "EMS_map",
+   "screensaver_reset",
+   "handle_input",
+   "wait_ticks_key",
+   "wait_ticks",
+   "str_pad",
+   "set_palette",
+   "set_color"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 685,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG003",
+  "datei": "SEG003.CPP",
+  "sprache": "C++",
+  "bereich": "Kopierschutz",
+  "titel": "Handbuchabfrage (CopyProt)",
+  "beschreibung": "Handbuchabfrage als Klasse CopyProt: „Bitte schlagen Sie in Ihrem Sternenschweif Handbuch auf, Seite %d, Zeile %d, Wort %d nach.“ Fragen aus PASSWORD.DAT, Antworten verschlüsselt verglichen, drei Versuche. Kurios: In der CD-Fassung ruft niemand die Abfrage auf, und die laufende Prüfung besteht immer. Dazu Aufräumen beim Programmende (cleanup_game) und der V86-Test cpu_v86_active.",
+  "funktionen": [
+   "CopyProt::CopyProt",
+   "CopyProt::query",
+   "CopyProt::encrypt",
+   "CopyProt::compare",
+   "CopyProt::init",
+   "CopyProt::fail",
+   "copyprot_check",
+   "copyprot_stub",
+   "cleanup_game",
+   "exit_game",
+   "cpu_v86_active",
+   "CopyProt::~CopyProt"
+  ],
+  "klassen": [
+   "CopyProt"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   228
+  ],
+  "zeilen": 293,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG004",
+  "datei": "SEG004.C",
+  "sprache": "C",
+  "bereich": "Klang",
+  "titel": "Klangobjekte",
+  "beschreibung": "Digitale Klänge mit Doppelpuffer, Musik über XMIDI und Sprachausgabe; Abspielen, Nachladen und Lautstärke.",
+  "funktionen": [
+   "snd_speech",
+   "snd_service",
+   "snd_queue",
+   "snd_stop",
+   "snd_play",
+   "snd_select",
+   "snd_start",
+   "snd_load"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 320,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG005",
+  "datei": "SEG005.CPP",
+  "sprache": "C++",
+  "bereich": "Start & System",
+  "titel": "Startphase (Init)",
+  "beschreibung": "Klasse Init: Speicher prüfen und reservieren, Overlay-Puffer, Datenarchive und Textdateien laden, Auslagerungsspeicher der 3D-Ansicht anlegen. Dazu die CD-Prüfung cd_check beim Start (Laufwerk aus PATH.CFG, MSCDEX, Datenträgername DSA2_CD1/DSA2_CD2).",
+  "funktionen": [
+   "Init::Init",
+   "cd_check",
+   "ctrl_break_handler",
+   "load_archives",
+   "load_ltx",
+   "swap_mem_init",
+   "Init::setdir",
+   "Init::~Init"
+  ],
+  "klassen": [
+   "Init"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   209,
+   210,
+   230,
+   231
+  ],
+  "zeilen": 507,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG006",
+  "datei": "SEG006.CPP",
+  "sprache": "C++",
+  "bereich": "Dateien & Spielstände",
+  "titel": "Archiv- und Dateizugriff",
+  "beschreibung": "Archivobjekt für das Datenarchiv mit Verzeichnis, Ausweichpfaden und XMS-Zwischenspeicher.",
+  "funktionen": [
+   "arc_mark",
+   "arc_open",
+   "arc_size",
+   "arc_release",
+   "arc_delete",
+   "arc_info",
+   "arc_read_raw",
+   "arc_open_raw"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 841,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG007",
+  "datei": "SEG007.C",
+  "sprache": "C",
+  "bereich": "Start & System",
+  "titel": "Speicherverwaltung",
+  "beschreibung": "mem_alloc und mem_free mit Wächterwörtern GUYS/GUYE und Belegungstabelle, operator new/delete.",
+  "funktionen": [
+   "mem_alloc",
+   "mem_free",
+   "mem_free_slot",
+   "mem_check",
+   "mem_alloc_w",
+   "mem_alloc_l",
+   "mem_free_v"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 196,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG008",
+  "datei": "SEG008.C",
+  "sprache": "C",
+  "bereich": "Reise & Karte",
+  "titel": "Mauszeiger je Feld, Automap aufdecken",
+  "beschreibung": "Wählt den Mauszeiger je Kartenfeld und deckt die Automap um die Gruppe auf.",
+  "funktionen": [
+   "cursor_for_cell",
+   "reveal_map"
+  ],
+  "klassen": [
+   "Map"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   7
+  ],
+  "zeilen": 148,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG009",
+  "datei": "SEG009.ASM",
+  "sprache": "ASM",
+  "bereich": "Start & System",
+  "titel": "huge-Zeiger-Differenz",
+  "beschreibung": "Original-Assembler: Differenz zweier huge-Zeiger (Abwandlung von H_PSBP).",
+  "funktionen": [
+   "huge_ptr_diff"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 86,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG010",
+  "datei": "SEG010.CPP",
+  "sprache": "C++",
+  "bereich": "Start & System",
+  "titel": "Zeitgeber",
+  "beschreibung": "Verteilt die Spielzeit-Zähler auf stündliche und tägliche Ereignisse und die Helden-Zeitgeber.",
+  "funktionen": [
+   "do_timers",
+   "sub_timers",
+   "timers_events",
+   "heroes_tick",
+   "hero_timers",
+   "sub_light_timers"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 169,
+  "bright_eyes": "sub_light_timers (DSA 1)"
+ },
+ {
+  "modul": "SEG011",
+  "datei": "SEG011.C",
+  "sprache": "C",
+  "bereich": "Grafik & Animation",
+  "titel": "Kompass der 3D-Ansicht",
+  "beschreibung": "Kompass-Objekt: Rahmen und Richtungsband je nach Blickwinkel zeichnen.",
+  "funktionen": [
+   "Compass_ctor",
+   "Compass_dtor",
+   "compass_draw",
+   "compass_draw_strip"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 73,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG012",
+  "datei": "SEG012.CPP",
+  "sprache": "C++",
+  "bereich": "Grafik & Animation",
+  "titel": "3D-Ansicht: Ablauf und Eingabe",
+  "beschreibung": "Bildablauf der 3D-Ansicht, Bewegungs- und Dreheingabe, Objekte zeichnen, Klickauswahl, Sternenhimmel und Nebeltabelle.",
+  "funktionen": [
+   "view_frame",
+   "call_handler",
+   "pick_mouse",
+   "pick_center",
+   "cell_event",
+   "move_input",
+   "draw_object",
+   "draw_hud"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   3
+  ],
+  "zeilen": 687,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG013",
+  "datei": "SEG013.C",
+  "sprache": "C",
+  "bereich": "Grafik & Animation",
+  "titel": "3D-Kollision",
+  "beschreibung": "Wandprofile je Kartenzelle, Kameradrehung und Bewegung mit Kollisionsprüfung.",
+  "funktionen": [
+   "cell_profile",
+   "edge",
+   "can_stand",
+   "cam_set_angles",
+   "cam_set_speed",
+   "cam_move",
+   "cam_drop",
+   "face_profile"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 336,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG014",
+  "datei": "SEG014.C",
+  "sprache": "C",
+  "bereich": "Start & System",
+  "titel": "GURU Meditation (Absturzbericht)",
+  "beschreibung": "Absturzbericht mit Aufrufliste und Speicherauszug.",
+  "funktionen": [
+   "push_fc",
+   "guru_meditation"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   225
+  ],
+  "zeilen": 154,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG015",
+  "datei": "SEG015.C",
+  "sprache": "C",
+  "bereich": "Grafik & Animation",
+  "titel": "Bild mit Lamellen-Effekt einblenden",
+  "beschreibung": "Blendet ein neues Bild in acht Durchgängen mit Lamellen-Effekt über das alte ein.",
+  "funktionen": [
+   "fade_in_pic",
+   "fade_line"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 106,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG016",
+  "datei": "SEG016.C",
+  "sprache": "C",
+  "bereich": "Grafik & Animation",
+  "titel": "Entpacker für Bilddaten",
+  "beschreibung": "Verteiler nach Packart sowie RLE-Entpacker; PP20 geht an R29.",
+  "funktionen": [
+   "decomp_rle",
+   "decomp",
+   "decomp_rle2"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 112,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG017",
+  "datei": "SEG017.C",
+  "sprache": "C",
+  "bereich": "Reise & Karte",
+  "titel": "Karte 64 x 64",
+  "beschreibung": "Kartenobjekt anlegen, laden, speichern, Felder lesen und schreiben und die Zellentabelle der 3D-Karte aufbauen.",
+  "funktionen": [
+   "get_map_cell",
+   "build_cells",
+   "new_map",
+   "free_map",
+   "load_map",
+   "save_map",
+   "set_map_cell",
+   "load_tiles"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 112,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG018",
+  "datei": "SEG018.C",
+  "sprache": "C",
+  "bereich": "Oberfläche (Fenster/Dialoge/Eingabe)",
+  "titel": "Maus und Tastatur",
+  "beschreibung": "Mauszeiger, Mausbereiche, Eingabeabfrage mit Pause und Programmende sowie Tastatur-ISR.",
+  "funktionen": [
+   "mouse_show",
+   "poll_input",
+   "keyboard_isr",
+   "mouse_hide",
+   "mouse_action",
+   "mouse_move",
+   "call_mouse_isr",
+   "mouse_set_cursor"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 599,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG019",
+  "datei": "SEG019.C",
+  "sprache": "C",
+  "bereich": "Grafik & Animation",
+  "titel": "Zellentabelle der 3D-Karte",
+  "beschreibung": "Zugriff auf Feldtyp, Zellbits und Drehwinkel der Zellen der 3D-Karte.",
+  "funktionen": [
+   "get_cell_a",
+   "get_cell_b",
+   "get_cell_c"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 26,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG020",
+  "datei": "SEG020.CPP",
+  "sprache": "C++",
+  "bereich": "Oberfläche (Fenster/Dialoge/Eingabe)",
+  "titel": "Textausgabe mit Proportionalschrift",
+  "beschreibung": "Zeichensatz einrichten, Textbreiten messen, Zeilenumbruch und Textausgabe mit Steuerzeichen.",
+  "funktionen": [
+   "font_wrap",
+   "font_print",
+   "font_init",
+   "font_glyph",
+   "font_rect",
+   "font_center_x",
+   "font_rect1",
+   "font_dummy1"
+  ],
+  "klassen": [
+   "Bmp"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 468,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG021",
+  "datei": "SEG021.C",
+  "sprache": "C",
+  "bereich": "Start & System",
+  "titel": "Spielzeit und Kalender",
+  "beschreibung": "Zeitsprung, Spielzeit-Tick, Kalender und besondere Tage.",
+  "funktionen": [
+   "time_tick",
+   "timewarp",
+   "timewarp_until",
+   "timewarp_minutes",
+   "timewarp_hours",
+   "timewarp_days",
+   "timewarp_months",
+   "timewarp_years"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 180,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG022",
+  "datei": "SEG022.ASM",
+  "sprache": "ASM",
+  "bereich": "Klang",
+  "titel": "Miles Audio Interface Library 2.14",
+  "beschreibung": "Zugekaufte Sound- und Musikbibliothek von John Miles, Version 2.14 vom 24.09.1992 (an den Änderungen gegenüber 2.12 erkennbar). Alle Namen folgen Miles' eigener, heute frei verfügbarer AIL-2.x-Quelle, bis hin zu seinen Makros; die Treiberaufrufe stehen symbolisch (AIL_INDEX_*).",
+  "funktionen": [
+   "AIL_startup",
+   "AIL_shutdown",
+   "AIL_register_timer",
+   "AIL_release_timer_handle",
+   "AIL_release_all_timers",
+   "AIL_start_timer",
+   "AIL_stop_timer",
+   "AIL_set_timer_period"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 2817,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG023",
+  "datei": "SEG023.C",
+  "sprache": "C",
+  "bereich": "Start & System",
+  "titel": "Zeitgeber und Maus",
+  "beschreibung": "BIOS-Zeitgeber (INT 1Ch: Klangdienste, Zufallssaat, Spielzeit, Doppelklick-Frist), Zeitgeber-Rückrufe der 3D-Ansicht und des Kampfs, Maus-Interrupt und Quadratwurzel. Im Kampf-Zeitgeber steckt Attics Anti-Cracker-Prüfung: alle 250 Takte Prüfsumme über den Schutzcode und Suche nach den markierten Aufrufen. Bei Manipulation steigt still ein Zähler, ab über 50 verlieren die Helden im Kampf Lebenspunkte.",
+  "funktionen": [
+   "timer_init",
+   "timer_restore",
+   "timer_isr",
+   "view_timer_cb",
+   "fight_timer_cb",
+   "mouse_isr",
+   "long_sqrt"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   229
+  ],
+  "zeilen": 400,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG024",
+  "datei": "SEG024.ASM",
+  "sprache": "ASM",
+  "bereich": "Grafik & Animation",
+  "titel": "3D-Engine: Wände, Böden, Decken",
+  "beschreibung": "Handgeschriebener 386-Assembler (32-Bit-Register für Festkomma). Wände werden spaltenweise, Böden und Decken zeilenweise gefüllt, weil entlang einer Wandspalte bzw. Bodenzeile die Tiefe konstant ist und die Perspektive je Linie nur einmal gerechnet werden muss. Die Pixelschritte sind 134- bzw. 208-fach abgerollt (im Quelltext jetzt als rept-Makro, von 10.011 auf rund 1.550 Zeilen), Einsprung über Sprungtabelle; selbstverändernder Code für EMS. Erklärung in Analyse/Bericht_3D_Engine.md.",
+  "funktionen": [
+   "poly_setup",
+   "poly_setup_clip",
+   "fill_smth",
+   "fill_scene",
+   "copy_3d_to_screen",
+   "poly_tex",
+   "poly_tex_m",
+   "poly_tex_p"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 1545,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG025",
+  "datei": "SEG025.ASM",
+  "sprache": "ASM",
+  "bereich": "Grafik & Animation",
+  "titel": "3D-Engine: Projektion und Texturen",
+  "beschreibung": "Projektion der 3D-Punkte auf den Bildschirm (view_set_projection), Sichtbarkeit und Tiefensortierung der Flächen (obj_project), Kantentabellen für die Füllroutinen in SEG024.",
+  "funktionen": [
+   "obj_project",
+   "tex_copy_flat"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 1056,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG026",
+  "datei": "SEG026.ASM",
+  "sprache": "ASM",
+  "bereich": "Oberfläche (Fenster/Dialoge/Eingabe)",
+  "titel": "Zeichen-Blit mit Farbübersetzung",
+  "beschreibung": "Original-Assembler: Blit von Schriftzeichen mit Farbübersetzung, dazu ein int-3Fh-Haken.",
+  "funktionen": [
+   "glyph_blit",
+   "glyph_blit_bg"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 268,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG027",
+  "datei": "SEG027.ASM",
+  "sprache": "ASM",
+  "bereich": "Grafik & Animation",
+  "titel": "Streifen nach A000",
+  "beschreibung": "Original-Assembler: kopiert Zeilenstreifen der Reisekarte in den VGA-Speicher.",
+  "funktionen": [
+   "tmap_blit_rows"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 124,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG028",
+  "datei": "SEG028.C",
+  "sprache": "C",
+  "bereich": "Start & System",
+  "titel": "Byte-Tausch",
+  "beschreibung": "Tauscht Bytes von 16- und 32-Bit-Werten (Motorola-/Amiga-Reihenfolge, aus DSA 1).",
+  "funktionen": [
+   "swap_u16",
+   "swap_u32",
+   "swap_u32_unused"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 45,
+  "bright_eyes": "swap_u16/swap_u32 (DSA 1)"
+ },
+ {
+  "modul": "SEG029",
+  "datei": "SEG029.C",
+  "sprache": "C",
+  "bereich": "Dateien & Spielstände",
+  "titel": "PowerPacker-Aufruf",
+  "beschreibung": "Übergibt PP20-Daten an den Entpacker ppDecrunch (R33).",
+  "funktionen": [
+   "unpack_pp20"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 13,
+  "bright_eyes": "decomp_pp20 (DSA 2 in Bright Eyes)"
+ },
+ {
+  "modul": "SEG030",
+  "datei": "SEG030.C",
+  "sprache": "C",
+  "bereich": "Oberfläche (Fenster/Dialoge/Eingabe)",
+  "titel": "Groß-/Kleinschreibung mit Umlauten",
+  "beschreibung": "Wandelt Groß- und Kleinbuchstaben einschließlich deutscher Umlaute (Codepage 437).",
+  "funktionen": [
+   "char_tolower",
+   "char_toupper",
+   "str_tolower",
+   "str_toupper"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 53,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG031",
+  "datei": "SEG031.ASM",
+  "sprache": "ASM",
+  "bereich": "Oberfläche (Fenster/Dialoge/Eingabe)",
+  "titel": "Tastaturpuffer",
+  "beschreibung": "Original-Assembler: Tastaturpuffer leeren.",
+  "funktionen": [
+   "clear_kbd"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 58,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG032",
+  "datei": "SEG032.C",
+  "sprache": "C",
+  "bereich": "Sonstiges",
+  "titel": "Listensuche",
+  "beschreibung": "Sucht Werte in Byte- und Wortlisten mit Endmarke -1.",
+  "funktionen": [
+   "is_in_byte_array",
+   "is_in_byte_array2",
+   "is_in_word_array"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 49,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG033",
+  "datei": "SEG033.ASM",
+  "sprache": "ASM",
+  "bereich": "Dateien & Spielstände",
+  "titel": "PowerPacker-Entpacker",
+  "beschreibung": "Original-Assembler: ppDecrunch entpackt PP20-Daten.",
+  "funktionen": [
+   "ppDecrunch"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 295,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG034",
+  "datei": "SEG034.ASM",
+  "sprache": "ASM",
+  "bereich": "Grafik & Animation",
+  "titel": "Grafik: Zeilen und Spalten",
+  "beschreibung": "Original-Assembler: Linien füllen sowie Zeilen und Spalten im VGA-Speicher sichern und wiederherstellen.",
+  "funktionen": [
+   "fill_line",
+   "vga_save_row",
+   "vga_restore_row",
+   "vga_restore_row_part",
+   "fill_v_line",
+   "vga_save_col",
+   "vga_restore_col",
+   "vga_restore_col_part"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 255,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG035",
+  "datei": "SEG035.ASM",
+  "sprache": "ASM",
+  "bereich": "Start & System",
+  "titel": "Flat Real Mode",
+  "beschreibung": "Original-Assembler: Flat Real Mode betreten und verlassen, lineares Kopieren.",
+  "funktionen": [
+   "flat_enter",
+   "flat_leave",
+   "flat_copy"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 262,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG036",
+  "datei": "SEG036.ASM",
+  "sprache": "ASM",
+  "bereich": "Start & System",
+  "titel": "EMS",
+  "beschreibung": "Original-Assembler: freie EMS-Seiten abfragen und Zeiger normalisieren.",
+  "funktionen": [
+   "EMS_get_num_pages_unalloced",
+   "EMS_alloc_pages",
+   "EMS_free_pages",
+   "EMS_map_memory",
+   "EMS_norm_ptr",
+   "EMS_init"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 333,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG037",
+  "datei": "SEG037.C",
+  "sprache": "C",
+  "bereich": "Start & System",
+  "titel": "Zufall und Würfel",
+  "beschreibung": "Zufallszahlen und Würfelwürfe (Grundlage Bright Eyes seg007).",
+  "funktionen": [
+   "random_schweif",
+   "random_interval",
+   "dice_roll",
+   "calc_damage_range"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 67,
+  "bright_eyes": "seg007 Zufall (DSA 1) und c102de_seg037 (DSA 2 in Bright Eyes)"
+ },
+ {
+  "modul": "SEG038",
+  "datei": "SEG038.C",
+  "sprache": "C",
+  "bereich": "Start & System",
+  "titel": "XMS-Verschiebung",
+  "beschreibung": "Verschiebt Speicher von und nach XMS, über den XMS-Treiber oder selbst im Flat Real Mode.",
+  "funktionen": [
+   "xms_move_any"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 53,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG039",
+  "datei": "SEG039.ASM",
+  "sprache": "ASM",
+  "bereich": "Start & System",
+  "titel": "XMS-Schnittstelle",
+  "beschreibung": "Original-Assembler: XMS-Speicher anlegen, sperren, verschieben und freigeben.",
+  "funktionen": [
+   "xms_present",
+   "xms_free_kb",
+   "xms_alloc_kb",
+   "xms_free_block",
+   "xms_move",
+   "xms_lock",
+   "xms_unlock"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 447,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG040",
+  "datei": "SEG040.C",
+  "sprache": "C",
+  "bereich": "Dateien & Spielstände",
+  "titel": "Große Blöcke lesen und schreiben",
+  "beschreibung": "Liest und schreibt Blöcke über 64 KB in Stücken zu 64000 Bytes.",
+  "funktionen": [
+   "read_big",
+   "write_big"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 45,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG041",
+  "datei": "SEG041.C",
+  "sprache": "C",
+  "bereich": "Grafik & Animation",
+  "titel": "NVF-Bilder im Speicher auspacken",
+  "beschreibung": "Packt ein Bild aus einer NVF-Datei im Speicher aus (wie Bright Eyes process_nvf); Gegenstück zur Klasse Nvf in O098.",
+  "funktionen": [
+   "nvf_new",
+   "nvf_delete",
+   "nvf_set",
+   "nvf_process",
+   "nvf_unpack"
+  ],
+  "klassen": [
+   "Nvf"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   217
+  ],
+  "zeilen": 197,
+  "bright_eyes": "c102de_seg041 process_nvf, decomp_rle (DSA 2 in Bright Eyes)"
+ },
+ {
+  "modul": "SEG042",
+  "datei": "SEG042.C",
+  "sprache": "C",
+  "bereich": "Grafik & Animation",
+  "titel": "Bildpuffer Bmp",
+  "beschreibung": "Bildpuffer-Klasse Bmp: anlegen, laden, freigeben, zeichnen, holen, skalieren, füllen, Linien und Rahmen.",
+  "funktionen": [
+   "gb_new",
+   "gb_delete",
+   "gb_blit_a",
+   "gb_blit_ab",
+   "gb_new_file",
+   "gb_new0",
+   "gb_new_alloc",
+   "gb_new_arch"
+  ],
+  "klassen": [
+   "Bmp"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   211
+  ],
+  "zeilen": 323,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG043",
+  "datei": "SEG043.ASM",
+  "sprache": "ASM",
+  "bereich": "Grafik & Animation",
+  "titel": "Grafikmodus und Palette",
+  "beschreibung": "Original-Assembler: Videomodus setzen und wiederherstellen, Farben und Palette lesen.",
+  "funktionen": [
+   "set_video_mode",
+   "set_display_page",
+   "restore_video_mode",
+   "get_color",
+   "get_palette"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 322,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG044",
+  "datei": "SEG044.C",
+  "sprache": "C",
+  "bereich": "Grafik & Animation",
+  "titel": "Palette angleichen",
+  "beschreibung": "Gleicht jede Farbkomponente einer Palette um einen Schritt an eine Zielpalette an (Ein- und Ausblenden).",
+  "funktionen": [
+   "pal_fade"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 44,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG045",
+  "datei": "SEG045.C",
+  "sprache": "C",
+  "bereich": "Grafik & Animation",
+  "titel": "Strahlrücklauf, Linien und Rahmen",
+  "beschreibung": "Wartet auf den VGA-Strahlrücklauf und zeichnet geclippte Linien und Rahmen im Bildschirmpuffer.",
+  "funktionen": [
+   "wait_for_vsync",
+   "wait_for_vsyncs",
+   "do_border",
+   "do_h_line",
+   "do_v_line"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 101,
+  "bright_eyes": null
+ },
+ {
+  "modul": "SEG046",
+  "datei": "SEG046.ASM",
+  "sprache": "ASM",
+  "bereich": "Grafik & Animation",
+  "titel": "Blit und Skalierer",
+  "beschreibung": "Original-Assembler: Zeilen blitten und holen mit Modi, Skalierer mit Codeerzeugung.",
+  "funktionen": [
+   "blit_lines",
+   "grab_lines",
+   "scale_lines"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 445,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O000",
+  "datei": "OVL000.CPP",
+  "sprache": "C++",
+  "bereich": "Dungeons",
+  "titel": "Zwergenbinge (Dungeon 10): Ereignisse",
+  "beschreibung": "Ereignisse des Dungeons 10, einer Zwergenbinge mit Ingerimm-Heiligtum: Steinaltar mit Münzen und Vision, verrottete Truhe, Kohlebecken u. a. Der Kartenverteiler steht in O060.",
+  "funktionen": [
+   "dng10_altar",
+   "dng10_altar_vision",
+   "dng10_altar_take",
+   "dng10_altar_rumble",
+   "dng10_altar_offer",
+   "dng10_vision_choice",
+   "dng10_anvil",
+   "dng10_relief"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "BINGE2.LTX"
+  ],
+  "fehler": [
+   160
+  ],
+  "zeilen": 549,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O001",
+  "datei": "OVL001.C",
+  "sprache": "C",
+  "bereich": "Dungeons",
+  "titel": "Ingerimms Schmiede (Dungeon 16), Teil 1",
+  "beschreibung": "Ereignisse des Dungeons 16 im Finsterkopp: Steinplatten, heiße Platten, Golem, Türen und Truhen. Fortsetzung in O002.",
+  "funktionen": [
+   "dng16_handler",
+   "dng16_stone_plate",
+   "dng16_hot_plates",
+   "dng16_door",
+   "dng16_double_key",
+   "dng16_plates_turn_back",
+   "dng16_walled_passage",
+   "dng16_rubble"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "BINGE7.LTX"
+  ],
+  "fehler": [
+   164
+  ],
+  "zeilen": 695,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O002",
+  "datei": "OVL002.C",
+  "sprache": "C",
+  "bereich": "Dungeons",
+  "titel": "Ingerimms Schmiede (Dungeon 16), Teil 2",
+  "beschreibung": "Fortsetzung von O001 mit den Golem- und Schmiede-Zwischensequenzen (FLI mit Sprachausgabe), Wasserbecken, Steintür und Schmiedehitze.",
+  "funktionen": [
+   "dng16_seq_golem_cb",
+   "dng16_seq_forge_cb",
+   "dng16_water_basin",
+   "dng16_lava_wall",
+   "dng16_stone_door",
+   "dng16_golem",
+   "dng16_golem_fight",
+   "dng16_forge_heat"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "BINGE7.LTX",
+   "GOLEM2.TLK",
+   "GLOBLTXT.LTX"
+  ],
+  "fehler": [
+   122
+  ],
+  "zeilen": 562,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O003",
+  "datei": "OVL003.CPP",
+  "sprache": "C++",
+  "bereich": "Dateien & Spielstände",
+  "titel": "Festplatten-Cache für CD-Dateien",
+  "beschreibung": "Klasse Cache: legt Dateien von der CD (Haupt-, Klang-, Sprach- und Rohdaten) auf der Festplatte ab und verwaltet sie nach Alter. Bei schwerem Fehler wird ein Notspielstand geschrieben.",
+  "funktionen": [
+   "Cache::Cache",
+   "Cache::age",
+   "cache_state_set",
+   "cache_state_get",
+   "Cache::fatal",
+   "Cache::split_key",
+   "Cache::disk_full",
+   "Cache::find"
+  ],
+  "klassen": [
+   "Cache",
+   "Keylist"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   86
+  ],
+  "zeilen": 592,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O004",
+  "datei": "OVL004.CPP",
+  "sprache": "C++",
+  "bereich": "Klang",
+  "titel": "CD-Audio über MSCDEX",
+  "beschreibung": "Klasse CD: Laufwerkserkennung, Datenträgername, Status und Abspielen von CD-Audio-Titeln über MSCDEX (int 2Fh). Bei falscher CD fordert das Spiel zum Wechsel auf.",
+  "funktionen": [
+   "CD::CD",
+   "cd_drive_reset",
+   "cd_get_label",
+   "cd_check_drive",
+   "CD::msf2hsg",
+   "CD::ndrives",
+   "CD::version",
+   "CD::firstdrive"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 402,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O005",
+  "datei": "OVL005.CPP",
+  "sprache": "C++",
+  "bereich": "Helden & Heldenerschaffung",
+  "titel": "Zeitgeber: Hunger, Durst, Sucht, Stufenaufstieg",
+  "beschreibung": "Stündliche, vierstündliche und tägliche Zeitgeber-Ereignisse: Sperrzähler, Wetter, Hunger und Durst, Sucht, Gefangenschaft und die Prüfung auf Stufenaufstieg.",
+  "funktionen": [
+   "ap_for_level",
+   "check_level_up",
+   "timers_hourly",
+   "location_countdown_msgs",
+   "timers_4hourly",
+   "timers_daily",
+   "hero_hunger_thirst",
+   "hero_disease_tick"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "BINGE.LTX"
+  ],
+  "fehler": [
+   179
+  ],
+  "zeilen": 597,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O006",
+  "datei": "OVL006.CPP",
+  "sprache": "C++",
+  "bereich": "Helden & Heldenerschaffung",
+  "titel": "Talente anwenden",
+  "beschreibung": "Talentwerte lesen und setzen sowie Talente anwenden: Heilkunde (Wunden, Gift, Krankheiten), Akrobatik, Musizieren, Tanzen, Falschspiel und Taschendiebstahl, dazu die Talentauswahl.",
+  "funktionen": [
+   "get_skill_value",
+   "set_skill_value",
+   "add_skill_value",
+   "use_skill",
+   "select_skill",
+   "skill_heal_disease",
+   "skill_heal_wounds",
+   "skill_acrobatics"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   117,
+   214
+  ],
+  "zeilen": 510,
+  "bright_eyes": "use_skill (DSA 1)"
+ },
+ {
+  "modul": "O007",
+  "datei": "OVL007.C",
+  "sprache": "C",
+  "bereich": "Intro & Abspann",
+  "titel": "Zwischensequenzen und Entwickler-Testmenü",
+  "beschreibung": "Entwickler-Testmenü zum Abspielen aller Sequenzen sowie die Schwarzmagier-Szene und das Phex-Finale mit Texten und Sprachausgabe.",
+  "funktionen": [
+   "debug_test_menu",
+   "phex_finale",
+   "blackmage_scene",
+   "scene_line_speech",
+   "scene_line",
+   "scene_line_anim",
+   "scene_choice",
+   "phex_finale_fight"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "DEBUG.LTX",
+   "SEQUENCE.LTX",
+   "PHEXTEMP.LTX"
+  ],
+  "fehler": [
+   134
+  ],
+  "zeilen": 544,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O008",
+  "datei": "OVL008.CPP",
+  "sprache": "C++",
+  "bereich": "Gruppe & Inventar",
+  "titel": "Heldenbogen und Inventar, Teil 1",
+  "beschreibung": "Klasse Inv für Heldenbogen und Gepäck: Bilder laden, Plätze zeichnen, Auswahl und Mauszeiger. Teil 2 steht in O009.",
+  "funktionen": [
+   "InvObj::set_cursor",
+   "InvObj::reset_cursor",
+   "InvObj::update_marks",
+   "InvObj::draw_slots",
+   "InvObj::draw_slot",
+   "InvObj::reselect",
+   "InvObj::sel_next",
+   "InvObj::sel_prev"
+  ],
+  "klassen": [
+   "Inv",
+   "InvObj"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 430,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O009",
+  "datei": "OVL009.CPP",
+  "sprache": "C++",
+  "bereich": "Gruppe & Inventar",
+  "titel": "Heldenbogen und Inventar, Teil 2",
+  "beschreibung": "Gegenstände im Heldenbogen verschieben, tauschen, kombinieren und benutzen, Wechsel zum nächsten Helden und Öffnen des Bogens.",
+  "funktionen": [
+   "Inv::confirm",
+   "Inv::next_hero",
+   "Inv::warn_signal",
+   "Inv::toggle_body",
+   "open_hero_sheet",
+   "Inv::draw"
+  ],
+  "klassen": [
+   "Inv",
+   "ItemUse"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 390,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O010",
+  "datei": "OVL010.CPP",
+  "sprache": "C++",
+  "bereich": "Grafik & Animation",
+  "titel": "3D-Objekte vorbereiten, Ansicht auslagern",
+  "beschreibung": "Berechnet Flächennormalen und Farben der 3D-Objekte und lagert die 3D-Ansicht in EMS/XMS aus bzw. holt sie zurück.",
+  "funktionen": [
+   "view_init",
+   "obj3d_prepare",
+   "swap_write",
+   "swap_read",
+   "view_swap_out",
+   "view_swap_in",
+   "view_suspend",
+   "swap_out_screen"
+  ],
+  "klassen": [
+   "Bmp"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   198
+  ],
+  "zeilen": 670,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O011",
+  "datei": "OVL011.CPP",
+  "sprache": "C++",
+  "bereich": "Sonstiges",
+  "titel": "Entwickler-Infobildschirm",
+  "beschreibung": "Zeigt Speicher-, EMS-/XMS- und Heapwerte im Textmodus und nimmt Entwicklerbefehle (Cheats) entgegen.",
+  "funktionen": [
+   "dev_info_screen",
+   "dos_open_files",
+   "heap_free_total",
+   "dev_beep",
+   "o011_stub_0a88",
+   "debug_log",
+   "o011_stub_0a8d",
+   "o011_stub_0a97"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "DEBUG.LTX"
+  ],
+  "fehler": [
+   32
+  ],
+  "zeilen": 308,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O012",
+  "datei": "OVL012.CPP",
+  "sprache": "C++",
+  "bereich": "Händler & Dienste",
+  "titel": "Lagerhaus",
+  "beschreibung": "Klasse Store: drei Lagerhäuser mit je einem Lagerplatz in der Datei DEPOT.DAT. Einlagern und Abholen stehen in O099/O100.",
+  "funktionen": [
+   "Store::Store",
+   "Store::~Store",
+   "Store::is_open",
+   "Store::can_enter",
+   "Store::check_fee",
+   "Store::lock",
+   "Store::run",
+   "Store::talk"
+  ],
+  "klassen": [
+   "Store"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   71
+  ],
+  "zeilen": 398,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O013",
+  "datei": "OVL013.CPP",
+  "sprache": "C++",
+  "bereich": "Dialoge & Tagebuch",
+  "titel": "Dialog-Sonderfunktionen",
+  "beschreibung": "Rückrufe für Gespräche: Geld- und Gegenstandsprüfungen, Belohnungen und Bedingungen, die den Folgezustand des Dialogs bestimmen.",
+  "funktionen": [
+   "talk_hand_over_weapons",
+   "talk_hand_over_items",
+   "talk_reward",
+   "talk_check_dwarf",
+   "talk_get_dwarf_name",
+   "talk_give_lowangen_key",
+   "talk_rejoin_leave",
+   "talk_take_heroes"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   126
+  ],
+  "zeilen": 598,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O014",
+  "datei": "OVL014.CPP",
+  "sprache": "C++",
+  "bereich": "Dungeons",
+  "titel": "Hauptschleife der Dungeon-Ansicht",
+  "beschreibung": "Ein Durchlauf der 3D-Ansicht in Dungeons: Musik, Bilder, Symbolleiste, Licht, Tasten und Menü. Gegenstück zu O046 für Städte.",
+  "funktionen": [
+   "dng_main",
+   "dng_load",
+   "dng_update_icons",
+   "dng_set_light",
+   "dng_action",
+   "dng_save_frame",
+   "dng_make_events",
+   "group_set_screen_pos"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 814,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O015",
+  "datei": "OVL015.C",
+  "sprache": "C",
+  "bereich": "Grafik & Animation",
+  "titel": "Heldenbogen-Animationen",
+  "beschreibung": "Ein- und Auszoomen der Anlege-Animation von Ausrüstung im Heldenbogen sowie die Zauber-Animation.",
+  "funktionen": [
+   "sheet_equip_anim_id",
+   "sheet_slot_changed",
+   "sheet_cast_anim",
+   "xms_save_screen",
+   "xms_restore_screen"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 275,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O016",
+  "datei": "OVL016.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Kampffigur-Animation (Objekt)",
+  "beschreibung": "Animationsobjekt FigAnim einer Kampffigur mit Ablaufbeschreibung und XMS-Auslagerung. Takten und Zeichnen stehen in O112.",
+  "funktionen": [
+   "FigAnim::FigAnim",
+   "FigAnim::load_seq",
+   "FigAnim::find_seq",
+   "FigAnim::load_frame",
+   "FigAnim::unpack",
+   "FigAnim::next_frame",
+   "fig_anim_sound",
+   "FigAnim::~FigAnim"
+  ],
+  "klassen": [
+   "FigAnim"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   73
+  ],
+  "zeilen": 426,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O017",
+  "datei": "OVL017.CPP",
+  "sprache": "C++",
+  "bereich": "Ereignisse unterwegs",
+  "titel": "Ortsereignisse der Reisekarte",
+  "beschreibung": "Ereignisse an Orten der Reisekarte, z. B. das orkische Heerlager und die Schwarzmagier mit dem Salamanderstein.",
+  "funktionen": [
+   "place_event_007",
+   "place_event_017",
+   "place_event_018",
+   "place_event_039",
+   "place_event_041",
+   "place_event_048",
+   "place_event_065",
+   "place_event_066"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "POINT2.LTX",
+   "POINT1.LTX",
+   "POINT.LTX",
+   "ALL_SECT.LTX"
+  ],
+  "fehler": [
+   180
+  ],
+  "zeilen": 695,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O018",
+  "datei": "OVL018.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Kampfobjekt und Kampfstart",
+  "beschreibung": "Konstruktor und Destruktor des Kampfobjekts (Puffer, Texte, Tabellen, Bilder) und der Start eines Kampfes.",
+  "funktionen": [
+   "Fight::Fight",
+   "Fight::run",
+   "fight_nop",
+   "start_fight",
+   "Fight::~Fight"
+  ],
+  "klassen": [
+   "Fight"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 360,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O019",
+  "datei": "OVL019.C",
+  "sprache": "C",
+  "bereich": "Städte & Orte",
+  "titel": "Zwergensiedlung am Finsterkopp",
+  "beschreibung": "Stadt 3 und Dungeon 9 der Zwerge am Finsterkopp: Gebäude betreten, Zorn der Zwerge nach einem Frevel.",
+  "funktionen": [
+   "dng09_enter_building",
+   "town03_handler",
+   "dng09_handler"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "FINSTER.LTX",
+   "GLOBLTXT.LTX"
+  ],
+  "fehler": [
+   31
+  ],
+  "zeilen": 372,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O020",
+  "datei": "OVL020.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Sonderkampf mit Zwischensequenzen",
+  "beschreibung": "Sonderkampf 0x493 mit untertitelten Zwischensequenzen und dem Gegnerzug mit Zielwahl.",
+  "funktionen": [
+   "sfight_event_text",
+   "sfight_event_text2",
+   "sfight_seq_main",
+   "sfight_seq_intro",
+   "sfight_intro",
+   "sfight_seq_end",
+   "sfight_hit_chance",
+   "sfight_enemy_turn"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   167
+  ],
+  "zeilen": 679,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O021",
+  "datei": "OVL021.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Rätselkampf mit Worteingabe",
+  "beschreibung": "Sonderkampf 2: Der Gegner stellt ein Rätsel, drei Freitext-Eingaben werden gegen Listen richtiger und falscher Wörter geprüft.",
+  "funktionen": [
+   "sfight2_setup",
+   "sfight2_place_enemy",
+   "sfight2_say",
+   "sfight2_check_word",
+   "sfight2_intro",
+   "sfight2_seq_vanish",
+   "sfight2_seq_attack",
+   "sfight2_seq_stand"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   49
+  ],
+  "zeilen": 372,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O022",
+  "datei": "OVL022.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Kampfaufbau",
+  "beschreibung": "Richtet einen Kampf ein: Kampfdaten, Gegner- und Heldenfiguren, Begehbarkeitskarte und isometrischer Hintergrund.",
+  "funktionen": [
+   "fight_setup",
+   "fight_make_walkmap",
+   "fight_draw_bg",
+   "fig_add_field_objs",
+   "fig_init_enemies",
+   "fig_init_heroes",
+   "fill_enemy_sheet",
+   "fig_add_enemy"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   168
+  ],
+  "zeilen": 486,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O023",
+  "datei": "OVL023.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Kampfsätze und Kampffeld laden",
+  "beschreibung": "Liest und schreibt Kampfsätze und Kampffelder aus den Arbeitsdateien und lädt das Hintergrundbild (wie DSA 1 seg027).",
+  "funktionen": [
+   "fight_read_rec",
+   "fight_write_rec",
+   "fight_count_monsters",
+   "fight_load_bg",
+   "fight_read_scenario"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 125,
+  "bright_eyes": "seg027 read_fight_lst, count_fight_enemies, load_fightbg, load_scenario (DSA 1)"
+ },
+ {
+  "modul": "O024",
+  "datei": "OVL024.C",
+  "sprache": "C",
+  "bereich": "Grafik & Animation",
+  "titel": "FLI-Animation abspielen",
+  "beschreibung": "Abspielschleife für FLI-Animationen mit 70-Hz-Zeitgeber und Abbruch per Taste oder nach Bildzahl.",
+  "funktionen": [
+   "fli_timer_tick",
+   "fli_play",
+   "fli_cb_key",
+   "fli_cb_frames",
+   "fli_play_file",
+   "fli_play_frames"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 170,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O025",
+  "datei": "OVL025.C",
+  "sprache": "C",
+  "bereich": "Grafik & Animation",
+  "titel": "FLI-Datei lesen",
+  "beschreibung": "Prüft Dateikopf und Rahmen von FLI-Animationen und verteilt die Chunks an die Entpacker in O270.",
+  "funktionen": [
+   "fli_open",
+   "fli_read_frame",
+   "fli_do_chunks",
+   "fli_clear_screen"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 167,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O026",
+  "datei": "OVL026.CPP",
+  "sprache": "C++",
+  "bereich": "Helden & Heldenerschaffung",
+  "titel": "Heldenerschaffung: Rahmen",
+  "beschreibung": "Klasse CharGen: Tabellen, Texte und Bilder der Heldenerschaffung, Namenseingabe, Porträtwahl und Prüfung der Eigenschaftsverschiebung.",
+  "funktionen": [
+   "CharGen::CharGen",
+   "CharGen::~CharGen",
+   "chargen_draw_name",
+   "chargen_enter_name",
+   "chargen_draw_portrait",
+   "chargen_select_portrait",
+   "chargen_run",
+   "chargen_redraw"
+  ],
+  "klassen": [
+   "CharGen",
+   "Nvf",
+   "Pic"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   145
+  ],
+  "zeilen": 528,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O027",
+  "datei": "OVL027.CPP",
+  "sprache": "C++",
+  "bereich": "Intro & Abspann",
+  "titel": "Vorspann (Opening)",
+  "beschreibung": "Klasse Opening: Vorspann beim Programmstart mit Titelbild, Musik und Szenen (u. a. Wellen-Effekt). Mit Sprach-CD läuft stattdessen die FLI-Fassung aus O028.",
+  "funktionen": [
+   "Opening::Opening",
+   "Opening::run",
+   "Opening::load_files",
+   "Opening::play",
+   "Opening::scene1",
+   "Opening::scene2",
+   "Opening::scene3",
+   "Opening::waves"
+  ],
+  "klassen": [
+   "Opening"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   172
+  ],
+  "zeilen": 551,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O028",
+  "datei": "OVL028.C",
+  "sprache": "C",
+  "bereich": "Intro & Abspann",
+  "titel": "Vorspann, FLI-Fassung",
+  "beschreibung": "Spielt die FLI-Sequenzen 2 bis 11 des Vorspanns mit Palettenüberblendungen ab.",
+  "funktionen": [
+   "opening_play_fli",
+   "opening_fli_part"
+  ],
+  "klassen": [
+   "Opening"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 104,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O029",
+  "datei": "OVL029.CPP",
+  "sprache": "C++",
+  "bereich": "Dateien & Spielstände",
+  "titel": "Heldendateien",
+  "beschreibung": "Liest, schreibt, kopiert und entfernt Heldensätze in der Heldendatei des Spielstands und in der Sammlung aller erschaffenen Helden.",
+  "funktionen": [
+   "herofile_copy",
+   "savegame_read_hero",
+   "herofile_remove",
+   "hero_delete_chr",
+   "herofile_find",
+   "herofile_write",
+   "herofile_append",
+   "herofile_save"
+  ],
+  "klassen": [
+   "TempFile"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 240,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O030",
+  "datei": "OVL030.CPP",
+  "sprache": "C++",
+  "bereich": "Städte & Orte",
+  "titel": "Ortsverteiler",
+  "beschreibung": "Legt beim Betreten eines Ortes je nach Ortsart das passende Objekt an (Tempel, Schenke, Herberge, Händler, Schmied, Heiler, Lager usw.) und führt es aus.",
+  "funktionen": [
+   "f_0000",
+   "f_0d47",
+   "f_1135",
+   "f_0df9",
+   "f_0b88",
+   "f_0bda",
+   "f_0c60",
+   "f_0cbe"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 704,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O031",
+  "datei": "OVL031.CPP",
+  "sprache": "C++",
+  "bereich": "Städte & Orte",
+  "titel": "Ereignisorte in Lowangen",
+  "beschreibung": "Klasse Ev: Ereignisorte 5 bis 28 der belagerten Stadt Lowangen (Markthalle, Magistrat, Opferschale, Brückenzoll u. a.) mit Gesprächen.",
+  "funktionen": [
+   "Ev::Ev",
+   "Ev::offering_bowl",
+   "Ev::bridge_toll",
+   "Ev::market_hall",
+   "Ev::magistrate",
+   "Ev::eolan",
+   "Ev::house_low49",
+   "Ev::academy"
+  ],
+  "klassen": [
+   "Ev"
+  ],
+  "spieltexte": [
+   "LOWANGEN.LTX",
+   "LOW47..LOW68.TLK",
+   "LOW48.TLK",
+   "LOW47CD.TLK"
+  ],
+  "fehler": [
+   137
+  ],
+  "zeilen": 665,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O032",
+  "datei": "OVL032.CPP",
+  "sprache": "C++",
+  "bereich": "Start & System",
+  "titel": "Programmstart (main)",
+  "beschreibung": "Hauptprogramm: FILES-Prüfung, Speicher, Grafikmodus, Maus und Tastatur, Klangeinstellungen, Vorspann, Wahl des Spielmodus und Start der Hauptschleife.",
+  "funktionen": [
+   "main",
+   "dos_files_total",
+   "init_memory",
+   "check_speech_file",
+   "init_game_state",
+   "disk_free",
+   "free_swap_handles",
+   "game_free_all"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "GLOBLTXT.LTX"
+  ],
+  "fehler": [],
+  "zeilen": 2204,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O033",
+  "datei": "OVL033.CPP",
+  "sprache": "C++",
+  "bereich": "Händler & Dienste",
+  "titel": "Tempelwunder",
+  "beschreibung": "Wunder der 14 Götter im Tempel (wie DSA 1 ask_miracle): Erfolgswurf aus Ansehen und Bonus, dann Heilung, Wiederbelebung, Schutz und andere Gaben.",
+  "funktionen": [
+   "temple_miracle",
+   "miracle_resurrect",
+   "miracle_group_effect",
+   "miracle_heal",
+   "miracle_show_anim"
+  ],
+  "klassen": [
+   "Anim"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   72
+  ],
+  "zeilen": 348,
+  "bright_eyes": "seg062 ask_miracle (DSA 1)"
+ },
+ {
+  "modul": "O034",
+  "datei": "OVL034.CPP",
+  "sprache": "C++",
+  "bereich": "Sonstiges",
+  "titel": "Sammelmodul: Gruppen, Paletten, Bilder",
+  "beschreibung": "Hilfsfunktionen für Gruppen (zusammenführen, trennen), Heldenlisten, Paletten-Überblendungen, Bildschirm sichern und Textblöcke.",
+  "funktionen": [
+   "group_find_mergeable",
+   "hero_file_active",
+   "chr_list_has",
+   "chr_list_remove",
+   "chr_list_collect",
+   "load_text_block",
+   "clear_screen_buf",
+   "pal_fade_out"
+  ],
+  "klassen": [
+   "Bmp"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   207
+  ],
+  "zeilen": 1139,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O035",
+  "datei": "OVL035.CPP",
+  "sprache": "C++",
+  "bereich": "Intro & Abspann",
+  "titel": "Spielende-Sequenz (Finale)",
+  "beschreibung": "Klasse Finale: Titelbild und Szenen des Spielendes mit Paletten-Überblendung und Texten. Mit Sprach-CD läuft das Skript aus O036.",
+  "funktionen": [
+   "Finale::Finale",
+   "Finale::run",
+   "Finale::title",
+   "Finale::scenes",
+   "Finale::scene1",
+   "Finale::scene9",
+   "Finale::fade_wait",
+   "cd_off"
+  ],
+  "klassen": [
+   "Finale"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   221
+  ],
+  "zeilen": 189,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O036",
+  "datei": "OVL036.C",
+  "sprache": "C",
+  "bereich": "Intro & Abspann",
+  "titel": "Spielende, FLI-Skript",
+  "beschreibung": "Spielt die Spielende-Sequenz als Skriptliste gegen einen 10-Hz-Zeitgeber ab: FLI-Animationen, Sprachausgabe und Texte.",
+  "funktionen": [
+   "finale_timer_tick",
+   "finale_play_script",
+   "finale_fli_cb",
+   "finale_show_text"
+  ],
+  "klassen": [
+   "Finale"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 179,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O037",
+  "datei": "OVL037.CPP",
+  "sprache": "C++",
+  "bereich": "Dateien & Spielstände",
+  "titel": "Dateiklasse File",
+  "beschreibung": "Öffnet, liest und sucht Spieldateien, die einzeln oder in einem Archiv (Namenstabelle mit Versatz) liegen.",
+  "funktionen": [
+   "File::File",
+   "File::open",
+   "File::load",
+   "File::read_all",
+   "File::read",
+   "File::write",
+   "File::close",
+   "File::length"
+  ],
+  "klassen": [
+   "File"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   91
+  ],
+  "zeilen": 535,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O038",
+  "datei": "OVL038.CPP",
+  "sprache": "C++",
+  "bereich": "Reise & Karte",
+  "titel": "Reiseobjekt Travel",
+  "beschreibung": "Klasse Travel der Reisekarte: Aufbau, Hauptschleife, Reiseschritte und Verlassen der Karte.",
+  "funktionen": [
+   "Travel::Travel",
+   "travel_main",
+   "Travel::~Travel",
+   "travel_enter",
+   "travel_leave",
+   "travel_step",
+   "travel_arrive",
+   "route_load_points"
+  ],
+  "klassen": [
+   "Travel"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   153
+  ],
+  "zeilen": 497,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O039",
+  "datei": "OVL039.CPP",
+  "sprache": "C++",
+  "bereich": "Intro & Abspann",
+  "titel": "Vorspann mit Sprachausgabe (Intro)",
+  "beschreibung": "Klasse Intro: Vorspann mit Animationen, Untertiteln und Sprachausgabe sowie Palettenüberblendung.",
+  "funktionen": [
+   "Intro::Intro",
+   "pal_crossfade",
+   "Intro::~Intro",
+   "Intro::run"
+  ],
+  "klassen": [
+   "Intro"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 310,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O040",
+  "datei": "OVL040.CPP",
+  "sprache": "C++",
+  "bereich": "Intro & Abspann",
+  "titel": "Bildfolge Anim3",
+  "beschreibung": "Animierte Bildfolge mit Untertiteln und Sprache im Bildausschnitt, angelegt aus O183 und O222.",
+  "funktionen": [
+   "Anim3::Anim3",
+   "Anim3::~Anim3",
+   "Anim3::cue_text",
+   "Anim3::play",
+   "Anim3::run",
+   "Anim3::blank"
+  ],
+  "klassen": [
+   "Anim3"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   125
+  ],
+  "zeilen": 418,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O041",
+  "datei": "OVL041.CPP",
+  "sprache": "C++",
+  "bereich": "Intro & Abspann",
+  "titel": "Abspann (Outro1/Outro2)",
+  "beschreibung": "Zwei Abspannfolgen, jeweils mit und ohne Sprachausgabe.",
+  "funktionen": [
+   "Outro1::Outro1",
+   "Outro1::~Outro1",
+   "Outro2::Outro2",
+   "Outro2::~Outro2",
+   "Outro2::run",
+   "Outro1::run",
+   "Outro2::voice",
+   "Outro1::voice"
+  ],
+  "klassen": [
+   "Outro1",
+   "Outro2"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   190
+  ],
+  "zeilen": 677,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O042",
+  "datei": "OVL042.CPP",
+  "sprache": "C++",
+  "bereich": "Klang",
+  "titel": "Klangobjekt auf dem Miles-Treiber",
+  "beschreibung": "Klasse Sound: Musik und digitale Klänge über die Miles-Bibliothek AIL (R22) laden und abspielen, Lautstärke und Treiberverwaltung.",
+  "funktionen": [
+   "Sound::Sound",
+   "Sound::start",
+   "Sound::timbre",
+   "Sound::load",
+   "Sound::play",
+   "Sound::music",
+   "Sound::timbres",
+   "Speech::set"
+  ],
+  "klassen": [
+   "Sound",
+   "Speech"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   68
+  ],
+  "zeilen": 488,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O043",
+  "datei": "OVL043.CPP",
+  "sprache": "C++",
+  "bereich": "Klang",
+  "titel": "Klangeinstellungen",
+  "beschreibung": "Klasse SndSetup: Wahl von Musik- und Digitaltreiber, Port und IRQ, CD-Audio und Schreiben der Konfigurationsdatei.",
+  "funktionen": [
+   "SndSetup::SndSetup",
+   "SndSetup::run",
+   "SndSetup::show",
+   "SndSetup::music_menu",
+   "SndSetup::digi_menu",
+   "SndSetup::save",
+   "SndSetup::write_driver",
+   "SndSetup::describe"
+  ],
+  "klassen": [
+   "SndSetup",
+   "Sound"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   127
+  ],
+  "zeilen": 459,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O044",
+  "datei": "OVL044.CPP",
+  "sprache": "C++",
+  "bereich": "Händler & Dienste",
+  "titel": "Tempel",
+  "beschreibung": "Klasse Temple: Helden aufnehmen und entlassen, spenden und um Wunder bitten (wie DSA 1 seg061).",
+  "funktionen": [
+   "Temple::Temple",
+   "Temple::~Temple",
+   "temple_is_open",
+   "temple_desecrate",
+   "temple_run",
+   "temple_talk",
+   "temple_add_heroes",
+   "temple_dismiss_heroes"
+  ],
+  "klassen": [
+   "Temple"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 488,
+  "bright_eyes": "seg061 do_temple, char_add, char_letgo, char_erase (DSA 1)"
+ },
+ {
+  "modul": "O045",
+  "datei": "OVL045.C",
+  "sprache": "C",
+  "bereich": "Intro & Abspann",
+  "titel": "Hüllen zur Spielende-Sequenz",
+  "beschreibung": "Legt das Finale-Objekt aus O035 lokal an und spielt es ab. Dazu ani_halt und drei leere Funktionen.",
+  "funktionen": [
+   "o045_ani_halt",
+   "finale_play",
+   "o045_stub_1",
+   "o045_stub_2",
+   "o045_stub_3"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 34,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O046",
+  "datei": "OVL046.CPP",
+  "sprache": "C++",
+  "bereich": "Städte & Orte",
+  "titel": "Hauptschleife der Stadtansicht",
+  "beschreibung": "Ein Durchlauf der 3D-Ansicht in Städten: Musik, Bilder, Symbolleiste, Tageszeit, Menü und Überfälle. Gegenstück zu O014.",
+  "funktionen": [
+   "town_main",
+   "town_cache_files",
+   "town_load",
+   "town_update_icons",
+   "town_daytime_cells",
+   "town_action",
+   "town_mugging",
+   "town_random_event"
+  ],
+  "klassen": [
+   "SaveMenu"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   184
+  ],
+  "zeilen": 862,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O047",
+  "datei": "OVL047.CPP",
+  "sprache": "C++",
+  "bereich": "Gegenstände",
+  "titel": "Gegenstand benutzen (ItemUse)",
+  "beschreibung": "Klasse ItemUse: Gegenstände benutzen und kombinieren, Bücher lesen, Waffen vergiften.",
+  "funktionen": [
+   "ItemUse::ItemUse",
+   "ItemUse::use",
+   "ItemUse::combine",
+   "ItemUse::use_arcano",
+   "ItemUse::use_armatrutz",
+   "ItemUse::use_flim_flam",
+   "ItemUse::use_ignifaxius",
+   "ItemUse::read_text"
+  ],
+  "klassen": [
+   "Cast",
+   "ItemUse"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   169
+  ],
+  "zeilen": 394,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O048",
+  "datei": "OVL048.CPP",
+  "sprache": "C++",
+  "bereich": "Gegenstände",
+  "titel": "Gegenstand benutzen, Sonderfälle",
+  "beschreibung": "Weitere ItemUse-Methoden: Schlüsselbund, Rezeptbuch, Questgegenstände, Ladungen und Kombinationen.",
+  "funktionen": [
+   "ItemUse::use_keyring",
+   "ItemUse::use_quest_items",
+   "ItemUse::quest_anim",
+   "ItemUse::maintain_weapons",
+   "ItemUse::combo_index",
+   "ItemUse::in_recipe_book",
+   "ItemUse::on_keyring",
+   "item_anim_cb"
+  ],
+  "klassen": [
+   "ItemUse"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   14,
+   15
+  ],
+  "zeilen": 384,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O049",
+  "datei": "OVL049.CPP",
+  "sprache": "C++",
+  "bereich": "Dialoge & Tagebuch",
+  "titel": "Gesprächsführung",
+  "beschreibung": "Gespräche mit Personen: Skript laden, Themenmenü, Antworten und Abschluss. Weitere Methoden in O257.",
+  "funktionen": [
+   "Conv::run",
+   "Conv::print",
+   "Conv::mark_topic",
+   "Conv::ask",
+   "Conv::draw_topics",
+   "Conv::draw",
+   "Conv::random_text",
+   "Conv::clear_new"
+  ],
+  "klassen": [
+   "Conv"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 556,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O050",
+  "datei": "OVL050.CPP",
+  "sprache": "C++",
+  "bereich": "Grafik & Animation",
+  "titel": "Animations-Abspieler",
+  "beschreibung": "Takten, Bildwechsel, Laden und Entpacken der Einzelbilder des Animationsobjekts Anim (Klasse aus O051).",
+  "funktionen": [
+   "Anim::tick",
+   "Anim::running",
+   "Anim::load",
+   "Anim::load_frame",
+   "Anim::unpack",
+   "Anim::advance",
+   "Anim::max_frame_size",
+   "Anim::load_pal"
+  ],
+  "klassen": [
+   "Anim"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   141
+  ],
+  "zeilen": 452,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O051",
+  "datei": "OVL051.CPP",
+  "sprache": "C++",
+  "bereich": "Grafik & Animation",
+  "titel": "Animationsobjekt Anim",
+  "beschreibung": "Klasse Anim mit Palette und zwei Bildobjekten: Konstruktor, Destruktor, Puffer, Start, Stopp und Warteschleifen.",
+  "funktionen": [
+   "Anim::Anim",
+   "Anim::size",
+   "Anim::area",
+   "Anim::frame_size",
+   "Anim::rect",
+   "Anim::pal_set",
+   "Anim::setbuf",
+   "Anim::setbg"
+  ],
+  "klassen": [
+   "Anim"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 197,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O052",
+  "datei": "OVL052.CPP",
+  "sprache": "C++",
+  "bereich": "Reise & Karte",
+  "titel": "Automap (Kartenobjekt)",
+  "beschreibung": "Klasse Automap: Kartenbild aus Kacheln, Zoom, Notizen am Kartenrand und der Spielstandblock AMAP.",
+  "funktionen": [
+   "Automap::Automap",
+   "Automap::load_cells",
+   "Automap::load",
+   "Automap::open",
+   "Automap::set_town_type",
+   "Automap::save",
+   "Automap::run",
+   "Automap::~Automap"
+  ],
+  "klassen": [
+   "Automap",
+   "Bmp"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   208
+  ],
+  "zeilen": 1126,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O053",
+  "datei": "OVL053.CPP",
+  "sprache": "C++",
+  "bereich": "Reise & Karte",
+  "titel": "Automap: Reisen per Klick",
+  "beschreibung": "Weitere Automap-Methoden: Reisen zum angeklickten Feld mit Wegsuche (Breitensuche) und Wegverfolgung.",
+  "funktionen": [
+   "Automap::nop",
+   "Automap::travel",
+   "Automap::path_search",
+   "Automap::path_trace",
+   "Automap::random_cell",
+   "Automap::cell_read",
+   "Automap::cell_write",
+   "Automap::init"
+  ],
+  "klassen": [
+   "Automap"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   22
+  ],
+  "zeilen": 355,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O054",
+  "datei": "OVL054.CPP",
+  "sprache": "C++",
+  "bereich": "Grafik & Animation",
+  "titel": "Hintergrundanimationen abspielen",
+  "beschreibung": "Spielt die Teilanimationen eines Hintergrundbildes ab (Varianten, Phasen, Ping-Pong, Masken). Laden in O055.",
+  "funktionen": [
+   "Ani::select_variant",
+   "Ani::reset",
+   "anim_sound",
+   "Ani::load_pic",
+   "Ani::tick",
+   "Ani::load_reset",
+   "Ani::load_variant",
+   "Ani::free_all"
+  ],
+  "klassen": [
+   "Ani",
+   "Bmp"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   92
+  ],
+  "zeilen": 360,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O055",
+  "datei": "OVL055.CPP",
+  "sprache": "C++",
+  "bereich": "Grafik & Animation",
+  "titel": "Hintergrundanimationen laden",
+  "beschreibung": "Konstruktion und Laden des Animationsobjekts Ani aus dem Archiv (Gegenstück zu Bright Eyes load_ani), Palette und Lage.",
+  "funktionen": [
+   "Ani::Ani",
+   "Ani::load",
+   "Ani::~Ani",
+   "Ani::clear",
+   "Ani::pal_black",
+   "Ani::set_pal",
+   "Ani::set_pos",
+   "Ani::set_pal_size"
+  ],
+  "klassen": [
+   "Ani"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   195
+  ],
+  "zeilen": 535,
+  "bright_eyes": "seg027 load_ani (DSA 1)"
+ },
+ {
+  "modul": "O056",
+  "datei": "OVL056.C",
+  "sprache": "C",
+  "bereich": "Oberfläche (Fenster/Dialoge/Eingabe)",
+  "titel": "Grammatik der Namen",
+  "beschreibung": "Artikel, Plural- und Kasusendungen sowie Pronomen für Gegenstands- und Monsternamen (wie DSA 1 seg096).",
+  "funktionen": [
+   "grammar_article",
+   "grammar_plural",
+   "grammar_name",
+   "grammar_pronoun_of",
+   "grammar_pronoun",
+   "grammar_def_article"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 265,
+  "bright_eyes": "seg096 GUI_names_grammar, GUI_name_plural, GUI_name_singular, GUI_get_ptr (DSA 1)"
+ },
+ {
+  "modul": "O057",
+  "datei": "OVL057.CPP",
+  "sprache": "C++",
+  "bereich": "Oberfläche (Fenster/Dialoge/Eingabe)",
+  "titel": "Balkenanzeigen",
+  "beschreibung": "Klasse Bars: LE- und AE-Balken in Porträtleiste und Kampf, Hunger- und Durstbalken im Heldenbogen (ab 100 blinkend).",
+  "funktionen": [
+   "Bars::Bars",
+   "Bars::draw",
+   "Bars::tick"
+  ],
+  "klassen": [
+   "Bars"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 135,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O058",
+  "datei": "OVL058.CPP",
+  "sprache": "C++",
+  "bereich": "Gruppe & Inventar",
+  "titel": "Helden für Aufgaben vorwählen",
+  "beschreibung": "Wählt für Proben den passenden Helden vor (bestes Talent, beste Eigenschaft, Gewandtheit, Jäger u. a.).",
+  "funktionen": [
+   "dlg_preselect",
+   "preselect_best_skill",
+   "preselect_best_attrib",
+   "preselect_hero",
+   "preselect_agile_hero",
+   "preselect_hunter",
+   "preselect_for_task"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   10
+  ],
+  "zeilen": 246,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O059",
+  "datei": "OVL059.CPP",
+  "sprache": "C++",
+  "bereich": "Dungeons",
+  "titel": "Gemeinsame Binge-Ereignisse",
+  "beschreibung": "Ereignisse, die in mehreren Binge-Dungeons (10 bis 16) vorkommen: Wandöffnungen, Kaminschacht und weitere.",
+  "funktionen": [
+   "binge_wall_hole",
+   "binge_shaft",
+   "binge_shaft_up",
+   "binge_shaft_down",
+   "binge_has_rope"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "BINGE.LTX"
+  ],
+  "fehler": [],
+  "zeilen": 367,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O060",
+  "datei": "OVL060.CPP",
+  "sprache": "C++",
+  "bereich": "Dungeons",
+  "titel": "Zwergenbinge (Dungeon 10): Kartenverteiler",
+  "beschreibung": "Kartenereignis-Verteiler des Dungeons 10: Felder, Türen, Treppen und Sonderfälle. Die Ereignisse selbst stehen meist in O000.",
+  "funktionen": [
+   "dng10_handler",
+   "dng10_door",
+   "dng10_coal_basin",
+   "dng10_coal_basin_plain",
+   "dng10_portal_enter",
+   "dng10_portal_leave",
+   "dng10_skeleton",
+   "dng10_ingerimm_statue"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "BINGE2.LTX"
+  ],
+  "fehler": [
+   143
+  ],
+  "zeilen": 609,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O061",
+  "datei": "OVL061.CPP",
+  "sprache": "C++",
+  "bereich": "Dungeons",
+  "titel": "Binge (Dungeon 11), Teil 1",
+  "beschreibung": "Kartenverteiler und Ereignisse des Dungeons 11 mit Bolzenfallen, Fallblock, Hebel und Koboldwohnung. Fortsetzung in O062.",
+  "funktionen": [
+   "dng11_handler",
+   "dng11_pressure_plate",
+   "dng11_bolt_trap",
+   "dng11_block_falls",
+   "dng11_door",
+   "dng11_lever_switch",
+   "dng11_winch",
+   "dng11_bolt_trap_found"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "BINGE3.LTX"
+  ],
+  "fehler": [
+   133
+  ],
+  "zeilen": 576,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O062",
+  "datei": "OVL062.CPP",
+  "sprache": "C++",
+  "bereich": "Dungeons",
+  "titel": "Binge (Dungeon 11), Teil 2",
+  "beschreibung": "Einsturz unter dem Hebel, Grubenrampe und die Koboldwohnung mit dem Kobold Mumpitz.",
+  "funktionen": [
+   "dng11_lever_floor",
+   "dng11_ramp_climb",
+   "dng11_plate",
+   "dng11_wardrobe",
+   "dng11_kobold_chest",
+   "dng11_kobold",
+   "dng11_kobold_soften_weapons",
+   "dng11_kobold_gift"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "BINGE3.LTX"
+  ],
+  "fehler": [
+   89
+  ],
+  "zeilen": 427,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O063",
+  "datei": "OVL063.CPP",
+  "sprache": "C++",
+  "bereich": "Dungeons",
+  "titel": "Binge-Stollen (Dungeon 12), Teil 1",
+  "beschreibung": "Ereignisse des Dungeons 12 mit Lorenbahn, Latrine, Werkzeugwand und morschen Balken. Fortsetzung in O064.",
+  "funktionen": [
+   "dng12_handler",
+   "dng12_cart_ride",
+   "dng12_latrine",
+   "dng12_tool_wall",
+   "dng12_door",
+   "dng12_skeleton_fight",
+   "dng12_skeleton",
+   "dng12_mine_cart"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "BINGE4.LTX"
+  ],
+  "fehler": [
+   114,
+   115
+  ],
+  "zeilen": 611,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O064",
+  "datei": "OVL064.CPP",
+  "sprache": "C++",
+  "bereich": "Dungeons",
+  "titel": "Binge-Stollen (Dungeon 12), Teil 2",
+  "beschreibung": "Hebel, Grube mit Sprung und Seil, Zwergengrab und Schutt im Dungeon 12.",
+  "funktionen": [
+   "dng12_lever",
+   "dng12_pit",
+   "dng12_pit_recover",
+   "dng12_pit_jump",
+   "dng12_altar_inscription",
+   "dng12_dwarf_grave",
+   "dng12_dig_rubble",
+   "dng12_dig_collapse"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "BINGE4.LTX"
+  ],
+  "fehler": [
+   151
+  ],
+  "zeilen": 556,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O065",
+  "datei": "OVL065.CPP",
+  "sprache": "C++",
+  "bereich": "Dungeons",
+  "titel": "Binge mit Feuerschlund (Dungeon 13)",
+  "beschreibung": "Kartenverteiler und Ereignisse des Dungeons 13 mit Lavaschacht, Wasserrad und Pelzwänden.",
+  "funktionen": [
+   "dng13_handler",
+   "dng13_ambush",
+   "dng13_wheel",
+   "dng13_wash",
+   "dng13_door",
+   "dng13_lava_shaft",
+   "dng13_fur_wall_cold",
+   "dng13_salt_seam"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "BINGE5.LTX"
+  ],
+  "fehler": [
+   140
+  ],
+  "zeilen": 571,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O066",
+  "datei": "OVL066.C",
+  "sprache": "C",
+  "bereich": "Dungeons",
+  "titel": "Binge mit Wasserbecken (Dungeons 14/15)",
+  "beschreibung": "Kartenverteiler und Ereignisse der Binge-Ebene mit dem großen Wasserbecken, voll oder leer je nach Wasserrad.",
+  "funktionen": [
+   "dng14_handler",
+   "dng14_wash",
+   "dng14_swim",
+   "dng14_dive",
+   "dng14_floor_plate"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "BINGE6.LTX"
+  ],
+  "fehler": [],
+  "zeilen": 304,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O067",
+  "datei": "OVL067.CPP",
+  "sprache": "C++",
+  "bereich": "Ereignisse unterwegs",
+  "titel": "Nächtliche Begegnungen im Lager",
+  "beschreibung": "Kämpfe und Besucher am Lagerfeuer während der Rast unterwegs, Gegner je nach Gebiet.",
+  "funktionen": [
+   "camp_encounter",
+   "camp_visitor",
+   "camp_visitor_type",
+   "camp_reveal_area",
+   "camp_place_set_dir"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "CAMP.LTX"
+  ],
+  "fehler": [
+   142
+  ],
+  "zeilen": 445,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O068",
+  "datei": "OVL068.CPP",
+  "sprache": "C++",
+  "bereich": "Händler & Dienste",
+  "titel": "Einkauf beim fahrenden Händler",
+  "beschreibung": "Kaufbildschirm des fahrenden Händlers mit Warenkorb, Raster und Blättern (Gegenstück zu O228).",
+  "funktionen": [
+   "peddler_buy_screen",
+   "peddler_buy_draw_money",
+   "peddler_grid_mark",
+   "peddler_buy_draw_grid",
+   "peddler_buy_draw_item",
+   "peddler_buy_sum",
+   "peddler_format_money",
+   "peddler_buy_draw_weight"
+  ],
+  "klassen": [
+   "Peddler"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   128
+  ],
+  "zeilen": 404,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O069",
+  "datei": "OVL069.CPP",
+  "sprache": "C++",
+  "bereich": "Händler & Dienste",
+  "titel": "Fahrender Händler",
+  "beschreibung": "Klasse Peddler: Warenliste, Sortieren, Feilschen und Rabatt beim fahrenden Händler.",
+  "funktionen": [
+   "Peddler::Peddler",
+   "Peddler::~Peddler",
+   "Peddler::run",
+   "Peddler::build_wares",
+   "Peddler::add_ware",
+   "Peddler::trade",
+   "Peddler::grid_input"
+  ],
+  "klassen": [
+   "Peddler"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   20,
+   21,
+   24
+  ],
+  "zeilen": 280,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O070",
+  "datei": "OVL070.CPP",
+  "sprache": "C++",
+  "bereich": "Händler & Dienste",
+  "titel": "Rasthaus",
+  "beschreibung": "Klasse Lodging: Essen und Übernachten im Rasthaus mit Preisaufschlag und Hausverbot.",
+  "funktionen": [
+   "Lodging::Lodging",
+   "Lodging::is_open",
+   "Lodging::run",
+   "Lodging::ask_price",
+   "Lodging::eat",
+   "Lodging::sleep",
+   "Lodging::pay",
+   "Lodging::~Lodging"
+  ],
+  "klassen": [
+   "Lodging"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 147,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O071",
+  "datei": "OVL071.CPP",
+  "sprache": "C++",
+  "bereich": "Gruppe & Inventar",
+  "titel": "Rastplatz und Lager",
+  "beschreibung": "Klasse Camp: Rast mit Wachen, Proviant- und Kräutersuche, Essen und Trinken.",
+  "funktionen": [
+   "Camp::Camp",
+   "Camp::run",
+   "Camp::rest_jobs",
+   "Camp::~Camp",
+   "Camp::menu_wild",
+   "Camp::menu_rest",
+   "Camp::menu_jobs",
+   "Camp::use_skill"
+  ],
+  "klassen": [
+   "Camp"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   193
+  ],
+  "zeilen": 826,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O072",
+  "datei": "OVL072.CPP",
+  "sprache": "C++",
+  "bereich": "Gruppe & Inventar",
+  "titel": "Lager und Rast unterwegs",
+  "beschreibung": "Rast unterwegs: Gegnergruppen, Wachen, Überfall, Diebstahl und Regeneration.",
+  "funktionen": [
+   "camp_set_foes",
+   "camp_night_encounter",
+   "camp_use_magic",
+   "camp_group_menu",
+   "camp_other_group_near",
+   "camp_rest",
+   "camp_wake_up",
+   "camp_regenerate"
+  ],
+  "klassen": [
+   "Camp"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   191
+  ],
+  "zeilen": 844,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O073",
+  "datei": "OVL073.CPP",
+  "sprache": "C++",
+  "bereich": "Ereignisse unterwegs",
+  "titel": "Besucher am Lagerfeuer",
+  "beschreibung": "Die vier Besucher am Lagerfeuer (Gaukler, Druide, Streuner, Jäger) mit Fragen und Folgen.",
+  "funktionen": [
+   "camp_visitor_vagabond",
+   "camp_visitor_hunter",
+   "camp_visitor_druid",
+   "camp_visitor_juggler"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "CAMP.LTX"
+  ],
+  "fehler": [],
+  "zeilen": 445,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O074",
+  "datei": "OVL074.CPP",
+  "sprache": "C++",
+  "bereich": "Helden & Heldenerschaffung",
+  "titel": "Heldenfunktionen: Geld, LE/AE, Regeneration",
+  "beschreibung": "Geldbeträge anzeigen, Heldenauswahl, Helden zählen, Gift und Krankheit, Schlaf und Regeneration, Alchimie.",
+  "funktionen": [
+   "money_to_string",
+   "select_from_list",
+   "get_free_hero_slot",
+   "count_heroes_check2",
+   "count_heroes",
+   "check_heroes_down",
+   "find_hero_with_item",
+   "sub_ae_max"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 546,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O075",
+  "datei": "OVL075.CPP",
+  "sprache": "C++",
+  "bereich": "Gruppe & Inventar",
+  "titel": "Gruppenverwaltung",
+  "beschreibung": "Gruppen bilden, teilen, vereinen und wechseln, Helden tauschen (wie DSA 1 seg049).",
+  "funktionen": [
+   "make_group",
+   "grp_split",
+   "groups_merge",
+   "grp_choose",
+   "grp_menu_entry",
+   "grp_select",
+   "group_switch_next",
+   "swap_heroes_dialog"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   61,
+   62,
+   219
+  ],
+  "zeilen": 423,
+  "bright_eyes": "seg049 GRP_split, GRP_merge, GRP_switch_to_next, GRP_swap_heroes, GRP_move_hero (DSA 1)"
+ },
+ {
+  "modul": "O076",
+  "datei": "OVL076.CPP",
+  "sprache": "C++",
+  "bereich": "Helden & Heldenerschaffung",
+  "titel": "Heldenwerte: Genitiv, LE/AE, Proben",
+  "beschreibung": "Heldenname im Genitiv, LE und AE abziehen oder hinzufügen, Proben, Magieresistenz und Porträt laden.",
+  "funktionen": [
+   "hero_name_gen",
+   "is_hero_available_in_group",
+   "sub_ae_splash",
+   "add_hero_ae",
+   "sub_hero_le",
+   "hunger_thirst_damage",
+   "add_hero_le",
+   "test_attrib"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   65
+  ],
+  "zeilen": 397,
+  "bright_eyes": "Teile von seg002/seg047 (DSA 1)"
+ },
+ {
+  "modul": "O077",
+  "datei": "OVL077.C",
+  "sprache": "C",
+  "bereich": "Helden & Heldenerschaffung",
+  "titel": "Heldenfunktionen: BP, Eigenschaften, AT/PA",
+  "beschreibung": "Bewegungspunkte, Eigenschaften ändern, AT/PA-Werte und weitere Heldenfunktionen.",
+  "funktionen": [
+   "calc_bp",
+   "change_attrib_normal",
+   "change_attrib",
+   "set_attrib",
+   "hero_at",
+   "hero_pa",
+   "hero_at_weapon",
+   "hero_pa_weapon"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 374,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O078",
+  "datei": "OVL078.CPP",
+  "sprache": "C++",
+  "bereich": "Gegenstände",
+  "titel": "Truhen",
+  "beschreibung": "Klasse Chest: Truhen mit Fallen öffnen, Inhalt und Geld nehmen.",
+  "funktionen": [
+   "Chest::Chest",
+   "Chest::trap_2w6",
+   "Chest::special_quest",
+   "Chest::trap_poison",
+   "Chest::special_key",
+   "Chest::init",
+   "Chest::try_open",
+   "Chest::show_msg"
+  ],
+  "klassen": [
+   "Chest",
+   "Lock"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   123
+  ],
+  "zeilen": 447,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O079",
+  "datei": "OVL079.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Kampf: Held wählen, Waffenschaden",
+  "beschreibung": "Nächsten Helden im Kampf wählen und Waffenschaden berechnen (wie DSA 1 seg041), dazu der Zauber Arax.",
+  "funktionen": [
+   "fig_choose_next_hero",
+   "fig_get_first_active_hero",
+   "hero_attack_damage",
+   "hero_is_inactive"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   213
+  ],
+  "zeilen": 302,
+  "bright_eyes": "seg041 FIG_choose_next_hero, FIG_get_first_active_hero, FIG_get_hero_weapon_attack_damage (DSA 1)"
+ },
+ {
+  "modul": "O080",
+  "datei": "OVL080.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Heldenzustände im Kampf",
+  "beschreibung": "Zählt handlungsfähige Helden, Rundenbeginn mit Aktionen und BP, Flucht und Statusbits.",
+  "funktionen": [
+   "count_heroes_except",
+   "count_heroes_in_fight",
+   "scared_hero_fled",
+   "fight_round_heroes",
+   "fight_end_heroes",
+   "set_asleep",
+   "group_set_fb5",
+   "group_set_fb6_b0"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 236,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O081",
+  "datei": "OVL081.CPP",
+  "sprache": "C++",
+  "bereich": "Helden & Heldenerschaffung",
+  "titel": "Krankheiten",
+  "beschreibung": "Schreibt die sieben Krankheiten eines Helden täglich fort (wie DSA 1 disease_effect) mit Schaden, Eigenschaftsverlust und Ansteckung.",
+  "funktionen": [
+   "disease_effect"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   154
+  ],
+  "zeilen": 305,
+  "bright_eyes": "seg119 disease_effect (DSA 1)"
+ },
+ {
+  "modul": "O082",
+  "datei": "OVL082.CPP",
+  "sprache": "C++",
+  "bereich": "Helden & Heldenerschaffung",
+  "titel": "Tollwut-Anfall eines Helden",
+  "beschreibung": "Tollwütiger Held ab Tag 3: niederschlagen, beruhigen oder per Zauber besänftigen, danach Heilversuch, sonst beißt er die Gruppe.",
+  "funktionen": [
+   "rabies_effect"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   215
+  ],
+  "zeilen": 116,
+  "bright_eyes": "seg120 rabies (DSA 1)"
+ },
+ {
+  "modul": "O083",
+  "datei": "OVL083.CPP",
+  "sprache": "C++",
+  "bereich": "Gruppe & Inventar",
+  "titel": "Inventar: verschieben, stapeln, Boni",
+  "beschreibung": "Inventar der Helden: Nahrung und Getränke suchen, verschieben, stapeln, Ausrüstungsboni und Auswahlliste (wie DSA 1 seg105/106).",
+  "funktionen": [
+   "move_item",
+   "can_item_at_pos",
+   "two_hand_collision",
+   "add_equip_boni",
+   "unequip",
+   "has_hero_equipped",
+   "has_hero_stacked",
+   "loose_random_item"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 596,
+  "bright_eyes": "seg105/seg106 move_item, can_item_at_pos, two_hand_collision, add_equip_boni, unequip (DSA 1)"
+ },
+ {
+  "modul": "O084",
+  "datei": "OVL084.CPP",
+  "sprache": "C++",
+  "bereich": "Gegenstände",
+  "titel": "Gegenstandsbeschreibung, Bruch, Startausrüstung",
+  "beschreibung": "Beschreibung eines Gegenstands im Heldenbogen, Bruch von Waffen und die Startausrüstung neuer Helden.",
+  "funktionen": [
+   "print_item_description",
+   "hero_weapon_state",
+   "hero_add_rs_lost",
+   "hero_add_inv_f10",
+   "hero_mark_weapon",
+   "startup_equipment",
+   "hero_weapon_type2",
+   "hero_weapon_type"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   201
+  ],
+  "zeilen": 431,
+  "bright_eyes": "seg105/seg106 (DSA 1)"
+ },
+ {
+  "modul": "O085",
+  "datei": "OVL085.CPP",
+  "sprache": "C++",
+  "bereich": "Gruppe & Inventar",
+  "titel": "Inventar: bewegen, ablegen, geben",
+  "beschreibung": "Gegenstände zwischen Helden bewegen, tauschen, ablegen und neu vergeben, mit Last- und Platzprüfung.",
+  "funktionen": [
+   "pass_item",
+   "drop_item",
+   "give_hero_new_item",
+   "give_item_at",
+   "hero_take_key"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   185
+  ],
+  "zeilen": 478,
+  "bright_eyes": "seg105/seg106 pass_item, drop_item (DSA 1)"
+ },
+ {
+  "modul": "O086",
+  "datei": "OVL086.CPP",
+  "sprache": "C++",
+  "bereich": "Helden & Heldenerschaffung",
+  "titel": "Stufenanstieg",
+  "beschreibung": "Klasse Lvl: Eigenschaften, Talente und Zauber beim Stufenanstieg steigern, auch automatisch.",
+  "funktionen": [
+   "Lvl::run",
+   "Lvl::redraw",
+   "Lvl::inc_attrib",
+   "Lvl::dec_attrib",
+   "Lvl::inc_le",
+   "Lvl::inc_mr",
+   "Lvl::auto_skills",
+   "Lvl::auto_spells"
+  ],
+  "klassen": [
+   "Lvl"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   161
+  ],
+  "zeilen": 528,
+  "bright_eyes": "seg050 Stufenanstieg (DSA 1)"
+ },
+ {
+  "modul": "O087",
+  "datei": "OVL087.CPP",
+  "sprache": "C++",
+  "bereich": "Helden & Heldenerschaffung",
+  "titel": "Steigern von Talenten und Zaubern",
+  "beschreibung": "Steigerungsversuche für Talente und Zauber mit Grenzen und Zählern, manuell und automatisch.",
+  "funktionen": [
+   "can_inc_skills",
+   "can_inc_spells",
+   "Lvl::inc_spell",
+   "Lvl::inc_skill",
+   "Lvl::inc_skill_auto",
+   "Lvl::inc_spell_auto"
+  ],
+  "klassen": [
+   "Lvl"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   2
+  ],
+  "zeilen": 207,
+  "bright_eyes": "inc_spell_advanced, inc_skill_advanced, inc_*_novice (DSA 1)"
+ },
+ {
+  "modul": "O088",
+  "datei": "OVL088.CPP",
+  "sprache": "C++",
+  "bereich": "Gruppe & Inventar",
+  "titel": "Helden suchen und auswählen",
+  "beschreibung": "Rund 40 Funktionen, die Helden einer Gruppe suchen, zufällig wählen oder per Liste auswählen.",
+  "funktionen": [
+   "get_random_alive_hero",
+   "get_random_hero",
+   "get_random_hero2",
+   "get_random_asleep_hero",
+   "get_first_active_hero",
+   "get_first_hero",
+   "get_second_active_hero",
+   "get_most_wounded_hero"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   171
+  ],
+  "zeilen": 724,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O089",
+  "datei": "OVL089.CPP",
+  "sprache": "C++",
+  "bereich": "Helden & Heldenerschaffung",
+  "titel": "Giftwirkung",
+  "beschreibung": "Wirkung der neun Gifte auf einen Helden (wie DSA 1 poison_effect).",
+  "funktionen": [
+   "poison_effect"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   138
+  ],
+  "zeilen": 295,
+  "bright_eyes": "seg121 poison_effect (DSA 1)"
+ },
+ {
+  "modul": "O090",
+  "datei": "OVL090.CPP",
+  "sprache": "C++",
+  "bereich": "Helden & Heldenerschaffung",
+  "titel": "Heilkunde, Alchimie, Schätzen",
+  "beschreibung": "Talentanwendungen Heilkunde Gift und Krankheiten, Heilkräuter, Alchimie und Schätzen (wie DSA 1 seg103/104).",
+  "funktionen": [
+   "skill_cure_disease",
+   "has_herb_for_disease",
+   "plan_alchemy",
+   "skill_cure_poison",
+   "money_to_rough_string",
+   "skill_appraise"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   152
+  ],
+  "zeilen": 419,
+  "bright_eyes": "seg103/seg104 skill_cure_disease, has_herb_for_disease, plan_alchemy (DSA 1)"
+ },
+ {
+  "modul": "O091",
+  "datei": "OVL091.CPP",
+  "sprache": "C++",
+  "bereich": "Magie",
+  "titel": "Magie: Menü, Zauberprobe, Zaubern",
+  "beschreibung": "Menü Meditation, Zaubern und Stabzauber, Zauberauswahl und Zauberprobe (wie DSA 1 seg098).",
+  "funktionen": [
+   "use_magic",
+   "use_spell",
+   "can_use_spellclass",
+   "select_spell",
+   "test_spell"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   110,
+   220
+  ],
+  "zeilen": 369,
+  "bright_eyes": "seg098 Magie (DSA 1)"
+ },
+ {
+  "modul": "O092",
+  "datei": "OVL092.CPP",
+  "sprache": "C++",
+  "bereich": "Gegenstände",
+  "titel": "Hüllen für Gegenstand benutzen",
+  "beschreibung": "Kleine Hüllen um ein lokales ItemUse-Objekt (benutzen, kombinieren, verzehren) und der Bitzugriff auf Kräuterfächer.",
+  "funktionen": [
+   "use_item",
+   "combine_items",
+   "hero_consume_item",
+   "box_has",
+   "box_set"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 65,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O093",
+  "datei": "OVL093.CPP",
+  "sprache": "C++",
+  "bereich": "Gruppe & Inventar",
+  "titel": "Heldenbogen: Seitenmenüs",
+  "beschreibung": "Menüs der Heldenbogen-Seiten, Heldenwechsel, Zauberanzeige und Porträt neu wählen.",
+  "funktionen": [
+   "inv_switch_hero",
+   "inv_draw_spell",
+   "select_portrait",
+   "inv_menu_page1",
+   "inv_menu_page2",
+   "inv_menu_page3",
+   "inv_menu_page45"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   148
+  ],
+  "zeilen": 400,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O094",
+  "datei": "OVL094.CPP",
+  "sprache": "C++",
+  "bereich": "Gruppe & Inventar",
+  "titel": "Heldenbogen: Seiten zeichnen",
+  "beschreibung": "Zeichnet die Seiten des Heldenbogens: Eigenschaften, Kampfwerte, Talente, Zauber und Gepäck.",
+  "funktionen": [
+   "Inv::draw_page1",
+   "Inv::draw_page2",
+   "Inv::draw_page3",
+   "Inv::draw_page4",
+   "Inv::draw_page5",
+   "Inv::draw_inventory",
+   "Inv::draw_body_slots",
+   "Inv::knapsack_open"
+  ],
+  "klassen": [
+   "Inv",
+   "Nvf"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 282,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O095",
+  "datei": "OVL095.C",
+  "sprache": "C",
+  "bereich": "Gruppe & Inventar",
+  "titel": "Heldenbogen: Hauptschleife",
+  "beschreibung": "Hauptschleife des Heldenbogens mit Tasten und Maus, Umbenennen, Ablegen und Texten zu Gift und Krankheit.",
+  "funktionen": [
+   "hero_sheet_loop",
+   "inv_poll_input",
+   "rename_hero",
+   "inv_draw_skill",
+   "inv_draw_skills",
+   "inv_redraw"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 352,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O096",
+  "datei": "OVL096.C",
+  "sprache": "C",
+  "bereich": "Grafik & Animation",
+  "titel": "3D-Ansicht: Puffer und Paletten",
+  "beschreibung": "Legt Puffer und Tabellen der 3D-Ansicht an, Sternfeld, Schattierung und Suche der nächsten Palettenfarbe.",
+  "funktionen": [
+   "view_alloc_lists",
+   "view_alloc",
+   "view_free_lists",
+   "view_leave",
+   "obj3d_free",
+   "view_alloc_face_list",
+   "obj3d_alloc",
+   "view_load_vis_order"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   16,
+   17
+  ],
+  "zeilen": 331,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O097",
+  "datei": "OVL097.CPP",
+  "sprache": "C++",
+  "bereich": "Grafik & Animation",
+  "titel": "3D-Objekte laden",
+  "beschreibung": "Lädt die 3D-Objekte und Texturen einer Stadt oder eines Dungeons, Bild-Cache und verschlüsselte Objektdateien.",
+  "funktionen": [
+   "view_load_objects",
+   "obj_load",
+   "view_load_dng_objects",
+   "tex_load",
+   "tex_get",
+   "obj_read_string",
+   "obj_read",
+   "o097_nop"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   202
+  ],
+  "zeilen": 368,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O098",
+  "datei": "OVL098.CPP",
+  "sprache": "C++",
+  "bereich": "Grafik & Animation",
+  "titel": "NVF-Bildklasse",
+  "beschreibung": "Klasse Nvf: Bilder aus NVF-Dateien laden und entpacken (PP20, RLE) samt Palette.",
+  "funktionen": [
+   "Nvf::Nvf",
+   "Nvf::set",
+   "Nvf::load",
+   "Nvf::process",
+   "Nvf::info",
+   "Nvf::count",
+   "Nvf::pal",
+   "Nvf::dims"
+  ],
+  "klassen": [
+   "Nvf"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   9
+  ],
+  "zeilen": 288,
+  "bright_eyes": "process_nvf (DSA 1)"
+ },
+ {
+  "modul": "O099",
+  "datei": "OVL099.CPP",
+  "sprache": "C++",
+  "bereich": "Händler & Dienste",
+  "titel": "Lagerhaus: einlagern",
+  "beschreibung": "Gegenstände der Helden im Lagerhaus einlagern, mit Auswahl je Held, Gebühr und Wertermittlung (Gegenstück zu O100).",
+  "funktionen": [
+   "store_deposit",
+   "store_deposit_check",
+   "store_deposit_draw_grid",
+   "store_deposit_commit",
+   "store_deposit_draw_item",
+   "store_deposit_fill",
+   "store_deposit_mark_hero"
+  ],
+  "klassen": [
+   "Store"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 407,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O100",
+  "datei": "OVL100.CPP",
+  "sprache": "C++",
+  "bereich": "Händler & Dienste",
+  "titel": "Lagerhaus: abholen",
+  "beschreibung": "Hinterlegte Gegenstände aus dem Lagerhaus abholen. Nach langer Lagerzeit kann ein Teil verloren gehen.",
+  "funktionen": [
+   "store_fetch",
+   "store_fetch_check",
+   "store_fetch_fill",
+   "store_fetch_commit",
+   "store_fetch_draw_grid"
+  ],
+  "klassen": [
+   "Store"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   78
+  ],
+  "zeilen": 342,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O101",
+  "datei": "OVL101.CPP",
+  "sprache": "C++",
+  "bereich": "Dialoge & Tagebuch",
+  "titel": "Dialogsystem",
+  "beschreibung": "Führt Gespräche über Zustandstabellen aus TLK-Dateien: Text, drei Antworten und Folgezustände (wie DSA 1 do_talk/load_tlk).",
+  "funktionen": [
+   "talk",
+   "talk_load",
+   "talk_format"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "LOW48.TLK"
+  ],
+  "fehler": [],
+  "zeilen": 214,
+  "bright_eyes": "do_talk, load_tlk (DSA 1)"
+ },
+ {
+  "modul": "O102",
+  "datei": "OVL102.CPP",
+  "sprache": "C++",
+  "bereich": "Dialoge & Tagebuch",
+  "titel": "Dialog-Sonderaktionen",
+  "beschreibung": "Eine große Funktion mit den Sonderaktionen der Gesprächszustände je Dialog und Partner: Folgezustände, Merker, Geld, Gegenstände und Ortswechsel.",
+  "funktionen": [
+   "talk_special"
+  ],
+  "klassen": [
+   "Stash"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   135
+  ],
+  "zeilen": 466,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O103",
+  "datei": "OVL103.CPP",
+  "sprache": "C++",
+  "bereich": "Dialoge & Tagebuch",
+  "titel": "Tagebuch: Bedienung",
+  "beschreibung": "Tagebuch-Schleife mit Blättern, Schreiben eigener Einträge, Suchen und Drucken.",
+  "funktionen": [
+   "Diary::run",
+   "Diary::Diary",
+   "Diary::add",
+   "Diary::lock_inc",
+   "Diary::lock_dec",
+   "Diary::write",
+   "Diary::search",
+   "Diary::print_menu"
+  ],
+  "klassen": [
+   "Diary",
+   "Edit",
+   "Sel"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   103
+  ],
+  "zeilen": 474,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O104",
+  "datei": "OVL104.CPP",
+  "sprache": "C++",
+  "bereich": "Dialoge & Tagebuch",
+  "titel": "Tagebuch: Seiten",
+  "beschreibung": "Legt Tagebuchseiten an, hängt Einträge mit Ort und Datum an und zeigt Seiten verschlüsselt gespeichert an.",
+  "funktionen": [
+   "Diary::append",
+   "Diary::mark_names",
+   "Diary::mark_word",
+   "Diary::show_page",
+   "Diary::draw",
+   "Diary::load_page",
+   "Diary::place_str",
+   "Diary::date_str"
+  ],
+  "klassen": [
+   "Diary",
+   "Pic"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   144
+  ],
+  "zeilen": 468,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O105",
+  "datei": "OVL105.C",
+  "sprache": "C",
+  "bereich": "Dialoge & Tagebuch",
+  "titel": "Tagebuch: Drucken und Verschlüsselung",
+  "beschreibung": "Druckt das Tagebuch auf Drucker oder in eine Datei, ver- und entschlüsselt die Seiten und führt die Heldenliste.",
+  "funktionen": [
+   "diary_encrypt",
+   "diary_decrypt",
+   "diary_open",
+   "diary_close",
+   "diary_chapters",
+   "diary_hero_names",
+   "diary_print_pages",
+   "diary_print_page"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   56,
+   57
+  ],
+  "zeilen": 419,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O106",
+  "datei": "OVL106.CPP",
+  "sprache": "C++",
+  "bereich": "Dateien & Spielstände",
+  "titel": "Spielstände speichern und laden",
+  "beschreibung": "Klasse SaveMenu: schreibt und liest Spielstände mit den Blöcken GLOB, RUNV, MONS, PLAY, LOCS und TEMP.",
+  "funktionen": [
+   "savegame_save_cur",
+   "savegame_write",
+   "savegame_write_header",
+   "savegame_seek_block",
+   "savegame_read",
+   "savegame_load_cur",
+   "savegame_load",
+   "savegame_check"
+  ],
+  "klassen": [
+   "SaveMenu"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   129
+  ],
+  "zeilen": 464,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O107",
+  "datei": "OVL107.CPP",
+  "sprache": "C++",
+  "bereich": "Dateien & Spielstände",
+  "titel": "Spielstand-Menü",
+  "beschreibung": "Menü zum Speichern und Laden mit Namenseingabe, Liste von bis zu 100 Spielständen und Beschreibung.",
+  "funktionen": [
+   "savegame_menu",
+   "savemenu_write_desc",
+   "savemenu_new",
+   "savemenu_touch",
+   "savemenu_input",
+   "savemenu_cmp",
+   "savemenu_scan",
+   "savemenu_draw_list"
+  ],
+  "klassen": [
+   "Edit",
+   "Pic",
+   "SaveMenu"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   197
+  ],
+  "zeilen": 628,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O108",
+  "datei": "OVL108.CPP",
+  "sprache": "C++",
+  "bereich": "Gegenstände",
+  "titel": "Schlösser",
+  "beschreibung": "Klasse Lock: Schlösser per Schlüssel, Aufbrechen, Schlossknacken oder Zauber öffnen, mit Fallen bei Fehlschlag.",
+  "funktionen": [
+   "Lock::Lock",
+   "Lock::try_open",
+   "Lock::pick",
+   "Lock::~Lock",
+   "Lock::init",
+   "Lock::claudibus",
+   "Lock::foramen",
+   "Lock::force_open"
+  ],
+  "klassen": [
+   "Lock"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   23
+  ],
+  "zeilen": 262,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O109",
+  "datei": "OVL109.C",
+  "sprache": "C",
+  "bereich": "Sonstiges",
+  "titel": "Leere Funktion",
+  "beschreibung": "Ein leerer Platzhalter aus dem Original, aufgerufen am Ende von init_game_state.",
+  "funktionen": [
+   "o109_init_stub"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 11,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O110",
+  "datei": "OVL110.CPP",
+  "sprache": "C++",
+  "bereich": "Oberfläche (Fenster/Dialoge/Eingabe)",
+  "titel": "Texteingabefeld, Teil 2",
+  "beschreibung": "Weitere Methoden des mehrzeiligen Eingabefelds Edit: Tastenschleife, Zeilenumbruch und Neuzeichnen.",
+  "funktionen": [
+   "Edit::getkey",
+   "Edit::run",
+   "Edit::newline",
+   "Edit::prepend",
+   "Edit::measure",
+   "Edit::wrap",
+   "Edit::redraw",
+   "Edit::join"
+  ],
+  "klassen": [
+   "Edit"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   109
+  ],
+  "zeilen": 419,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O111",
+  "datei": "OVL111.CPP",
+  "sprache": "C++",
+  "bereich": "Oberfläche (Fenster/Dialoge/Eingabe)",
+  "titel": "Texteingabefeld, Teil 1",
+  "beschreibung": "Klasse Edit: mehrzeiliges Texteingabefeld mit Konstruktor, Cursorbewegung, Einfügen und Löschen.",
+  "funktionen": [
+   "Edit::Edit",
+   "Edit::end",
+   "Edit::del_char",
+   "Edit::insert_char",
+   "Edit::last_space",
+   "Edit::word_len",
+   "Edit::next_line",
+   "Edit::prev_line"
+  ],
+  "klassen": [
+   "Edit"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   27,
+   28
+  ],
+  "zeilen": 285,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O112",
+  "datei": "OVL112.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Kampffiguren: Animation und Zeichnen",
+  "beschreibung": "Takten und Zeichnen der Animationsobjekte der Kampffiguren mit Clipping und XMS-Bildern (Methoden zu O016).",
+  "funktionen": [
+   "fig_anim_reset",
+   "seq_set",
+   "seq_done",
+   "fig_anim_step",
+   "fig_anim_draw",
+   "fig_anim_clip"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   224
+  ],
+  "zeilen": 358,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O113",
+  "datei": "OVL113.CPP",
+  "sprache": "C++",
+  "bereich": "Ereignisse unterwegs",
+  "titel": "Reiseereignisse der Wege 0 bis 8",
+  "beschreibung": "Ereignisse auf den ersten Wegen der Reisekarte, z. B. Rondra-Geweihte im Kampf gegen Orks.",
+  "funktionen": [
+   "tevent_000",
+   "tevent_001",
+   "tevent_002",
+   "tevent_003",
+   "tevent_004",
+   "tevent_005",
+   "tevent_006",
+   "tevent_007"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "SECTION.LTX",
+   "ALL_SECT.LTX"
+  ],
+  "fehler": [
+   112
+  ],
+  "zeilen": 476,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O114",
+  "datei": "OVL114.CPP",
+  "sprache": "C++",
+  "bereich": "Ereignisse unterwegs",
+  "titel": "Reiseereignisse der Wege 9 bis 36",
+  "beschreibung": "Führer-Angebote, Fähre ohne Fährmann, Wasserfall, Warzennashorn und weitere Wegereignisse.",
+  "funktionen": [
+   "tevent_009",
+   "tevent_019",
+   "tevent_012",
+   "tevent_013",
+   "tevent_024",
+   "tevent_010",
+   "tevent_016",
+   "tevent_036"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "SECTION.LTX",
+   "SECTION0.LTX",
+   "ALL_SECT.LTX",
+   "SECTION6.LTX"
+  ],
+  "fehler": [
+   118,
+   119,
+   226
+  ],
+  "zeilen": 534,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O115",
+  "datei": "OVL115.CPP",
+  "sprache": "C++",
+  "bereich": "Ereignisse unterwegs",
+  "titel": "Reiseereignisse der Wege 37 bis 48",
+  "beschreibung": "Unter anderem die Begegnung mit dem Baron von Meresfeld und seinen Reitern.",
+  "funktionen": [
+   "tevent_037",
+   "tevent_038",
+   "tevent_046",
+   "tevent_039",
+   "tevent_041",
+   "tevent_042",
+   "tevent_043",
+   "tevent_044"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "SECTION0.LTX",
+   "ALL_SECT.LTX"
+  ],
+  "fehler": [
+   101
+  ],
+  "zeilen": 453,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O116",
+  "datei": "OVL116.CPP",
+  "sprache": "C++",
+  "bereich": "Ereignisse unterwegs",
+  "titel": "Reiseereignisse der Wege 49 bis 64",
+  "beschreibung": "Unter anderem das verlassene Holzfällerlager mit Vorräten und weitere Wegereignisse.",
+  "funktionen": [
+   "tevent_049",
+   "tevent_050",
+   "tevent_051",
+   "tevent_052",
+   "tevent_053",
+   "tevent_054",
+   "tevent_055",
+   "tevent_062"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "SECTION0.LTX",
+   "SECTION1.LTX",
+   "ALL_SECT.LTX",
+   "PHEXNITE.TLK"
+  ],
+  "fehler": [
+   77
+  ],
+  "zeilen": 437,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O117",
+  "datei": "OVL117.CPP",
+  "sprache": "C++",
+  "bereich": "Ereignisse unterwegs",
+  "titel": "Reiseereignisse der Wege 66 bis 78",
+  "beschreibung": "Unter anderem das Bärenjunge auf der Blumenwiese und weitere Wegereignisse.",
+  "funktionen": [
+   "tevent_066",
+   "tevent_069",
+   "tevent_067",
+   "tevent_070",
+   "tevent_071",
+   "tevent_072",
+   "tevent_073",
+   "tevent_075"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "SECTION1.LTX",
+   "SECTION2.LTX",
+   "ALL_SECT.LTX"
+  ],
+  "fehler": [],
+  "zeilen": 489,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O118",
+  "datei": "OVL118.CPP",
+  "sprache": "C++",
+  "bereich": "Ereignisse unterwegs",
+  "titel": "Reiseereignisse der Wege 81 bis 99",
+  "beschreibung": "Unter anderem der Weg zum Orklager Gashok und das Dickicht im Wald.",
+  "funktionen": [
+   "o118_0000",
+   "tevent_081",
+   "tevent_082",
+   "tevent_083",
+   "tevent_084",
+   "tevent_085",
+   "tevent_087",
+   "tevent_088"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "SECTION2.LTX",
+   "ALL_SECT.LTX"
+  ],
+  "fehler": [
+   93
+  ],
+  "zeilen": 450,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O119",
+  "datei": "OVL119.CPP",
+  "sprache": "C++",
+  "bereich": "Ereignisse unterwegs",
+  "titel": "Reiseereignisse der Wege 100 bis 119",
+  "beschreibung": "Hinterhalte im Tal, Seilstellen im Gebirge, Kämpfe und Zufallsbegegnungen.",
+  "funktionen": [
+   "tevent_101",
+   "tevent_112",
+   "tevent_100",
+   "tevent_119",
+   "tevent_103",
+   "tevent_105",
+   "tevent_108",
+   "tevent_109"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "SECTION3.LTX"
+  ],
+  "fehler": [
+   43
+  ],
+  "zeilen": 360,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O120",
+  "datei": "OVL120.CPP",
+  "sprache": "C++",
+  "bereich": "Ereignisse unterwegs",
+  "titel": "Reiseereignisse der Wege 121 bis 138",
+  "beschreibung": "Hinterhalte, Seilstellen, die unheimliche Gestalt auf dem Felsen, Quelle und Kämpfe.",
+  "funktionen": [
+   "tevent_121",
+   "tevent_132",
+   "tevent_122",
+   "tevent_123",
+   "tevent_126",
+   "tevent_127",
+   "tevent_134",
+   "tevent_137"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "SECTION3.LTX",
+   "SECTION2.LTX",
+   "ALL_SECT.LTX",
+   "GLOBLTXT.LTX"
+  ],
+  "fehler": [
+   30
+  ],
+  "zeilen": 343,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O121",
+  "datei": "OVL121.CPP",
+  "sprache": "C++",
+  "bereich": "Ereignisse unterwegs",
+  "titel": "Reiseereignisse der Wege 140 bis 154",
+  "beschreibung": "Kräuterfunde, Rehjagd, Steinschlag am Abgrund und weitere Wegereignisse.",
+  "funktionen": [
+   "tevent_140",
+   "tevent_153",
+   "tevent_141",
+   "tevent_142",
+   "tevent_143",
+   "tevent_144",
+   "tevent_145",
+   "tevent_146"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "SECTION3.LTX",
+   "ALL_SECT.LTX"
+  ],
+  "fehler": [
+   37
+  ],
+  "zeilen": 373,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O122",
+  "datei": "OVL122.CPP",
+  "sprache": "C++",
+  "bereich": "Ereignisse unterwegs",
+  "titel": "Reiseereignisse der Wege 157 bis 190",
+  "beschreibung": "Sumpfwege, Sumpfranzen, Rehjagd, Fallen und Kämpfe (Fortsetzung von O121).",
+  "funktionen": [
+   "tevent_157",
+   "o122_07c5",
+   "tevent_158",
+   "tevent_159",
+   "tevent_160",
+   "tevent_161",
+   "tevent_163",
+   "tevent_164"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "SECTION3.LTX",
+   "SECTION6.LTX",
+   "ALL_SECT.LTX"
+  ],
+  "fehler": [
+   45
+  ],
+  "zeilen": 488,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O123",
+  "datei": "OVL123.CPP",
+  "sprache": "C++",
+  "bereich": "Ereignisse unterwegs",
+  "titel": "Reiseereignisse der Wege 191 bis 221",
+  "beschreibung": "Führer-Angebote, Rehjagd, Gelächter in der Nacht, Fallen und Kämpfe.",
+  "funktionen": [
+   "tevent_191",
+   "tevent_218",
+   "tevent_192",
+   "tevent_214",
+   "tevent_193",
+   "tevent_195",
+   "tevent_205",
+   "tevent_211"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "SECTION6.LTX",
+   "ALL_SECT.LTX"
+  ],
+  "fehler": [
+   63
+  ],
+  "zeilen": 464,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O124",
+  "datei": "OVL124.CPP",
+  "sprache": "C++",
+  "bereich": "Ereignisse unterwegs",
+  "titel": "Reiseereignisse der Wege 225 bis 259",
+  "beschreibung": "Verfolger hinter der Biegung, Kämpfe und weitere Ereignisse der letzten Wege.",
+  "funktionen": [
+   "tevent_225",
+   "tevent_228",
+   "tevent_239",
+   "tevent_251",
+   "tevent_229",
+   "tevent_253",
+   "tevent_230",
+   "tevent_244"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "SECTION6.LTX",
+   "ALL_SECT.LTX",
+   "FEATURE.LTX"
+  ],
+  "fehler": [
+   223
+  ],
+  "zeilen": 433,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O125",
+  "datei": "OVL125.CPP",
+  "sprache": "C++",
+  "bereich": "Ereignisse unterwegs",
+  "titel": "Ortsereignisse der Orte 103 bis 198",
+  "beschreibung": "Ortsereignisse der Reisekarte, z. B. Burgruine mit Geheimgang, Höhle und Schiff auf dem Svellt.",
+  "funktionen": [
+   "place_event_103",
+   "place_event_106",
+   "place_event_114",
+   "place_event_170",
+   "place_event_183",
+   "place_event_187",
+   "place_event_189",
+   "place_event_196"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "POINT1.LTX",
+   "POINT.LTX",
+   "ALL_SECT.LTX"
+  ],
+  "fehler": [],
+  "zeilen": 424,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O126",
+  "datei": "OVL126.CPP",
+  "sprache": "C++",
+  "bereich": "Städte & Orte",
+  "titel": "Flusshäfen am Svellt",
+  "beschreibung": "Drei Orte der Reisekarte mit Herberge und Bootsfahrt.",
+  "funktionen": [
+   "place_event_028",
+   "place_event_030",
+   "place_event_031"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "ALL_SECT.LTX",
+   "POINT2.LTX",
+   "GLOBLTXT.LTX"
+  ],
+  "fehler": [
+   55
+  ],
+  "zeilen": 419,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O127",
+  "datei": "OVL127.CPP",
+  "sprache": "C++",
+  "bereich": "Städte & Orte",
+  "titel": "Neun Dörfer der Reisekarte",
+  "beschreibung": "Dörfer der Reisekarte (u. a. Aumond, Sibra, Hiltorp) mit Ortsbeschreibung, Tagebucheintrag und Einrichtungen.",
+  "funktionen": [
+   "place_event_021",
+   "place_event_022",
+   "place_event_023",
+   "place_event_024",
+   "place_event_025",
+   "place_event_026",
+   "place_event_027",
+   "place_event_029"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "ALL_SECT.LTX",
+   "POINT2.LTX",
+   "GLOBLTXT.LTX"
+  ],
+  "fehler": [],
+  "zeilen": 345,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O128",
+  "datei": "OVL128.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Kampfrunde",
+  "beschreibung": "Ablauf einer Kampfrunde mit den Aktionen von Helden und Gegnern (wie DSA 1 FIG_do_round).",
+  "funktionen": [
+   "fight_hero_turn",
+   "fight_enemy_turn",
+   "fight_do_round"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 322,
+  "bright_eyes": "seg032 FIG_do_round (DSA 1)"
+ },
+ {
+  "modul": "O129",
+  "datei": "OVL129.CPP",
+  "sprache": "C++",
+  "bereich": "Dungeons",
+  "titel": "Ereignisobjekt eines Dungeons",
+  "beschreibung": "Klasse area_events: Texte und Rückruf für Kartenereignisse je Dungeon, Feldänderungen, Versetzung und NSC-Abschied am Eingang.",
+  "funktionen": [
+   "area_events::area_events",
+   "area_events::set_cell",
+   "area_events::fight1",
+   "area_events::fight",
+   "area_events::fight2",
+   "area_events::set_cell_bits",
+   "area_events::teleport",
+   "area_events::notice"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "FINAL.LTX"
+  ],
+  "fehler": [
+   59,
+   60
+  ],
+  "zeilen": 318,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O130",
+  "datei": "OVL130.CPP",
+  "sprache": "C++",
+  "bereich": "Dungeons",
+  "titel": "Keller des Namenlosen-Dieners (Dungeon 2)",
+  "beschreibung": "Ereignisse des Dungeons 2 unter dem Haus in Tjolmar: Bolzenfallen, Türen, Treppen, Amulette und Kämpfe.",
+  "funktionen": [
+   "dng02_handler",
+   "dng02_amulet_timers",
+   "dng02_fights",
+   "dng02_door",
+   "dng02_amulet_part1",
+   "dng02_amulet_part2",
+   "dng02_amulet_part3",
+   "dng02_amulet_part4"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "FINAL.LTX"
+  ],
+  "fehler": [
+   139
+  ],
+  "zeilen": 556,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O131",
+  "datei": "OVL131.CPP",
+  "sprache": "C++",
+  "bereich": "Dungeons",
+  "titel": "Gewölbe des Namenlosen-Kults (Dungeon 3)",
+  "beschreibung": "Ereignisse des Dungeons 3: Zahlenschloss, Passwort, Versetzungen und Kämpfe.",
+  "funktionen": [
+   "dng03_handler",
+   "dng03_fights",
+   "dng03_stone_thief"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "FINAL.LTX"
+  ],
+  "fehler": [
+   102
+  ],
+  "zeilen": 572,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O132",
+  "datei": "OVL132.CPP",
+  "sprache": "C++",
+  "bereich": "Dungeons",
+  "titel": "Gewölbe unter Tjolmar (Dungeon 1)",
+  "beschreibung": "Ereignisse des Dungeons 1: Troll auf der Truhe, Eiskrieger, Hesinde-Statue, Schädelornament, Illusionswände und Kämpfe.",
+  "funktionen": [
+   "dng01_handler",
+   "dng01_move_groups",
+   "dng01_ice_warrior",
+   "dng01_ghouls",
+   "dng01_grate",
+   "dng01_grate_falls",
+   "dng01_vanishing_wall",
+   "dng01_door"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "FINAL.LTX",
+   "GLOBLTXT.LTX"
+  ],
+  "fehler": [
+   203,
+   204,
+   205
+  ],
+  "zeilen": 997,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O133",
+  "datei": "OVL133.C",
+  "sprache": "C",
+  "bereich": "Kampf",
+  "titel": "Aktion einer Kampffigur",
+  "beschreibung": "Eine Funktion: führt Schritte, Drehungen und Sonderaktionen einer Kampffigur aus.",
+  "funktionen": [
+   "fig_anim_event"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 223,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O134",
+  "datei": "OVL134.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Kampfbildschirm auf- und abbauen",
+  "beschreibung": "Aufbau und Abbau des Kampfbildschirms, Zeitgeber und Plätze der Animationsobjekte.",
+  "funktionen": [
+   "fight_timer_stop",
+   "fight_timer_start",
+   "fight_quick_start",
+   "fight_quick_end",
+   "fight_quick_stop",
+   "fight_new_extra_anim"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   96
+  ],
+  "zeilen": 296,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O135",
+  "datei": "OVL135.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Animationsfolgen der Helden",
+  "beschreibung": "Ablaufbeschreibungen für Helden im Kampf: Drehen, Standbild, Gehen und Angreifen.",
+  "funktionen": [
+   "fig_turn",
+   "fig_stand_pic",
+   "fig_hero_attack_seq",
+   "fig_hero_defend_seq"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 249,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O136",
+  "datei": "OVL136.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Animationsfolgen der Gegner",
+  "beschreibung": "Ablaufbeschreibungen für Gegner im Kampf (Gegenstück zu O135).",
+  "funktionen": [
+   "fig_enemy_turn",
+   "fig_stand_seq",
+   "fig_enemy_attack_seq",
+   "fig_enemy_defend_seq"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 215,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O137",
+  "datei": "OVL137.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Animationsfolgen Fernkampf und Zauber (Helden)",
+  "beschreibung": "Ablaufbeschreibungen für Treffer, Fernkampf und Zauber der Helden mit Flugbahnen (Gegenstück zu O138).",
+  "funktionen": [
+   "fig_hit_pic",
+   "fig_hero_shoot_seq",
+   "fig_hero_spell_seq",
+   "fig_hero_spell_hit_seq",
+   "fig_hero_pose_seq",
+   "fig_hero_use_seq",
+   "fig_hero_throw_seq"
+  ],
+  "klassen": [
+   "Nvf"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 487,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O138",
+  "datei": "OVL138.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Animationsfolgen Fernkampf und Zauber (Gegner)",
+  "beschreibung": "Ablaufbeschreibungen für Treffer, Fernangriffe und Zauber der Gegner mit Flugbahnen.",
+  "funktionen": [
+   "fig_enemy_hit_seq",
+   "fig_enemy_shoot_seq",
+   "fig_enemy_spell_seq",
+   "fig_enemy_spell_hit_seq"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   64
+  ],
+  "zeilen": 338,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O139",
+  "datei": "OVL139.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Kampffeld aus der Umgebung",
+  "beschreibung": "Erzeugt das Kampffeld-Gitter aus der Umgebung der Gruppe: Wände, Objekte und Startfelder.",
+  "funktionen": [
+   "fight_env_cell",
+   "fight_env_scan",
+   "fight_load_grid",
+   "fight_wall_shape",
+   "fight_path_to_start",
+   "fight_block_unreachable",
+   "fight_is_wall",
+   "fight_is_obj"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   183
+  ],
+  "zeilen": 566,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O140",
+  "datei": "OVL140.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Kampfaufstellung",
+  "beschreibung": "Stellt Helden und Gegner auf dem Kampffeld auf, je nach Kampfdefinition und Eintrittsseite.",
+  "funktionen": [
+   "fight_setup_env",
+   "fight_entry_side",
+   "fight_make_field",
+   "fight_place_hero",
+   "fight_place_enemy",
+   "fight_heroes_face_enemies",
+   "fight_nearest_hero",
+   "fight_nearest_enemy"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   98
+  ],
+  "zeilen": 502,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O141",
+  "datei": "OVL141.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Sonderkampf gegen Einzelgegner",
+  "beschreibung": "Sonderkampf 0x493 gegen einen großen Einzelgegner: Aufbau, Figuren, Angriff und Gegnerzug.",
+  "funktionen": [
+   "sfight_setup",
+   "sfight_place_enemy",
+   "sfight_enemy_action",
+   "sfight_do_action",
+   "sfight_special_attack",
+   "sfight_attack",
+   "sfight_area_attack",
+   "sfight_fig_pos"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   106
+  ],
+  "zeilen": 628,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O142",
+  "datei": "OVL142.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Sonderkampf: Animationsfolgen",
+  "beschreibung": "Ablaufbeschreibungen der vierteiligen Sonderfigur im Sonderkampf 0x493 (zu O141).",
+  "funktionen": [
+   "sfight_enemy_reset",
+   "sfight_enemy_move",
+   "sfight_enemy_end_seq",
+   "sfight_seq_action",
+   "sfight_seq_walk_random",
+   "sfight_seq_area_attack",
+   "sfight_seq_special",
+   "sfight_seq_spell"
+  ],
+  "klassen": [
+   "Nvf"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   189
+  ],
+  "zeilen": 757,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O143",
+  "datei": "OVL143.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Kampfende: Flucht, Beute, Abenteuerpunkte",
+  "beschreibung": "Wertet das Kampfende aus: Flucht, geflohene Gegner, Beute und Verteilung der Abenteuerpunkte.",
+  "funktionen": [
+   "fight_finish",
+   "fig_loot_monsters",
+   "fig_split_ap",
+   "fight_split_escaped"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 417,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O144",
+  "datei": "OVL144.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Kampfbildschirm zeichnen",
+  "beschreibung": "Bildaufbau des Kampfbildschirms mit Neuzeichnen geänderter Rechtecke, Figuren und Anzeigen.",
+  "funktionen": [
+   "fight_draw",
+   "fight_restore_bg",
+   "fight_draw_figures",
+   "fight_printer",
+   "fight_draw_flush",
+   "fight_draw_hero_box",
+   "fight_draw_enemy_box",
+   "fight_rect_overlap"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   181
+  ],
+  "zeilen": 557,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O145",
+  "datei": "OVL145.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Zielfelder und Sichtlinien",
+  "beschreibung": "Markiert Zielfelder im Kampf und prüft Sichtlinien und Flugbahnen (Bresenham).",
+  "funktionen": [
+   "fig_mark_hero_targets",
+   "fig_line_of_sight",
+   "fig_mark_enemy_targets",
+   "fig_prepare_search",
+   "bresenham_line",
+   "fig_line_free",
+   "fig_find_sfight_cell",
+   "fig_cb_select_target"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   200
+  ],
+  "zeilen": 701,
+  "bright_eyes": "FIG_cb_select_target (DSA 1)"
+ },
+ {
+  "modul": "O146",
+  "datei": "OVL146.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Wegsuche im Kampf",
+  "beschreibung": "Wegsuche zum Ziel mit Rückverfolgung und Zählung der Richtungswechsel (wie DSA 1 seg038).",
+  "funktionen": [
+   "fig_find_path_backtrack",
+   "fig_count_dir_changes",
+   "fig_path_add_target",
+   "fight_path_search"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   79
+  ],
+  "zeilen": 374,
+  "bright_eyes": "seg038 FIG_find_path_to_target, FIG_find_path_to_target_backtrack, FIG_count_direction_changes_of_path (DSA 1)"
+ },
+ {
+  "modul": "O147",
+  "datei": "OVL147.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Kampf-Hilfsroutinen",
+  "beschreibung": "Hilfsroutinen für Gegner und Kampffeld: Kampf fortsetzen, Gegnerliste aufräumen, freie Felder finden und Objekte setzen.",
+  "funktionen": [
+   "fig_is_cell_89_8c",
+   "fig_all_heroes_escaped",
+   "fig_fight_continues",
+   "fig_count_active_enemies",
+   "fig_tidy_monsters",
+   "fig_find_free_cell",
+   "fight_latecomers",
+   "place_obj_on_cb"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   38,
+   39
+  ],
+  "zeilen": 318,
+  "bright_eyes": "teils seg032/seg034/seg039, place_obj_on_cb (DSA 1)"
+ },
+ {
+  "modul": "O148",
+  "datei": "OVL148.C",
+  "sprache": "C",
+  "bereich": "Kampf",
+  "titel": "Kampf- und Anzeigehilfen",
+  "beschreibung": "Markierungen unter Figuren, zufällige Gegnerwahl, Summen von LE und AE und Anzeige der Heldenleiste.",
+  "funktionen": [
+   "fig_obj_transparent",
+   "fig_set_mark",
+   "fig_choose_next_enemy",
+   "fig_next_side",
+   "fig_enemies_le_sum",
+   "fig_enemies_ae_sum",
+   "fig_draw_hero_bar",
+   "fight_msg_names"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 253,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O149",
+  "datei": "OVL149.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Bewegung entlang des Pfads",
+  "beschreibung": "Bewegt Gegner und Helden im Kampf entlang des berechneten Pfads mit Drehungen, Doppelschritten und BP-Abzug.",
+  "funktionen": [
+   "fig_enemy_move",
+   "fig_hero_place"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   29
+  ],
+  "zeilen": 299,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O150",
+  "datei": "OVL150.C",
+  "sprache": "C",
+  "bereich": "Kampf",
+  "titel": "Held im Kampf bewegen",
+  "beschreibung": "Prüft Zielfeld und Weg eines Helden, einschließlich Flucht über den Rand (wie DSA 1 seg034 FIG_move_hero).",
+  "funktionen": [
+   "fig_move_pathlen",
+   "fig_move_check",
+   "fig_move_hero"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   18
+  ],
+  "zeilen": 288,
+  "bright_eyes": "seg034 FIG_move_pathlen, FIG_move_hero (DSA 1, in DSA 2 umgebaut)"
+ },
+ {
+  "modul": "O151",
+  "datei": "OVL151.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Gegnerzauber: Zielart und Sinnprüfung",
+  "beschreibung": "Bestimmt den Zielsuche-Modus eines Gegnerzaubers und prüft, ob der Zauber beim Ziel noch sinnvoll ist.",
+  "funktionen": [
+   "get_foe_attack_mode",
+   "enemy_spell_target_ok"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 103,
+  "bright_eyes": "seg037 get_foe_attack_mode (DSA 1)"
+ },
+ {
+  "modul": "O152",
+  "datei": "OVL152.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Gegner-KI",
+  "beschreibung": "Entscheidungen der Gegner im Kampf: Nahkampfziele, Zauber und Fernangriffe (wie DSA 1 seg037).",
+  "funktionen": [
+   "test_foe_melee_attack",
+   "enemy_spell_attack",
+   "enemy_range_attack",
+   "enemy_turn"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   54
+  ],
+  "zeilen": 430,
+  "bright_eyes": "seg037 (DSA 1)"
+ },
+ {
+  "modul": "O153",
+  "datei": "OVL153.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Figurenliste und Kampffeld-Hilfen",
+  "beschreibung": "Klasse FigList: sortierte, doppelt verkettete Liste der Kampffiguren sowie Zellen des Kampffelds lesen und setzen.",
+  "funktionen": [
+   "FigList::FigList",
+   "FigList::clear",
+   "FigList::remove",
+   "FigList::resort",
+   "FigList::last",
+   "FigList::hide",
+   "FigList::show",
+   "FigList::purge"
+  ],
+  "klassen": [
+   "FigList"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   90
+  ],
+  "zeilen": 589,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O154",
+  "datei": "OVL154.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Kampfmenü eines Helden",
+  "beschreibung": "Kampfmenü mit Bewegen, Angriff, Zauber, Gegenständen, Werten und Flucht (wie DSA 1 FIG_menu).",
+  "funktionen": [
+   "fig_menu",
+   "Menuewahl",
+   "fig_menu_move",
+   "fig_menu_attack"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 403,
+  "bright_eyes": "seg033 FIG_menu (DSA 1)"
+ },
+ {
+  "modul": "O155",
+  "datei": "OVL155.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Unteraktionen des Kampfmenüs",
+  "beschreibung": "Sichern, Zaubern, Gegenstand benutzen, Wiederholen und weitere Unterpunkte des Kampfmenüs.",
+  "funktionen": [
+   "fig_menu_guard",
+   "fig_menu_spell",
+   "fig_menu_use_item",
+   "fig_menu_take_item",
+   "fig_menu_drop_item",
+   "fig_menu_change_weapon",
+   "fig_menu_show_values",
+   "fig_menu_repeat"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   187,
+   188
+  ],
+  "zeilen": 565,
+  "bright_eyes": "seg033 FIG_menu (DSA 1)"
+ },
+ {
+  "modul": "O156",
+  "datei": "OVL156.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Kampf-KI der Helden",
+  "beschreibung": "Automatische Entscheidungen für Helden: Waffe tauschen, Ziele wählen, Zauber auswählen (wie DSA 1 seg036).",
+  "funktionen": [
+   "KI",
+   "ki_change_hero_weapon",
+   "ki_target_valid",
+   "ki_best_target",
+   "ki_search_target",
+   "ki_range_target",
+   "ki_spell_mode",
+   "ki_spell_useful"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   120
+  ],
+  "zeilen": 579,
+  "bright_eyes": "seg036 KI_change_hero_weapon, KI_can_attack_neighbour, KI_get_spell (DSA 1)"
+ },
+ {
+  "modul": "O157",
+  "datei": "OVL157.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Automatischer Kampfzug eines Helden",
+  "beschreibung": "Ein ganzer automatischer Zug eines Helden: Flucht, Zauber, Fernkampf oder Nahkampf.",
+  "funktionen": [
+   "ki_hero",
+   "range_attack_check_ammo"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 271,
+  "bright_eyes": "seg036 KI_hero, range_attack_check_ammo (DSA 1)"
+ },
+ {
+  "modul": "O158",
+  "datei": "OVL158.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Kampfaktion Held gegen Held",
+  "beschreibung": "Nah- und Fernkampf sowie Zauber eines verzauberten Helden gegen einen anderen Helden, mit Patzern und Waffenbruch.",
+  "funktionen": [
+   "fig_hero_attack_hero",
+   "fig_hero_shoot_hero",
+   "fig_hero_spell_hero"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   40,
+   41,
+   42
+  ],
+  "zeilen": 311,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O159",
+  "datei": "OVL159.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Kampfaktion Held gegen Gegner",
+  "beschreibung": "Führt die gewählte Aktion eines Helden gegen einen Gegner aus (Nahkampf, Fernkampf, Zauber, Gegenstand).",
+  "funktionen": [
+   "fig_do_hero_action",
+   "fig_hero_attack_enemy",
+   "fig_hero_shoot_enemy",
+   "fig_hero_spell_enemy"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   147
+  ],
+  "zeilen": 468,
+  "bright_eyes": "FIG_do_hero_action (DSA 1)"
+ },
+ {
+  "modul": "O160",
+  "datei": "OVL160.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Kampfaktion Gegner gegen Gegner",
+  "beschreibung": "Nahkampf, Fernkampf und Zauber eines abtrünnigen oder verzauberten Gegners gegen einen anderen Gegner.",
+  "funktionen": [
+   "fig_enemy_attack_enemy",
+   "fig_enemy_shoot_enemy",
+   "fig_enemy_spell_enemy"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   1
+  ],
+  "zeilen": 230,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O161",
+  "datei": "OVL161.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Kampfaktion Gegner gegen Held",
+  "beschreibung": "Aktion eines Gegners gegen einen Helden mit Treffern, Paraden und Patzern.",
+  "funktionen": [
+   "fig_do_enemy_action",
+   "fig_enemy_attack_hero",
+   "fig_enemy_shoot_hero",
+   "fig_enemy_spell_hero"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   113
+  ],
+  "zeilen": 446,
+  "bright_eyes": "FIG_do_enemy_action (DSA 1)"
+ },
+ {
+  "modul": "O162",
+  "datei": "OVL162.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Gegenstand im Kampf einsetzen",
+  "beschreibung": "Wurf- und Anwendungsgegenstände aus der linken Hand gegen Helden oder Gegner sowie der Text zu noch nicht erschienenen Gegnern.",
+  "funktionen": [
+   "fig_use_item_hero",
+   "fig_use_item_enemy",
+   "fig_hidden_enemies_text"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   75,
+   76
+  ],
+  "zeilen": 350,
+  "bright_eyes": "seg043 FIG_use_item (DSA 1)"
+ },
+ {
+  "modul": "O163",
+  "datei": "OVL163.CPP",
+  "sprache": "C++",
+  "bereich": "Ereignisse unterwegs",
+  "titel": "Wegereignisse unterwegs",
+  "beschreibung": "Orklager-Gepäck, Fährüberfahrt, Rehjagd und weitere Wegereignisse auf der Reisekarte.",
+  "funktionen": [
+   "orc_camp_luggage",
+   "flag_not",
+   "place_event_nop",
+   "ford_crossing",
+   "ferry_crossing",
+   "deer_hunt",
+   "swamp_path"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "ALL_SECT.LTX",
+   "POINT2.LTX",
+   "POINT1.LTX"
+  ],
+  "fehler": [
+   150
+  ],
+  "zeilen": 523,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O164",
+  "datei": "OVL164.CPP",
+  "sprache": "C++",
+  "bereich": "Ereignisse unterwegs",
+  "titel": "Sonderereignisse: Schrein, Führer, Begegnung",
+  "beschreibung": "Spendenschrein, Führer-Angebote und Zufallsbegegnungen unterwegs.",
+  "funktionen": [
+   "group_has_special_item",
+   "travel_scene_31",
+   "shrine_donation",
+   "guide_offer",
+   "random_encounter",
+   "show_once_anim",
+   "armed_hero_fight",
+   "npc6_encounter"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   146
+  ],
+  "zeilen": 466,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O165",
+  "datei": "OVL165.CPP",
+  "sprache": "C++",
+  "bereich": "Ereignisse unterwegs",
+  "titel": "Wegereignisse im Gebirge",
+  "beschreibung": "Gruppenschaden, Hinterhalt im Tal, Seilstellen, Steinschlag und Lawine.",
+  "funktionen": [
+   "group_damage",
+   "avalanche",
+   "valley_ambush",
+   "mountain_rope",
+   "rockslide_dig"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "ALL_SECT.LTX",
+   "SECTION1.LTX",
+   "SECTION2.LTX",
+   "SECTION3.LTX"
+  ],
+  "fehler": [
+   222
+  ],
+  "zeilen": 249,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O166",
+  "datei": "OVL166.CPP",
+  "sprache": "C++",
+  "bereich": "Städte & Orte",
+  "titel": "Sonderorte einer Stadt",
+  "beschreibung": "Klasse Sites: Ereignisorte 1 bis 4 einer Stadt mit Herausforderung, Abendkampf und Revanche sowie deren Kartenrückruf.",
+  "funktionen": [
+   "Sites::Sites",
+   "Sites::explore",
+   "Sites::evening_fight",
+   "Sites::challenge",
+   "Sites::rematch",
+   "Sites::inn_vision",
+   "Sites::talk",
+   "Town::sites_event"
+  ],
+  "klassen": [
+   "Sites",
+   "Town"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   186
+  ],
+  "zeilen": 643,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O167",
+  "datei": "OVL167.CPP",
+  "sprache": "C++",
+  "bereich": "Helden & Heldenerschaffung",
+  "titel": "Heldenerschaffung: Würfeln und Steigern",
+  "beschreibung": "Eigenschaften neu würfeln, AT/PA-Basis berechnen und die automatische Steigerung von Talenten und Zaubern.",
+  "funktionen": [
+   "chargen_roll_attribs",
+   "chargen_calc_atpa",
+   "chargen_auto_inc",
+   "chargen_auto_inc_skill",
+   "chargen_auto_inc_spell",
+   "chargen_set_type_values"
+  ],
+  "klassen": [
+   "CharGen"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   116
+  ],
+  "zeilen": 374,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O168",
+  "datei": "OVL168.CPP",
+  "sprache": "C++",
+  "bereich": "Helden & Heldenerschaffung",
+  "titel": "Heldenerschaffung: Heldenbogen",
+  "beschreibung": "Zeichnet die Seiten des Heldenbogens in der Heldenerschaffung mit Eigenschaften und Verschiebemarken.",
+  "funktionen": [
+   "chargen_draw_attribs",
+   "chargen_draw_page",
+   "chargen_change_atpa"
+  ],
+  "klassen": [
+   "CharGen"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 264,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O169",
+  "datei": "OVL169.CPP",
+  "sprache": "C++",
+  "bereich": "Helden & Heldenerschaffung",
+  "titel": "Heldenerschaffung: neuer Held",
+  "beschreibung": "Typ wählen, Eigenschaften auswürfeln, Typvoraussetzungen erzwingen und Eigenschaften verschieben.",
+  "funktionen": [
+   "chargen_new_hero",
+   "chargen_move_attribs",
+   "chargen_save_bg",
+   "chargen_restore_bg",
+   "chargen_inc_skill",
+   "chargen_toggle_sex"
+  ],
+  "klassen": [
+   "CharGen"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   107
+  ],
+  "zeilen": 445,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O170",
+  "datei": "OVL170.CPP",
+  "sprache": "C++",
+  "bereich": "Helden & Heldenerschaffung",
+  "titel": "Heldenerschaffung: Zauber, Talente, Typ",
+  "beschreibung": "Steigerungsstand zurücksetzen, Zauber und Talente steigern und den Heldentyp wählen.",
+  "funktionen": [
+   "chargen_reset_incs",
+   "chargen_inc_spell",
+   "chargen_menu_spells",
+   "chargen_menu_skills",
+   "chargen_select_type"
+  ],
+  "klassen": [
+   "CharGen"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   178
+  ],
+  "zeilen": 396,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O171",
+  "datei": "OVL171.CPP",
+  "sprache": "C++",
+  "bereich": "Helden & Heldenerschaffung",
+  "titel": "Heldenerschaffung: Held übernehmen",
+  "beschreibung": "Speichert den fertigen Helden in den Heldendateien und übernimmt ihn in die Gruppe.",
+  "funktionen": [
+   "chargen_save_hero",
+   "chargen_draw_type_pic"
+  ],
+  "klassen": [
+   "CharGen"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 100,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O172",
+  "datei": "OVL172.CPP",
+  "sprache": "C++",
+  "bereich": "Oberfläche (Fenster/Dialoge/Eingabe)",
+  "titel": "Bildauswahl-Fenster",
+  "beschreibung": "Verschiebbares Fenster mit mehreren Bildern zur Auswahl per Maus oder Cursor.",
+  "funktionen": [
+   "Win::draw_pics",
+   "Win::select_pic_run",
+   "Win::select_pic",
+   "Win::select_pic_loop"
+  ],
+  "klassen": [
+   "Win"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 187,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O173",
+  "datei": "OVL173.CPP",
+  "sprache": "C++",
+  "bereich": "Städte & Orte",
+  "titel": "Wohnhaus",
+  "beschreibung": "Klasse House: das Haus, an dessen Tür die Gruppe klopft, mit abweisender Antwort oder Nachtlager bei den Zwergen.",
+  "funktionen": [
+   "House::House",
+   "House::run",
+   "House::hint",
+   "House::~House"
+  ],
+  "klassen": [
+   "House"
+  ],
+  "spieltexte": [
+   "GETOFF.LTX"
+  ],
+  "fehler": [],
+  "zeilen": 280,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O174",
+  "datei": "OVL174.CPP",
+  "sprache": "C++",
+  "bereich": "Händler & Dienste",
+  "titel": "Heiler",
+  "beschreibung": "Klasse Healer: Wunden heilen, Gift und Krankheiten kurieren, Gespräch und Preise je Heiler.",
+  "funktionen": [
+   "Healer::Healer",
+   "Healer::run",
+   "Healer::~Healer",
+   "Healer::is_open",
+   "Healer::talk",
+   "Healer::cure_wounds",
+   "Healer::cure_disease",
+   "Healer::cure_poison"
+  ],
+  "klassen": [
+   "Healer"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   70
+  ],
+  "zeilen": 329,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O175",
+  "datei": "OVL175.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Meldungsliste des Kampfes",
+  "beschreibung": "Klasse FightMsgs: sammelt bis zu 15 Kampfmeldungen und zeigt sie in der Meldungsleiste an.",
+  "funktionen": [
+   "FightMsgs::FightMsgs",
+   "FightMsgs::init",
+   "FightMsgs::set_screen",
+   "FightMsgs::add",
+   "FightMsgs::add2",
+   "FightMsgs::add0",
+   "FightMsgs::run",
+   "FightMsgs::~FightMsgs"
+  ],
+  "klassen": [
+   "FightMsgs"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 105,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O176",
+  "datei": "OVL176.CPP",
+  "sprache": "C++",
+  "bereich": "Dateien & Spielstände",
+  "titel": "Heldenimport aus DSA 1: Laden",
+  "beschreibung": "Klasse Save: liest Spielstände von DSA 1 (Schicksalsklinge) und prüft Kennung und Format.",
+  "funktionen": [
+   "Save::Save",
+   "dsa1_heroes_pos",
+   "Save::load",
+   "Save::check_hero",
+   "Save::undo_timers",
+   "Save::undo_timers_v1",
+   "Save::find_portrait",
+   "hero_clear_slot"
+  ],
+  "klassen": [
+   "Save"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   66
+  ],
+  "zeilen": 377,
+  "bright_eyes": "DSA-1-Spielstände (Schicksalsklinge) als Quelle des Imports"
+ },
+ {
+  "modul": "O177",
+  "datei": "OVL177.CPP",
+  "sprache": "C++",
+  "bereich": "Dateien & Spielstände",
+  "titel": "Heldenimport aus DSA 1: Umsetzen",
+  "beschreibung": "Setzt DSA-1-Helden (auch Amiga-Format) in das Heldenformat von Sternenschweif um.",
+  "funktionen": [
+   "swap16",
+   "swap32",
+   "bitrev16",
+   "bitrev32",
+   "dsa1_swap_hero_v1",
+   "dsa1_swap_hero",
+   "Save::import_heroes_v1",
+   "Save::import_heroes"
+  ],
+  "klassen": [
+   "Save"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   165
+  ],
+  "zeilen": 420,
+  "bright_eyes": "DSA-1-Heldenformat (BE-Format) als Quelle der Umsetzung"
+ },
+ {
+  "modul": "O178",
+  "datei": "OVL178.CPP",
+  "sprache": "C++",
+  "bereich": "Händler & Dienste",
+  "titel": "Herberge",
+  "beschreibung": "Klasse Inn: Essen, Zimmer mieten, Übernachten und Menü der Herberge (wie DSA 1 seg068/069).",
+  "funktionen": [
+   "Inn::Inn",
+   "Inn::is_open",
+   "Inn::run",
+   "Inn::eat",
+   "Inn::room",
+   "Inn::sleep",
+   "Inn::wait_midnight",
+   "Inn::wait_morning"
+  ],
+  "klassen": [
+   "Inn",
+   "Sites"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   155
+  ],
+  "zeilen": 541,
+  "bright_eyes": "seg068/seg069 Herberge (DSA 1)"
+ },
+ {
+  "modul": "O179",
+  "datei": "OVL179.CPP",
+  "sprache": "C++",
+  "bereich": "Händler & Dienste",
+  "titel": "Herberge, Teil 2",
+  "beschreibung": "Gespräch mit dem Wirt, Talent anwenden, nächtlicher Diebstahl und weitere Ereignisse in der Herberge.",
+  "funktionen": [
+   "Inn::talk",
+   "Inn::apply_skill",
+   "Inn::apply_magic",
+   "Inn::theft_morning",
+   "Inn::theft_night",
+   "inn_conv_callback"
+  ],
+  "klassen": [
+   "Inn"
+  ],
+  "spieltexte": [
+   "INN.LTX",
+   "KVIR02.TLK"
+  ],
+  "fehler": [
+   4
+  ],
+  "zeilen": 240,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O180",
+  "datei": "OVL180.CPP",
+  "sprache": "C++",
+  "bereich": "Oberfläche (Fenster/Dialoge/Eingabe)",
+  "titel": "Einzeiliges Texteingabefeld",
+  "beschreibung": "Klasse für ein einzeiliges Eingabefeld mit Hintergrundsicherung, Cursor und Umlauten.",
+  "funktionen": [
+   "Input::run",
+   "Input::Input",
+   "Input::save_bg",
+   "Input::draw_init",
+   "Input::redraw",
+   "Input::restore_rest",
+   "Input::backspace",
+   "Input::put_char"
+  ],
+  "klassen": [
+   "Input"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 233,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O181",
+  "datei": "OVL181.C",
+  "sprache": "C",
+  "bereich": "Oberfläche (Fenster/Dialoge/Eingabe)",
+  "titel": "Textbildschirm",
+  "beschreibung": "Textbildschirm als Basis der Bildfolgen: Schriftzustand sichern, Texte laden, Zeilen mit Hintergrund ausgeben.",
+  "funktionen": [
+   "tscr_open_anim",
+   "tscr_open",
+   "tscr_open_texts",
+   "tscr_set_anim",
+   "tscr_close",
+   "tscr_print",
+   "tscr_print_txt",
+   "tscr_print_font"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 131,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O182",
+  "datei": "OVL182.CPP",
+  "sprache": "C++",
+  "bereich": "Gegenstände",
+  "titel": "Gegenstandstabelle",
+  "beschreibung": "Klasse Items: lädt ITEMS.DAT und ITEMS.LTX und ändert Preise je nach Nachfrage.",
+  "funktionen": [
+   "Items::Items",
+   "Items::change_price",
+   "Items::~Items"
+  ],
+  "klassen": [
+   "Items"
+  ],
+  "spieltexte": [
+   "ITEMS.LTX"
+  ],
+  "fehler": [],
+  "zeilen": 55,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O183",
+  "datei": "OVL183.CPP",
+  "sprache": "C++",
+  "bereich": "Städte & Orte",
+  "titel": "Stadtobjekt und Hafen",
+  "beschreibung": "Klasse Town: Ort betreten, Hafen mit Schiffsreise und weitere Stadtereignisse.",
+  "funktionen": [
+   "Town::Town",
+   "Town::enter",
+   "Town::cell_dir",
+   "Town::harbor_event",
+   "Town::ship_voyage",
+   "Town::swim_check",
+   "Town::market_stall",
+   "Town::show_anim3"
+  ],
+  "klassen": [
+   "Nvf",
+   "Town"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   11
+  ],
+  "zeilen": 258,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O184",
+  "datei": "OVL184.CPP",
+  "sprache": "C++",
+  "bereich": "Städte & Orte",
+  "titel": "Ereignisfunktionen in Lowangen",
+  "beschreibung": "Dialog- und Ereignisfunktionen der Ereignisorte in Lowangen (Tribut, Geschichten, Gespräche, Warten auf Mittag).",
+  "funktionen": [
+   "Ev::tribute",
+   "Ev::story_13",
+   "Ev::talk_90",
+   "Ev::show_pic_197",
+   "Ev::count_sneak_fails",
+   "Ev::choice_49",
+   "Ev::choice_56",
+   "Ev::wait_noon"
+  ],
+  "klassen": [
+   "Bmp",
+   "Ev"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 226,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O185",
+  "datei": "OVL185.CPP",
+  "sprache": "C++",
+  "bereich": "Städte & Orte",
+  "titel": "Ereignisse in Lowangen",
+  "beschreibung": "Ankunft mit Antharon und dem Salamanderstein, Straßenbanden, Stadtgarde und Verfolgung Gavrons.",
+  "funktionen": [
+   "lowangen_arrival",
+   "lowangen_food_thugs",
+   "lowangen_weapon_check",
+   "lowangen_drop_food",
+   "Ev::gavron_chase"
+  ],
+  "klassen": [
+   "Ev"
+  ],
+  "spieltexte": [
+   "L_STREET.TLK",
+   "NAKED.LTX",
+   "LOWANGEN.LTX",
+   "GLOBLTXT.LTX"
+  ],
+  "fehler": [
+   149,
+   216
+  ],
+  "zeilen": 458,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O186",
+  "datei": "OVL186.CPP",
+  "sprache": "C++",
+  "bereich": "Städte & Orte",
+  "titel": "Kartenereignisse in Lowangen",
+  "beschreibung": "Kartenereignis-Rückruf der Stadt Lowangen: Straßenbande, Stadtgarde, Ankunftsszene an den Stadttoren.",
+  "funktionen": [
+   "town_lowangen_event"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "TJOLMAR.LTX"
+  ],
+  "fehler": [],
+  "zeilen": 328,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O187",
+  "datei": "OVL187.CPP",
+  "sprache": "C++",
+  "bereich": "Reise & Karte",
+  "titel": "Kartenobjekt der Reisekarte",
+  "beschreibung": "Klasse TMap: Kartenbild ORKLAND.AIF, Ausschnitt, Scrollen und animierte Kartenpunkte.",
+  "funktionen": [
+   "TMap::TMap",
+   "TMap::~TMap",
+   "TMap::new_pal",
+   "TMap::free_pal",
+   "TMap::screen_x",
+   "TMap::screen_y",
+   "TMap::read_header",
+   "TMap::read_pal"
+  ],
+  "klassen": [
+   "TMap"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   176
+  ],
+  "zeilen": 594,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O188",
+  "datei": "OVL188.CPP",
+  "sprache": "C++",
+  "bereich": "Oberfläche (Fenster/Dialoge/Eingabe)",
+  "titel": "Spielbildschirm",
+  "beschreibung": "Klasse Screen: Rahmen, Porträtleisten, Symbolleiste und Meldungszeile des Spielbildschirms.",
+  "funktionen": [
+   "Screen::Screen",
+   "Screen::reset_icons",
+   "Screen::set_icons",
+   "Screen::draw_base",
+   "Screen::short_name",
+   "Screen::draw_portraits",
+   "Screen::clear_portrait",
+   "Screen::load_icon"
+  ],
+  "klassen": [
+   "Screen"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   58
+  ],
+  "zeilen": 336,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O189",
+  "datei": "OVL189.CPP",
+  "sprache": "C++",
+  "bereich": "Oberfläche (Fenster/Dialoge/Eingabe)",
+  "titel": "Auswahlfenster des Dialogobjekts",
+  "beschreibung": "Methoden der Dialogklasse Dlg für Auswahlfenster: Zeilen zählen, Rahmen und Knöpfe zeichnen, Markierung.",
+  "funktionen": [
+   "Dlg::count_lines",
+   "Dlg::draw_choices",
+   "Dlg::draw_button",
+   "Dlg::mark_line",
+   "Dlg::run",
+   "Dlg::choose_loop",
+   "Dlg::wait_message",
+   "Dlg::click_sound"
+  ],
+  "klassen": [
+   "Dlg",
+   "Win"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 508,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O190",
+  "datei": "OVL190.CPP",
+  "sprache": "C++",
+  "bereich": "Oberfläche (Fenster/Dialoge/Eingabe)",
+  "titel": "Dialogfenster-Klasse",
+  "beschreibung": "Klassen Win und Dlg: Ja/Nein-Abfrage, Meldung, Zahleneingabe, Auswahl und Bildfenster.",
+  "funktionen": [
+   "Dlg::Dlg",
+   "Win::Win",
+   "Dlg::yes_no_box",
+   "Dlg::box",
+   "Dlg::message",
+   "Dlg::input",
+   "Dlg::choose",
+   "Dlg::box_anim"
+  ],
+  "klassen": [
+   "Dlg",
+   "NumIn",
+   "Win"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   99
+  ],
+  "zeilen": 505,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O191",
+  "datei": "OVL191.ASM",
+  "sprache": "ASM",
+  "bereich": "Grafik & Animation",
+  "titel": "Maskenblit nach A000",
+  "beschreibung": "Original-Assembler (handgeschriebenes TASM): Blit mit Maske in den VGA-Speicher.",
+  "funktionen": [],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 90,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O192",
+  "datei": "OVL192.CPP",
+  "sprache": "C++",
+  "bereich": "Kampf",
+  "titel": "Gegnerklasse",
+  "beschreibung": "Klasse Enemy: Name, Bild, Typprüfungen, Schaden, AT/PA und Proben der Gegner.",
+  "funktionen": [
+   "Enemy::Enemy",
+   "Enemy::name",
+   "Enemy::load_pic",
+   "Enemy::is_fire",
+   "Enemy::type_check",
+   "Enemy::is_humanoid",
+   "Enemy::is_undead",
+   "Enemy::is_dead"
+  ],
+  "klassen": [
+   "Enemy"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 491,
+  "bright_eyes": "FIG_get_enemy_attack_damage (DSA 1)"
+ },
+ {
+  "modul": "O193",
+  "datei": "OVL193.C",
+  "sprache": "C",
+  "bereich": "Start & System",
+  "titel": "Maus",
+  "beschreibung": "Mausvariablen und Zeigerbilder, Maustreiber und Ereignis-Handler einrichten und abbauen (wie DSA 1).",
+  "funktionen": [
+   "mouse_init_vars",
+   "mouse_init",
+   "mouse_irq_init",
+   "disable_mouse",
+   "mouse_reset",
+   "mouse_reset_ehandler"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 120,
+  "bright_eyes": "seg002 mouse_init, mouse_irq_init, mouse_reset_ehandler (DSA 1)"
+ },
+ {
+  "modul": "O194",
+  "datei": "OVL194.CPP",
+  "sprache": "C++",
+  "bereich": "Magie",
+  "titel": "Zauber der Gegner",
+  "beschreibung": "Klasse Spell: Kosten, Schaden und Wirkung der Gegnerzauber (Gegenstück zu Cast in O233).",
+  "funktionen": [
+   "Spell::Spell",
+   "Spell::cast",
+   "mon_spell_cost",
+   "Spell::damage",
+   "Spell::target_pa",
+   "Spell::target_rs",
+   "Spell::mon_spell_ignifaxius",
+   "Spell::mon_spell_armatrutz"
+  ],
+  "klassen": [
+   "Enemy",
+   "Spell"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   111
+  ],
+  "zeilen": 374,
+  "bright_eyes": "MON_get_spell_cost, MON_do_spell_damage, MON_cast_spell, mspell_* (DSA 1)"
+ },
+ {
+  "modul": "O195",
+  "datei": "OVL195.CPP",
+  "sprache": "C++",
+  "bereich": "Dungeons",
+  "titel": "Altsvellt-Sumpf (Dungeon 4)",
+  "beschreibung": "Ereignisse des Dungeons 4: Kräuter, Schlangen, tiefes Wasser, Truhen und Hebelrätsel.",
+  "funktionen": [
+   "dng04_handler",
+   "dng04_snake",
+   "dng04_take_from_pool",
+   "dng04_deep_water"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "NATURE.LTX",
+   "SWAMP.TLK",
+   "GLOBLTXT.LTX"
+  ],
+  "fehler": [
+   104
+  ],
+  "zeilen": 434,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O196",
+  "datei": "OVL196.C",
+  "sprache": "C",
+  "bereich": "Gruppe & Inventar",
+  "titel": "NSC-Begleiter entlassen und aufnehmen",
+  "beschreibung": "Prüft für alle Gruppen, ob ein NSC die Gruppe verlässt, und nimmt neue NSC auf (wie DSA 1 seg095).",
+  "funktionen": [
+   "load_npc",
+   "add_npc",
+   "groups_check_npc"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   19
+  ],
+  "zeilen": 284,
+  "bright_eyes": "seg095 npc_farewell, load_npc, add_npc (DSA 1)"
+ },
+ {
+  "modul": "O197",
+  "datei": "OVL197.CPP",
+  "sprache": "C++",
+  "bereich": "Oberfläche (Fenster/Dialoge/Eingabe)",
+  "titel": "Zahleneingabe",
+  "beschreibung": "Klasse NumIn: Zahleneingabe mit Ziffernfeldern, Pfeilen und OK-Knopf.",
+  "funktionen": [
+   "NumIn::NumIn",
+   "NumIn::~NumIn",
+   "NumIn::value",
+   "NumIn::get_x",
+   "NumIn::get_y",
+   "NumIn::set_x",
+   "NumIn::set_y",
+   "NumIn::draw_frame"
+  ],
+  "klassen": [
+   "Dlg",
+   "NumIn",
+   "NvfMem",
+   "Win"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   44
+  ],
+  "zeilen": 293,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O198",
+  "datei": "OVL198.C",
+  "sprache": "C",
+  "bereich": "Grafik & Animation",
+  "titel": "3D-Ansicht: Bild aufbauen",
+  "beschreibung": "Baut ein Bild der 3D-Ansicht auf: Kamera, Augenhöhe, Texturanimation, Himmel mit Dämmerung.",
+  "funktionen": [
+   "view_draw",
+   "view_draw_sky"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   50
+  ],
+  "zeilen": 432,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O199",
+  "datei": "OVL199.CPP",
+  "sprache": "C++",
+  "bereich": "Oberfläche (Fenster/Dialoge/Eingabe)",
+  "titel": "Optionen-Menü",
+  "beschreibung": "Klasse Opt: Optionen mit Reglern für Klang, Geschwindigkeit und weitere Einstellungen.",
+  "funktionen": [
+   "Opt::Opt",
+   "Opt::popup",
+   "Opt::run",
+   "Opt::defaults",
+   "Opt::slider_mouse",
+   "Opt::apply",
+   "Opt::draw",
+   "Opt::draw_all"
+  ],
+  "klassen": [
+   "NvfMem0",
+   "Opt"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 701,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O200",
+  "datei": "OVL200.CPP",
+  "sprache": "C++",
+  "bereich": "Gruppe & Inventar",
+  "titel": "Gruppenklasse, Teil 1",
+  "beschreibung": "Klasse group: Konstruktor, Geld hinzufügen und abziehen, Geldanteile, AP-Summe, Heldenzählungen und NSC entfernen.",
+  "funktionen": [
+   "group::group",
+   "group::add_money",
+   "group::money_share",
+   "group::sub_money",
+   "group::sum_ap",
+   "group::count_check1",
+   "group::get_ill",
+   "group::infect"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   25,
+   26
+  ],
+  "zeilen": 414,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O201",
+  "datei": "OVL201.CPP",
+  "sprache": "C++",
+  "bereich": "Gruppe & Inventar",
+  "titel": "Gruppenklasse, Teil 2",
+  "beschreibung": "Helden einer Gruppe suchen und zählen, Gegenstände bei den Helden suchen und Porträts zeichnen.",
+  "funktionen": [
+   "group::has_hero_named",
+   "group::has_hero",
+   "group::count_check2b",
+   "group::count_alive",
+   "group::hero_pos",
+   "group::hero_with_item",
+   "group::all_have_item",
+   "group::find_food"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   51,
+   52,
+   53
+  ],
+  "zeilen": 435,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O202",
+  "datei": "OVL202.CPP",
+  "sprache": "C++",
+  "bereich": "Gruppe & Inventar",
+  "titel": "Gruppenklasse, Teil 3",
+  "beschreibung": "Wasser auffüllen, AP verteilen, Helden aufnehmen und entlassen, Waren an die Helden verteilen, Gruppendaten speichern und laden.",
+  "funktionen": [
+   "group::refill_water",
+   "group::add_ap",
+   "group::add_ap_each",
+   "group::sub_ap_each",
+   "group::add_hero",
+   "group::free_slot",
+   "group::save",
+   "group::dismiss_hero"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   81,
+   82,
+   83
+  ],
+  "zeilen": 597,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O203",
+  "datei": "OVL203.C",
+  "sprache": "C",
+  "bereich": "Gruppe & Inventar",
+  "titel": "Gruppenschleifen",
+  "beschreibung": "Freie Funktionen über die sieben Helden einer Gruppe: Tragkraft, Gegenstände und Kräuter suchen, Schlaf, Talentproben und Heldentausch.",
+  "funktionen": [
+   "group_free_capacity",
+   "group_find_item_box",
+   "group_find_key",
+   "group_all_asleep",
+   "count_failed_skill",
+   "group_count_bd2",
+   "group_kill_but_bd2",
+   "group_kill_all"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 307,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O204",
+  "datei": "OVL204.CPP",
+  "sprache": "C++",
+  "bereich": "Dungeons",
+  "titel": "Phex-Tempel (Dungeon 5)",
+  "beschreibung": "Ereignisse des Dungeons 5, in den Hensger die Gruppe lockt: Schriftrolle, Skelette, Hebel, Fallen, Schlösser, Legespiel und Poltergeist.",
+  "funktionen": [
+   "dng05_poltergeist",
+   "dng05_handler",
+   "dng05_fights",
+   "dng05_skeleton_key",
+   "dng05_puzzle_result"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "PHEXTEMP.LTX",
+   "GLOBLTXT.LTX"
+  ],
+  "fehler": [
+   192
+  ],
+  "zeilen": 712,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O205",
+  "datei": "OVL205.CPP",
+  "sprache": "C++",
+  "bereich": "Oberfläche (Fenster/Dialoge/Eingabe)",
+  "titel": "Fensterfunktionen",
+  "beschreibung": "Klasse Win: Hintergrund per XMS sichern, Rahmen zeichnen, Fenster platzieren, verschieben und Eingaben verarbeiten.",
+  "funktionen": [
+   "Win::save_bg",
+   "Win::restore_bg",
+   "Win::draw_frame",
+   "Win::draw_frame_row",
+   "Win::calc_x",
+   "Win::calc_y",
+   "Win::save_border",
+   "Win::restore_border"
+  ],
+  "klassen": [
+   "Win"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   136
+  ],
+  "zeilen": 543,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O206",
+  "datei": "OVL206.CPP",
+  "sprache": "C++",
+  "bereich": "Helden & Heldenerschaffung",
+  "titel": "Charakterbogen drucken, Teil 1",
+  "beschreibung": "Druckt den Charakterbogen eines Helden auf Drucker oder in eine Datei: Kopf, Eigenschaften, Kampfwerte, Talente.",
+  "funktionen": [
+   "hero_print_sheet",
+   "print_get_item",
+   "print_line"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 263,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O207",
+  "datei": "OVL207.CPP",
+  "sprache": "C++",
+  "bereich": "Helden & Heldenerschaffung",
+  "titel": "Charakterbogen drucken, Teil 2",
+  "beschreibung": "Druckt die Zauberwerte und weitere Teile des Charakterbogens zeilenweise.",
+  "funktionen": [
+   "print_spells",
+   "print_items",
+   "print_file_name"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 231,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O208",
+  "datei": "OVL208.CPP",
+  "sprache": "C++",
+  "bereich": "Dungeons",
+  "titel": "Legespiel im Phex-Tempel",
+  "beschreibung": "Klasse Puzzle: Kartenrätsel mit 3 x 5 verdeckten Karten im Dungeon 5.",
+  "funktionen": [
+   "Puzzle::load_data",
+   "Puzzle::shuffle",
+   "Puzzle::draw_table",
+   "Puzzle::handle_keys",
+   "Puzzle::handle_mouse",
+   "Puzzle::check_won",
+   "Puzzle::unflip_oldest",
+   "Puzzle::push_shown"
+  ],
+  "klassen": [
+   "Bmp",
+   "NvfMem",
+   "Puzzle"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   69
+  ],
+  "zeilen": 323,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O209",
+  "datei": "OVL209.CPP",
+  "sprache": "C++",
+  "bereich": "Reise & Karte",
+  "titel": "Reisekarte zeichnen",
+  "beschreibung": "Zeichnet Kartenbild, Datum, Statusbild, Symbole sowie Route und Wege auf der Reisekarte.",
+  "funktionen": [
+   "travelmap_draw",
+   "travelmap_draw_icons",
+   "travelmap_walk_x",
+   "travelmap_show_route",
+   "travelmap_route",
+   "travelmap_draw_path",
+   "travelmap_draw_path_to",
+   "travelmap_set_point1"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   46,
+   47
+  ],
+  "zeilen": 344,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O210",
+  "datei": "OVL210.CPP",
+  "sprache": "C++",
+  "bereich": "Ereignisse unterwegs",
+  "titel": "Ortsereignisse der Reisekarte (Verteiler)",
+  "beschreibung": "Bestimmt die Reiseetappe und verteilt die Ortsereignisse der Reisekarte nach Ortsnummer.",
+  "funktionen": [
+   "travel_stage",
+   "place_has_event",
+   "place_event",
+   "place_unloads_ui"
+  ],
+  "klassen": [
+   "Travel"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   5
+  ],
+  "zeilen": 264,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O211",
+  "datei": "OVL211.C",
+  "sprache": "C",
+  "bereich": "Ereignisse unterwegs",
+  "titel": "Reiseereignisse (Verteiler)",
+  "beschreibung": "Eine Funktion tevent_run: lädt die Wegtexte und ruft das Reiseereignis des jeweiligen Weges auf (O113 bis O124).",
+  "funktionen": [
+   "tevent_run"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   88
+  ],
+  "zeilen": 642,
+  "bright_eyes": "tevent_NNN (Benennung wie DSA 1)"
+ },
+ {
+  "modul": "O212",
+  "datei": "OVL212.CPP",
+  "sprache": "C++",
+  "bereich": "Ereignisse unterwegs",
+  "titel": "Kämpfe und Zufallsbegegnungen unterwegs",
+  "beschreibung": "Kampfergebnis auswerten, Begegnungsstufe, Überfälle der Verfolger und Zufallsbegegnungen je Gelände.",
+  "funktionen": [
+   "fight_result",
+   "encounter_level",
+   "ambush_fight",
+   "travel_encounter"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   8
+  ],
+  "zeilen": 340,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O213",
+  "datei": "OVL213.CPP",
+  "sprache": "C++",
+  "bereich": "Reise & Karte",
+  "titel": "Reiseanimation und Kartenposition",
+  "beschreibung": "Reiseanimation nach Tempostufe, Wetterfolgen und Position der Gruppe auf der Karte.",
+  "funktionen": [
+   "travel_nop_o213",
+   "travel_anim_off_leave",
+   "travel_anim",
+   "travel_anim_off",
+   "travel_anim_on",
+   "travel_level",
+   "travel_weather_effects",
+   "travel_ui_load"
+  ],
+  "klassen": [
+   "Bmp"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   80
+  ],
+  "zeilen": 395,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O214",
+  "datei": "OVL214.C",
+  "sprache": "C",
+  "bereich": "Reise & Karte",
+  "titel": "Eingabe der Reisekarte",
+  "beschreibung": "Richtungswahl mit der Kompassrose per Tasten und Maus, Menü und Abbruch.",
+  "funktionen": [
+   "travelmap_select_dir",
+   "travel_redraw",
+   "travel_menu"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   36
+  ],
+  "zeilen": 356,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O215",
+  "datei": "OVL215.CPP",
+  "sprache": "C++",
+  "bereich": "Reise & Karte",
+  "titel": "Reiseschleife eines Weges",
+  "beschreibung": "Hauptschleife eines Weges zwischen zwei Orten: Zeit, Tempo, Ereignisse, Gruppentreffen und Umkehr.",
+  "funktionen": [
+   "travel_resume",
+   "travel_route"
+  ],
+  "klassen": [
+   "Travel"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   196
+  ],
+  "zeilen": 511,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O216",
+  "datei": "OVL216.CPP",
+  "sprache": "C++",
+  "bereich": "Reise & Karte",
+  "titel": "Reise entlang der Route",
+  "beschreibung": "Reist entlang der geplanten Route mit Tempo, Straßen- und Wetterfaktoren und Statusbild.",
+  "funktionen": [
+   "travel_follow_route",
+   "travel_boat_speed",
+   "travel_road_factor",
+   "travel_weather_factor",
+   "travel_health_factor",
+   "travel_text_speed",
+   "travel_text_variant",
+   "travel_status_update"
+  ],
+  "klassen": [
+   "Bmp",
+   "Travel"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   124
+  ],
+  "zeilen": 478,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O217",
+  "datei": "OVL217.CPP",
+  "sprache": "C++",
+  "bereich": "Reise & Karte",
+  "titel": "Tempo, Rast und Umkehr",
+  "beschreibung": "Langsam oder eilig reisen, Heldenauswahl am unteren Rand, Rastmenü und Umkehren.",
+  "funktionen": [
+   "travel_slow5_off",
+   "travel_slow4_off",
+   "travel_slow4_on",
+   "select_hero_bar",
+   "travel_rest_menu",
+   "travel_stop",
+   "travel_speed_hurry",
+   "travel_slow5_on"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   121
+  ],
+  "zeilen": 479,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O218",
+  "datei": "OVL218.CPP",
+  "sprache": "C++",
+  "bereich": "Reise & Karte",
+  "titel": "Reiseroute planen",
+  "beschreibung": "Stellt die Route auf der Reisekarte zusammen: Richtungen, Wege, Rückfragen an Kreuzungen und Umkehr.",
+  "funktionen": [
+   "route_plan",
+   "route_choose_dir",
+   "route_plan_simple",
+   "route_dest_by_dir"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   170
+  ],
+  "zeilen": 535,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O219",
+  "datei": "OVL219.CPP",
+  "sprache": "C++",
+  "bereich": "Reise & Karte",
+  "titel": "Hilfsfunktionen der Reisekarte",
+  "beschreibung": "Wege suchen, Richtungsbits der Orte zählen, Wegpunkte laden und Stadt betreten.",
+  "funktionen": [
+   "route_is_known",
+   "place_count_dirs",
+   "place_count_all_dirs",
+   "route_find",
+   "route_first",
+   "route_start_index",
+   "route_find_area",
+   "place_area"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   162
+  ],
+  "zeilen": 515,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O220",
+  "datei": "OVL220.CPP",
+  "sprache": "C++",
+  "bereich": "Reise & Karte",
+  "titel": "Kompassrose",
+  "beschreibung": "Richtungswahl mit der Kompassrose: Bilder laden, Mausbereiche, Lage und Zeichnen der Rose.",
+  "funktionen": [
+   "rose_alloc",
+   "rose_free",
+   "rose_mouse_area",
+   "rose_dir_allowed",
+   "rose_compose",
+   "rose_open",
+   "rose_next_dir",
+   "rose_draw"
+  ],
+  "klassen": [
+   "Bmp"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   97
+  ],
+  "zeilen": 385,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O221",
+  "datei": "OVL221.C",
+  "sprache": "C",
+  "bereich": "Sonstiges",
+  "titel": "17 leere Funktionen",
+  "beschreibung": "Platzhalter aus dem Original ohne Aufrufer.",
+  "funktionen": [
+   "o221_stub_0",
+   "o221_stub_16",
+   "o221_stub_1",
+   "o221_stub_2",
+   "o221_stub_3",
+   "o221_stub_4",
+   "o221_stub_5",
+   "o221_stub_6"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 78,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O222",
+  "datei": "OVL222.C",
+  "sprache": "C",
+  "bereich": "Sonstiges",
+  "titel": "Testmenüs für Schlussszenen und Reiseereignisse",
+  "beschreibung": "Zwei Entwickler-Menüs ohne Aufrufer im Spiel: Schlussszenen und elf Reiseereignisse, dazu vier leere Funktionen.",
+  "funktionen": [
+   "debug_ending_menu",
+   "debug_travel_events",
+   "debug_nop1",
+   "debug_nop2",
+   "debug_nop3",
+   "debug_nop4"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 123,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O223",
+  "datei": "OVL223.CPP",
+  "sprache": "C++",
+  "bereich": "Reise & Karte",
+  "titel": "Route abgehen",
+  "beschreibung": "Geht die geplante oder einfache Route Weg für Weg ab, markiert Wege als bekannt und schaltet Richtungen frei.",
+  "funktionen": [
+   "travel_walk_planned",
+   "travel_walk_simple",
+   "place_reveal_dirs",
+   "place_reveal_dir",
+   "route_rebuild",
+   "travel_reset_pos",
+   "route_mark_known"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   177
+  ],
+  "zeilen": 551,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O224",
+  "datei": "OVL224.CPP",
+  "sprache": "C++",
+  "bereich": "Start & System",
+  "titel": "Bildschirmschoner",
+  "beschreibung": "Bildschirmschoner mit Zeitgrenze, Kachel-Animation und Abbruch per Taste oder Maus.",
+  "funktionen": [
+   "saver_ctor",
+   "saver::tick",
+   "saver::wait",
+   "saver::poll",
+   "saver_init",
+   "saver::set_level",
+   "saver::anim"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 133,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O225",
+  "datei": "OVL225.CPP",
+  "sprache": "C++",
+  "bereich": "Dialoge & Tagebuch",
+  "titel": "Auswahlliste mit Tippsuche",
+  "beschreibung": "Klasse Sel: sortierte Liste der Suchbegriffe für die Tagebuchsuche mit Rollbalken und Tippsuche.",
+  "funktionen": [
+   "Sel::Sel",
+   "sel_compar",
+   "Sel::~Sel",
+   "Sel::run",
+   "Sel::fill",
+   "Sel::loop",
+   "Sel::type_search",
+   "Sel::flash"
+  ],
+  "klassen": [
+   "Sel"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   108
+  ],
+  "zeilen": 386,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O226",
+  "datei": "OVL226.CPP",
+  "sprache": "C++",
+  "bereich": "Händler & Dienste",
+  "titel": "Laden",
+  "beschreibung": "Klasse Shop: Laden betreten, Feilschen, Kaufen, Verkaufen und Diebstahl.",
+  "funktionen": [
+   "Shop::Shop",
+   "Shop::~Shop",
+   "Shop::leave",
+   "Shop::is_open",
+   "Shop::run",
+   "Shop::check_time",
+   "Shop::talk",
+   "Shop::steal"
+  ],
+  "klassen": [
+   "Shop"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   84,
+   85
+  ],
+  "zeilen": 390,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O227",
+  "datei": "OVL227.CPP",
+  "sprache": "C++",
+  "bereich": "Händler & Dienste",
+  "titel": "Laden: Verkaufen",
+  "beschreibung": "Verkaufsbildschirm des Ladens mit Heldenwahl, Gepäckliste und Erlös.",
+  "funktionen": [
+   "shop_sell_screen",
+   "shop_sell_fill",
+   "shop_sell_draw_grid",
+   "shop_sell_draw_item",
+   "shop_mark_hero"
+  ],
+  "klassen": [
+   "Shop"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 371,
+  "bright_eyes": "sell_screen (DSA 1)"
+ },
+ {
+  "modul": "O228",
+  "datei": "OVL228.CPP",
+  "sprache": "C++",
+  "bereich": "Händler & Dienste",
+  "titel": "Laden: Kaufen",
+  "beschreibung": "Kaufbildschirm des Ladens mit Warenliste, Geld, Gewicht und Plätzen.",
+  "funktionen": [
+   "shop_buy_screen",
+   "shop_buy_draw_money",
+   "shop_buy_draw_weight",
+   "shop_buy_draw_slots",
+   "shop_buy_draw_grid",
+   "shop_buy_draw_item",
+   "shop_buy_sum"
+  ],
+  "klassen": [
+   "Shop"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   94
+  ],
+  "zeilen": 349,
+  "bright_eyes": "buy_screen (DSA 1)"
+ },
+ {
+  "modul": "O229",
+  "datei": "OVL229.C",
+  "sprache": "C",
+  "bereich": "Händler & Dienste",
+  "titel": "Warenraster der Läden",
+  "beschreibung": "Raster mit 3 x 5 Waren je Seite, Markierung, Sortierung nach Preis und Eingabe per Maus oder Cursor.",
+  "funktionen": [
+   "shop_compar",
+   "shop_grid_mark",
+   "shop_grid_input"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 124,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O230",
+  "datei": "OVL230.CPP",
+  "sprache": "C++",
+  "bereich": "Händler & Dienste",
+  "titel": "Schmiede",
+  "beschreibung": "Klasse Smith: Öffnungszeiten, Hausverbot, Reparaturaufträge abgeben und abholen (wie DSA 1 seg058).",
+  "funktionen": [
+   "Smith::Smith",
+   "Smith::check_open",
+   "Smith::ban",
+   "Smith::run",
+   "Smith::talk",
+   "Smith::pickup",
+   "Smith::check_closing",
+   "smith_talk_event"
+  ],
+  "klassen": [
+   "Smith"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   24
+  ],
+  "zeilen": 273,
+  "bright_eyes": "seg058 do_smith (DSA 1)"
+ },
+ {
+  "modul": "O231",
+  "datei": "OVL231.CPP",
+  "sprache": "C++",
+  "bereich": "Händler & Dienste",
+  "titel": "Schmiede: Reparaturbildschirm",
+  "beschreibung": "Helden mit reparierbaren Gegenständen wählen und Gegenstände zur Reparatur geben.",
+  "funktionen": [
+   "smith_select_hero",
+   "smith_repair",
+   "smith_draw_grid",
+   "smith_list_items",
+   "smith_draw_cursor",
+   "smith_mark_hero"
+  ],
+  "klassen": [
+   "Smith"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 401,
+  "bright_eyes": "seg058 repair_screen, add_item_to_smith (DSA 1)"
+ },
+ {
+  "modul": "O232",
+  "datei": "OVL232.C",
+  "sprache": "C",
+  "bereich": "Klang",
+  "titel": "Klangkonfiguration",
+  "beschreibung": "Ports und IRQs lesen und schreiben, Treiberdateien löschen und die BLASTER-Variable auswerten.",
+  "funktionen": [
+   "snd_cfg_read",
+   "snd_cfg_write",
+   "snd_cfg_unlink_drivers",
+   "blaster_parse",
+   "blaster_detect"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 162,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O233",
+  "datei": "OVL233.CPP",
+  "sprache": "C++",
+  "bereich": "Magie",
+  "titel": "Zaubern der Helden (Cast)",
+  "beschreibung": "Klasse Cast: Zauberkosten, Zauberkundigen wählen, Heilanimation und Ablauf eines Heldenzaubers (Gegenstück zu O194).",
+  "funktionen": [
+   "Cast::Cast",
+   "spell_class_first",
+   "hero_spell_cost",
+   "select_magic_user",
+   "Cast::heal_ani",
+   "Cast::damage",
+   "Cast::target_pa",
+   "Cast::target_rs"
+  ],
+  "klassen": [
+   "Cast"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   163
+  ],
+  "zeilen": 476,
+  "bright_eyes": "get_spell_cost, FIG_do_spell_damage, get_attackee_parade (DSA 1)"
+ },
+ {
+  "modul": "O234",
+  "datei": "OVL234.CPP",
+  "sprache": "C++",
+  "bereich": "Magie",
+  "titel": "Zauber 9 bis 26",
+  "beschreibung": "Beherrschungs-, Dämonologie- und Elementarzauber, z. B. Große Gier, Zwingtanz, Magischer Raub und Beschwörungen.",
+  "funktionen": [
+   "spell_grosse_gier",
+   "spell_zwingtanz",
+   "spell_magischer_raub",
+   "spell_respondami",
+   "spell_furor_blut",
+   "spell_heptagon",
+   "spell_elementare_beschwoeren",
+   "spell_skelettarius"
+  ],
+  "klassen": [
+   "Cast"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   166
+  ],
+  "zeilen": 456,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O235",
+  "datei": "OVL235.CPP",
+  "sprache": "C++",
+  "bereich": "Magie",
+  "titel": "Zauber 27 bis 48",
+  "beschreibung": "Bewegungs-, Heil-, Hellsicht- und Illusionszauber, z. B. Axxeleratus, Transversalis, Balsam und Hexenspeichel.",
+  "funktionen": [
+   "spell_analues",
+   "spell_axxeleratus",
+   "spell_foramen",
+   "spell_motoricus",
+   "spell_spurlos",
+   "spell_sensibar",
+   "spell_transversalis",
+   "spell_ueber_eis"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   173
+  ],
+  "zeilen": 514,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O236",
+  "datei": "OVL236.CPP",
+  "sprache": "C++",
+  "bereich": "Magie",
+  "titel": "Zauber 49 bis 71",
+  "beschreibung": "Kampf-, Verständigungs- und Verwandlungszauber, z. B. Blitz, Eisenrost, Fulminictus, Ignifaxius und Armatrutz.",
+  "funktionen": [
+   "spell_blitz",
+   "spell_ecliptifactus",
+   "spell_eisenrost",
+   "spell_fulminictus",
+   "spell_ignifaxius",
+   "spell_plumbumbarum",
+   "spell_radau",
+   "spell_saft_kraft"
+  ],
+  "klassen": [
+   "Cast"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   159
+  ],
+  "zeilen": 453,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O237",
+  "datei": "OVL237.CPP",
+  "sprache": "C++",
+  "bereich": "Magie",
+  "titel": "Zauber 72 bis 85",
+  "beschreibung": "Verwandlungs- und Veränderungszauber, z. B. Paralü, Salander, Visibili und Brenne toter Stoff.",
+  "funktionen": [
+   "spell_paralue",
+   "spell_salander",
+   "spell_in_see_und_fluss",
+   "spell_visibili",
+   "spell_abvenenum",
+   "spell_aeolitus",
+   "spell_weiches_erstarre",
+   "spell_claudibus"
+  ],
+  "klassen": [
+   "Cast"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   48
+  ],
+  "zeilen": 315,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O238",
+  "datei": "OVL238.CPP",
+  "sprache": "C++",
+  "bereich": "Gegenstände",
+  "titel": "Gegenstandsablagen",
+  "beschreibung": "Klasse Stash: Ablagen und Verstecke an Orten laden, anzeigen, füllen und zurückschreiben.",
+  "funktionen": [
+   "Stash::Stash",
+   "Stash::is",
+   "Stash::show",
+   "Stash::set",
+   "Stash::add",
+   "Stash::update",
+   "Stash::has_items",
+   "Stash::count_items"
+  ],
+  "klassen": [
+   "Stash"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 268,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O239",
+  "datei": "OVL239.CPP",
+  "sprache": "C++",
+  "bereich": "Städte & Orte",
+  "titel": "Zufallsereignisse in der Stadt",
+  "beschreibung": "Zufällige Ereignisse in Städten je nach Ort und Tageszeit, mit Bild und Fragen.",
+  "funktionen": [
+   "town_rnd_open",
+   "town_rnd_close",
+   "town_rnd_tallest_hero",
+   "town_rnd_magic_user",
+   "town_rnd_best_weapon",
+   "town_rnd_note_17",
+   "town_rnd_item83_arrest",
+   "town_rnd_dwarf_test"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   206
+  ],
+  "zeilen": 725,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O240",
+  "datei": "OVL240.CPP",
+  "sprache": "C++",
+  "bereich": "Händler & Dienste",
+  "titel": "Schenke",
+  "beschreibung": "Klasse Tavern: Zutritt, Hauptmenü, Andrang, Sperrstunde und Zechprobe (wie DSA 1 seg059).",
+  "funktionen": [
+   "Tavern::Tavern",
+   "Tavern::admit",
+   "Tavern::check_ban",
+   "Tavern::drink_test",
+   "Tavern::run",
+   "Tavern::hourly_event",
+   "Tavern::check_closing",
+   "Tavern::order"
+  ],
+  "klassen": [
+   "Tavern"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   100
+  ],
+  "zeilen": 353,
+  "bright_eyes": "seg059 do_tavern (DSA 1)"
+ },
+ {
+  "modul": "O241",
+  "datei": "OVL241.C",
+  "sprache": "C",
+  "bereich": "Händler & Dienste",
+  "titel": "Schenke, Teil 2",
+  "beschreibung": "Öffnungszeiten, Eingangsmenü, Runden ausgeben und Zeche der Schenke.",
+  "funktionen": [
+   "tavern_check_hours",
+   "tavern_entrance",
+   "tavern_round",
+   "tavern_pay_bill",
+   "tavern_use_skill",
+   "tavern_change_seat",
+   "tavern_talk",
+   "tavern_guests_left"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   158
+  ],
+  "zeilen": 485,
+  "bright_eyes": "seg059/seg060 Schenke (DSA 1)"
+ },
+ {
+  "modul": "O242",
+  "datei": "OVL242.C",
+  "sprache": "C",
+  "bereich": "Händler & Dienste",
+  "titel": "Schenke, Teil 3",
+  "beschreibung": "Essen und Getränke bestellen, Mahlzeit bezahlen und das Ereignis in der Schenke.",
+  "funktionen": [
+   "tavern_order_dinner",
+   "tavern_pay_meal",
+   "tavern_order_drink",
+   "tavern_night_event"
+  ],
+  "klassen": [
+   "Tavern"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 163,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O243",
+  "datei": "OVL243.CPP",
+  "sprache": "C++",
+  "bereich": "Dateien & Spielstände",
+  "titel": "Arbeitsdateien (TempFile)",
+  "beschreibung": "Klasse TempFile: Dateien aus dem Archiv ins TEMP-Verzeichnis entpacken, öffnen, lesen, schreiben und positionieren.",
+  "funktionen": [
+   "TempFile::TempFile",
+   "TempFile::extract",
+   "TempFile::write",
+   "TempFile::open",
+   "TempFile::load",
+   "TempFile::read",
+   "TempFile::length",
+   "TempFile::close"
+  ],
+  "klassen": [
+   "TempFile"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 214,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O244",
+  "datei": "OVL244.C",
+  "sprache": "C",
+  "bereich": "Sonstiges",
+  "titel": "Leere Funktion",
+  "beschreibung": "Ein Platzhalter aus dem Original ohne Aufrufer.",
+  "funktionen": [
+   "o244_stub_0"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 10,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O245",
+  "datei": "OVL245.C",
+  "sprache": "C",
+  "bereich": "Sonstiges",
+  "titel": "3 leere Funktionen",
+  "beschreibung": "Platzhalter aus dem Original ohne Aufrufer.",
+  "funktionen": [
+   "o245_stub_0",
+   "o245_stub_1",
+   "o245_stub_2"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 18,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O246",
+  "datei": "OVL246.C",
+  "sprache": "C",
+  "bereich": "Sonstiges",
+  "titel": "5 leere Funktionen",
+  "beschreibung": "Platzhalter aus dem Original ohne Aufrufer.",
+  "funktionen": [
+   "o246_stub_0",
+   "o246_stub_1",
+   "o246_stub_2",
+   "o246_stub_3",
+   "o246_stub_4"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 26,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O247",
+  "datei": "OVL247.C",
+  "sprache": "C",
+  "bereich": "Sonstiges",
+  "titel": "2 leere Funktionen",
+  "beschreibung": "Platzhalter aus dem Original ohne Aufrufer.",
+  "funktionen": [
+   "o247_stub_0",
+   "o247_stub_1"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 14,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O248",
+  "datei": "OVL248.CPP",
+  "sprache": "C++",
+  "bereich": "Oberfläche (Fenster/Dialoge/Eingabe)",
+  "titel": "Schrift und Textlisten",
+  "beschreibung": "Klasse Font: Zeichensatz laden, Schreibposition, Textdateien in Zeigerlisten zerlegen und Textbreiten messen.",
+  "funktionen": [
+   "Font::Font",
+   "Font::set_line_h",
+   "Font::split",
+   "Font::load_text",
+   "Font::load_list",
+   "Font::max_width",
+   "Font::~Font",
+   "Font::goto_x"
+  ],
+  "klassen": [
+   "Font"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 127,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O249",
+  "datei": "OVL249.CPP",
+  "sprache": "C++",
+  "bereich": "Städte & Orte",
+  "titel": "Hafenstadt: Passage",
+  "beschreibung": "Ereignisse einer zweiten Hafenstadt: Hafenmeister, Passage verhandeln und Abfahrt.",
+  "funktionen": [
+   "port_event",
+   "port_harbor_master",
+   "port_haggle",
+   "port_pay",
+   "PortTxt::PortTxt",
+   "port_talk",
+   "port_depart",
+   "port_night_event"
+  ],
+  "klassen": [
+   "PortTxt"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   156
+  ],
+  "zeilen": 522,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O250",
+  "datei": "OVL250.CPP",
+  "sprache": "C++",
+  "bereich": "Start & System",
+  "titel": "Kalender und Spielzeit",
+  "beschreibung": "Klasse Date: Datum, Uhrzeit, Jahreszeit, besondere Tage und Himmelsanzeige mit Sonne und Mond, dazu der Spielstandblock TIME.",
+  "funktionen": [
+   "Date::Date",
+   "Date::next_day",
+   "Date::print",
+   "Date::season",
+   "Date::draw",
+   "Date::load",
+   "Date::alloc",
+   "Date::save"
+  ],
+  "klassen": [
+   "Date"
+  ],
+  "spieltexte": [
+   "GLOBLTXT.LTX"
+  ],
+  "fehler": [
+   33,
+   34,
+   35
+  ],
+  "zeilen": 352,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O251",
+  "datei": "OVL251.CPP",
+  "sprache": "C++",
+  "bereich": "Städte & Orte",
+  "titel": "Kartenereignisse in Tjolmar",
+  "beschreibung": "Kartenereignis-Rückruf der Stadt Tjolmar mit den Gebäuden und dem Haus des Zwergs Ingramosch.",
+  "funktionen": [
+   "town_tjolmar_event",
+   "tjolmar_dwarf_door"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "TJOLMAR.LTX",
+   "GLOBLTXT.LTX"
+  ],
+  "fehler": [],
+  "zeilen": 303,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O252",
+  "datei": "OVL252.CPP",
+  "sprache": "C++",
+  "bereich": "Gegenstände",
+  "titel": "Gegenstände benutzen: Angriff, Licht, Instrumente",
+  "beschreibung": "Weitere ItemUse-Methoden: Wurf- und Giftgegenstände außerhalb des Kampfes, Instrumente, Lampen, Zunder und Schreibzeug.",
+  "funktionen": [
+   "ItemUse::use_attack_item",
+   "ItemUse::play_instrument",
+   "ItemUse::read_heptagon_book",
+   "ItemUse::use_light",
+   "ItemUse::show_hidden_enemies",
+   "ItemUse::write_recipe",
+   "ItemUse::read_recipe_book",
+   "ItemUse::show_note"
+  ],
+  "klassen": [
+   "ItemUse"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   95
+  ],
+  "zeilen": 369,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O253",
+  "datei": "OVL253.CPP",
+  "sprache": "C++",
+  "bereich": "Gegenstände",
+  "titel": "Verzehren",
+  "beschreibung": "ItemUse::consume: Nahrung, Getränke, Kräuter und Tränke verzehren, auch wenn ein anderer Held den Bewusstlosen füttert.",
+  "funktionen": [
+   "ItemUse::consume"
+  ],
+  "klassen": [
+   "ItemUse"
+  ],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 141,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O254",
+  "datei": "OVL254.CPP",
+  "sprache": "C++",
+  "bereich": "Gegenstände",
+  "titel": "Wirkung von Kräutern und Tränken",
+  "beschreibung": "Wirkungen verzehrter Kräuter und Tränke: Heilung, Eigenschaftsboni, Gegengifte und Giftarten.",
+  "funktionen": [
+   "item_poison_type",
+   "ItemUse::herb_effect",
+   "ItemUse::potion_effect"
+  ],
+  "klassen": [
+   "ItemUse"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   130,
+   131
+  ],
+  "zeilen": 330,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O255",
+  "datei": "OVL255.C",
+  "sprache": "C",
+  "bereich": "Grafik & Animation",
+  "titel": "3D-Ansicht: Verdeckung",
+  "beschreibung": "Eine Funktion: löscht in der 3D-Ansicht die Objekte verdeckter Nachbarzellen, damit sie nicht gezeichnet werden.",
+  "funktionen": [
+   "view_cull_hidden"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [
+   87
+  ],
+  "zeilen": 255,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O256",
+  "datei": "OVL256.CPP",
+  "sprache": "C++",
+  "bereich": "Reise & Karte",
+  "titel": "Wetter",
+  "beschreibung": "Klasse Wx: Wetter aus Jahreszeit und einem zyklischen Zufallszustand, einmal täglich fortgeschrieben.",
+  "funktionen": [
+   "Wx::Wx",
+   "Wx::get",
+   "Wx::set",
+   "Wx::next",
+   "Wx::~Wx"
+  ],
+  "klassen": [
+   "Wx"
+  ],
+  "spieltexte": [
+   "MMASK.LTX"
+  ],
+  "fehler": [],
+  "zeilen": 79,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O257",
+  "datei": "OVL257.CPP",
+  "sprache": "C++",
+  "bereich": "Dialoge & Tagebuch",
+  "titel": "Dialogobjekt",
+  "beschreibung": "Gesprächsobjekt mit Themenmerkern, Themenliste, Zählertabelle, Begrüßungs- und Abschlusstexten (Gesprächsführung in O049).",
+  "funktionen": [
+   "Conv::Conv",
+   "Conv::greet",
+   "Conv::bye",
+   "Conv::insert_topic",
+   "Conv::remove_temp",
+   "Conv::script_topics",
+   "Conv::relock",
+   "Conv::place_topics"
+  ],
+  "klassen": [
+   "Conv"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   174
+  ],
+  "zeilen": 668,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O258",
+  "datei": "OVL258.CPP",
+  "sprache": "C++",
+  "bereich": "Dialoge & Tagebuch",
+  "titel": "Gesprächs-Rückrufe",
+  "beschreibung": "44 Rückrufe der Gespräche für Aktionen und Bedingungen: Themen freischalten, Merker setzen, Herberge, Szenen.",
+  "funktionen": [
+   "conv_cb_tavgas",
+   "conv_cb_swamp2",
+   "conv_cb_low62_dragan",
+   "conv_cb_low65",
+   "conv_cb_low42",
+   "conv_cb_low35",
+   "conv_cb_frp25b",
+   "conv_cb_low02"
+  ],
+  "klassen": [
+   "Sites"
+  ],
+  "spieltexte": [
+   "XDS.LTX",
+   "LOW04.TLK",
+   "KVIR01.TLK",
+   "FINS01.TLK",
+   "LOW02.TLK",
+   "LOW06.TLK",
+   "LOW07.TLK",
+   "LOW08.TLK",
+   "LOW15.TLK",
+   "LOW16.TLK",
+   "LOW22.TLK",
+   "LOW24.TLK",
+   "LOW25.TLK",
+   "LOW26.TLK",
+   "LOW27.TLK",
+   "LOW31.TLK",
+   "LOW32.TLK",
+   "LOW33.TLK",
+   "LOW34.TLK",
+   "LOW42.TLK",
+   "LOW43.TLK",
+   "TJOL09.TLK",
+   "LOW37..LOW41.TLK",
+   "FRP183B.TLK",
+   "FST000.TLK",
+   "FST167.TLK",
+   "FRP22B.TLK",
+   "FRP25B.TLK",
+   "FRP32B.TLK",
+   "FRP32C.TLK",
+   "LOW36.TLK",
+   "LOW62.TLK",
+   "LOW63.TLK",
+   "LOW65.TLK",
+   "GASINFO2.TLK",
+   "TIEF12B.TLK",
+   "SWAMP2.TLK"
+  ],
+  "fehler": [],
+  "zeilen": 930,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O259",
+  "datei": "OVL259.CPP",
+  "sprache": "C++",
+  "bereich": "Dialoge & Tagebuch",
+  "titel": "Szenen in Gesprächen",
+  "beschreibung": "Szenen innerhalb von Gesprächen: Bilder, Erzählungen, Musik und Gesprächsende.",
+  "funktionen": [
+   "conv_scene_redraw",
+   "conv_finish",
+   "conv_scene_picture",
+   "conv_scene_lore",
+   "conv_scene_brothel",
+   "conv_scene_iwain",
+   "conv_scene_meal",
+   "conv_scene_music"
+  ],
+  "klassen": [
+   "Conv"
+  ],
+  "spieltexte": [
+   "XDS.LTX",
+   "GLOBLTXT.LTX"
+  ],
+  "fehler": [
+   132
+  ],
+  "zeilen": 539,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O260",
+  "datei": "OVL260.CPP",
+  "sprache": "C++",
+  "bereich": "Dialoge & Tagebuch",
+  "titel": "Leser für Dialogskripte",
+  "beschreibung": "Klasse Script: liest Themenliste und Skriptdatei eines Gesprächs und zerlegt sie in Abschnitte (TOPIC, END, NAME).",
+  "funktionen": [
+   "Script::Script",
+   "Script::split",
+   "Script::word",
+   "Script::quoted",
+   "Script::parse",
+   "Script::find",
+   "Script::cut",
+   "Script::keyword"
+  ],
+  "klassen": [
+   "Script"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   67,
+   227
+  ],
+  "zeilen": 380,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O261",
+  "datei": "OVL261.CPP",
+  "sprache": "C++",
+  "bereich": "Dungeons",
+  "titel": "Orkfestung, Ebene 1 (Dungeon 6)",
+  "beschreibung": "Kartenverteiler des Dungeons 6 in den Blutzinnen: Lärmfelder, Fallen, Truhen, Rast und Kämpfe.",
+  "funktionen": [
+   "dng06_handler",
+   "dng06_latrine_ambush",
+   "dng06_fights"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "BLUT1.LTX"
+  ],
+  "fehler": [
+   182
+  ],
+  "zeilen": 681,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O262",
+  "datei": "OVL262.CPP",
+  "sprache": "C++",
+  "bereich": "Dungeons",
+  "titel": "Orkfestung, Ebene 1: Feldereignisse",
+  "beschreibung": "Feldereignisse des Dungeons 6 (Brazoragh-Statue, Zwergenskelett, Waffenregal) und gemeinsame Routinen der Orkfestung.",
+  "funktionen": [
+   "blut_nop",
+   "blut_noise_check",
+   "dng06_brazoragh",
+   "dng06_pit",
+   "blut_rockfall",
+   "dng06_beer_barrel",
+   "dng06_straw",
+   "dng06_stores"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "BLUT1.LTX"
+  ],
+  "fehler": [
+   175
+  ],
+  "zeilen": 624,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O263",
+  "datei": "OVL263.CPP",
+  "sprache": "C++",
+  "bereich": "Dungeons",
+  "titel": "Gefangennahme: Gegenstände einsammeln",
+  "beschreibung": "Sammelt bei der Gefangennahme Kräuter, Rüstungen, Waffen und übrige Gegenstände der Gruppe in Ablagen ein und gibt Kleidung aus.",
+  "funktionen": [
+   "group_confiscate",
+   "group_confiscate_herbs",
+   "group_give_clothes",
+   "group_confiscate_armor",
+   "group_confiscate_weapons",
+   "group_confiscate_rest"
+  ],
+  "klassen": [
+   "Stash"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   6,
+   212
+  ],
+  "zeilen": 173,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O264",
+  "datei": "OVL264.CPP",
+  "sprache": "C++",
+  "bereich": "Dungeons",
+  "titel": "Orkgefängnis (Dungeon 7)",
+  "beschreibung": "Kartenverteiler des Dungeons 7 in den Blutzinnen: Lauschfelder, Versteck, Ausrüstungstruhe, Hundezwinger, Latrine und Gefangenschaft.",
+  "funktionen": [
+   "dng07_handler",
+   "dng07_spider_queen",
+   "dng07_prison_day"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "BLUT2.LTX",
+   "BLUT.TLK"
+  ],
+  "fehler": [
+   199,
+   218
+  ],
+  "zeilen": 708,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O265",
+  "datei": "OVL265.CPP",
+  "sprache": "C++",
+  "bereich": "Dungeons",
+  "titel": "Orkgefängnis: Türen und Regale",
+  "beschreibung": "Schlösser, Regale, Truhen und Netze im Dungeon 7.",
+  "funktionen": [
+   "dng07_door",
+   "dng07_shelves",
+   "dng07_gold_statue",
+   "dng07_straw",
+   "dng07_graffiti",
+   "dng07_web",
+   "dng07_web_corpse"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "BLUT2.LTX"
+  ],
+  "fehler": [
+   105
+  ],
+  "zeilen": 494,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O266",
+  "datei": "OVL266.C",
+  "sprache": "C",
+  "bereich": "Dungeons",
+  "titel": "Orkgefängnis: feste Kämpfe",
+  "beschreibung": "Kämpfe an festen Feldern des Dungeons 7, abhängig von Alarm und Tageszeit.",
+  "funktionen": [
+   "dng07_fights",
+   "dng07_pincer_key",
+   "dng07_glasses_key"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "BLUT2.LTX"
+  ],
+  "fehler": [
+   12,
+   13
+  ],
+  "zeilen": 224,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O267",
+  "datei": "OVL267.CPP",
+  "sprache": "C++",
+  "bereich": "Dungeons",
+  "titel": "Orkfestung, Ebene 3 (Dungeon 8)",
+  "beschreibung": "Kartenverteiler des Dungeons 8: Lärmfelder, Blick in die große Halle, Fallen und Hebel.",
+  "funktionen": [
+   "dng08_handler",
+   "dng08_bolt_trap"
+  ],
+  "klassen": [],
+  "spieltexte": [
+   "BLUT3.LTX"
+  ],
+  "fehler": [
+   194
+  ],
+  "zeilen": 578,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O268",
+  "datei": "OVL268.CPP",
+  "sprache": "C++",
+  "bereich": "Dungeons",
+  "titel": "Orkfestung, Ebene 3: Feldereignisse",
+  "beschreibung": "Schlösser, feste Kämpfe, Regale und Grube im Dungeon 8.",
+  "funktionen": [
+   "dng08_door",
+   "dng08_fights",
+   "dng08_shelves",
+   "dng08_pit"
+  ],
+  "klassen": [
+   "Stash"
+  ],
+  "spieltexte": [
+   "BLUT3.LTX"
+  ],
+  "fehler": [
+   157
+  ],
+  "zeilen": 592,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O269",
+  "datei": "OVL269.CPP",
+  "sprache": "C++",
+  "bereich": "Grafik & Animation",
+  "titel": "Bildklasse Pic",
+  "beschreibung": "Klasse Pic: AIF-Bilder aus Datei oder Archiv laden und entpacken (RLE, PackBits, PP20) samt Palette.",
+  "funktionen": [
+   "Pic::Pic",
+   "Pic::load",
+   "Pic::loadf",
+   "Pic::sload",
+   "Pic::sloadf",
+   "Pic::do_load",
+   "Pic::read_header",
+   "Pic::read_pal"
+  ],
+  "klassen": [
+   "Pic"
+  ],
+  "spieltexte": [],
+  "fehler": [
+   74
+  ],
+  "zeilen": 479,
+  "bright_eyes": null
+ },
+ {
+  "modul": "O270",
+  "datei": "OVL270.ASM",
+  "sprache": "ASM",
+  "bereich": "Grafik & Animation",
+  "titel": "FLI-Entpacker, Vsync, Palette",
+  "beschreibung": "Original-Assembler (handgeschriebenes TASM): Strahlrücklauf, Palette und die FLI-Chunk-Entpacker (LC, BRUN, BLACK, COPY) nach A000.",
+  "funktionen": [
+   "fli_color_dac",
+   "fli_wait_retrace",
+   "fli_color_pal",
+   "fli_copy",
+   "fli_lc",
+   "fli_normalize",
+   "fli_brun",
+   "fli_black"
+  ],
+  "klassen": [],
+  "spieltexte": [],
+  "fehler": [],
+  "zeilen": 343,
+  "bright_eyes": null
+ }
+]
