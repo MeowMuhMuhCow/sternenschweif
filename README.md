@@ -1,5 +1,16 @@
 # Sternenschweif – rekonstruierter Quelltext
 
+## 225 Fehler behoben – 32 Jahre nach Release
+
+**Inoffizielle Bugfix-Fassung · spielbar ohne Compiler · das Original bleibt unangetastet · [gleich loslegen](#schnellstart-bugfix-fassung-spielen-ohne-compiler)**
+
+> **Zum ersten Mal seit 1994:** Nach der Gefangennahme durch die Orks liegt eure Ausrüstung wirklich in den Truhen,
+> statt für immer zu verschwinden. Das Lagerhaus frisst euer Vermögen nicht mehr, Händler kassieren nur noch, was
+> sie auch liefern, der Horriphobus-Kampf endet, und zwei Gespräche geben endlich den großen AP-Bonus, den Attic
+> vorgesehen hatte. → [alle 225 Änderungen](BUGFIXES.md)
+
+**Zusammen mit der [Schicksalsklinge](https://github.com/MeowMuhMuhCow/schicksalsklinge): 473 Bugfixes für DSA 1 und DSA 2.**
+
 **Das Schwarze Auge 2: Sternenschweif** (Attic, 1994), deutsche CD-Fassung C1.02, vollständig als C/C++-Quelltext
 rekonstruiert. Borland C++ 3.1 baut daraus eine `SCHWEIF.EXE`, die **Byte für Byte dem Original gleicht**
 (MD5 `da3b59ce86a82e4b8bb14d36ed37d4d0`).
