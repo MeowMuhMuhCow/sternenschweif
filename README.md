@@ -4,7 +4,9 @@
 rekonstruiert. Borland C++ 3.1 baut daraus eine `SCHWEIF.EXE`, die **Byte für Byte dem Original gleicht**
 (MD5 `da3b59ce86a82e4b8bb14d36ed37d4d0`).
 
-*English: Complete source reconstruction of the 1994 DOS RPG "Realms of Arkania: Star Trail" (German CD version 1.02).
+> **Passt zur GOG-Fassung:** Grundlage ist die deutsche `SCHWEIF.EXE` (CD-Version C1.02), wie sie in **„Realms of Arkania 2 - Star Trail Classic“ bei GOG** enthalten ist (MD5 `da3b59ce86a82e4b8bb14d36ed37d4d0`). Andere Fassungen (Diskette, englisch, andere Patchstände) ergeben eine andere EXE. Vor dem Bauen die eigene EXE mit dieser Prüfsumme vergleichen.
+
+*English: Complete source reconstruction of the 1994 DOS RPG "Realms of Arkania: Star Trail" (German CD version 1.02, as sold by GOG).
 Rebuilds a byte-identical executable with the original Borland C++ 3.1 compiler. Includes an unofficial bug-fix build (200+ original bugs fixed,
 savegame compatible) behind compile-time switches. Documentation is in German.*
 
