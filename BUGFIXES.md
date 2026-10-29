@@ -14,7 +14,7 @@ Nötig: Windows und **„Realms of Arkania 2 - Star Trail Classic“ von GOG** (
 | 2 | **`PATCHEN.bat`** doppelklicken. Es findet den GOG-Ordner (oder fragt), prüft die eigene `SCHWEIF.EXE` per Prüfsumme und baut daraus die Bugfix-EXEs. **Das Original wird nicht verändert** |
 | 3 | **`SCHWEIF_FIX_WICHTIG_STARTEN.bat`** doppelklicken und spielen. Wer wirklich alles behoben haben will: `SCHWEIF_FIX_ALLES_STARTEN.bat` |
 
-Die Spielstände der Bugfix-Fassung liegen in eigenen Ordnern unter `Build\`. Alte Spielstände lassen sich dorthin kopieren und weiterspielen, das Format ist unverändert. Die echten Spielstände im GOG-Ordner bleiben unberührt.
+**Funktionieren meine Spielstände weiter?** Ja. Die Bugfix-Fassung ändert das Speicherformat nicht, kein Feld, keine Größe. Eure alten Spielstände aus dem GOG-Ordner erscheinen beim Laden automatisch und lassen sich weiterspielen. Was ihr mit der Bugfix-Fassung neu speichert, landet in einem eigenen Ordner unter `Build\`. Eure Original-Spielstände werden dabei nie überschrieben. Und weil das Format gleich bleibt, kann man jederzeit zurück zum Original.  Speichern und Laden sind im Spiel getestet.
 
 | Fassung | behebt |
 |---|---|
