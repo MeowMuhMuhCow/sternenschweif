@@ -16,6 +16,21 @@ savegame compatible) behind compile-time switches. Documentation is in German.*
 | Fehler im Original | 268 dokumentiert, 18 kritisch, 22 Exploits ([Fehlerliste](Analyse/Fehlerliste_Sternenschweif.pdf)) |
 | Fehlerbehebung | per Schalter `FIX_BUGS` 1 (wichtig) / 2 (alles), `FIX_EXPLOITS`, jeder Fehler einzeln. Ohne Schalter bytegleich ([FIXES.md](Bauen/FIXES.md)) |
 
+## Danke
+
+Dieses Projekt (und schon sein Vorgehen) steht auf den Schultern von Menschen, die sich jahrelang, unbezahlt und aus reiner Liebe zu diesen
+Spielen durch Maschinencode gearbeitet haben. **Ohne sie gäbe es das hier nicht.**
+
+| | |
+|---|---|
+| **Henne** | Er hat im Projekt **Bright-Eyes** die Pionierarbeit für die Nordlandtrilogie geleistet: Die Schicksalsklinge Funktion für Funktion aus dem Maschinencode in binäräquivalenten Code zurückgewonnen, dazu die Werkzeuge und den Weg, den historischen Borland-Compiler in DOSBox anzusteuern. Über viele Jahre, größtenteils allein, mit einem Stundenaufwand, der sich kaum ermessen lässt. Er hat den Rohdiamanten ausgegraben. |
+| **siebenstreich** | hat Bright-Eyes weitergeführt, den C-Code geschliffen und das Projekt am Leben gehalten (github.com/siebenstreich/BrightEyes), und hat unsere Fragen geduldig und offen beantwortet. |
+| **Das Crystals-DSA-Forum** | Seit 2006 sammeln die Spielerinnen und Spieler dort Fehler, Beobachtungen und Rätsel der Nordlandtrilogie, im Thread „Bugs in Sternenschweif“, in den Truhenpatch-Threads, in Tipps-Sammlungen und in der Technischen Werkstatt. Viele Einträge unserer Fehlerlisten gehen auf ihre Meldungen zurück und sind dort zuerst beschrieben worden. Danke an alle, die dort über die Jahre geschrieben, gemessen und nachgespielt haben, und an die Forenbetreiber, die das alles erhalten. |
+| **Alle Beteiligten an Bright-Eyes, am BrightEyes-Wiki und an den Reverse-Engineering-Projekten der Nordlandtrilogie** | für Karten, Datenformate, Dokumentation und den langen Atem. |
+| **Attic Entertainment Software** | für diese Spiele. 30 Jahre später lohnt es sich immer noch, jeden Winkel davon zu verstehen. |
+
+Fehler in diesem Repository sind unsere eigenen. Alles, was gut daran ist, beruht auf ihrer Vorarbeit.
+
 ## Bugfix-Fassung: Sternenschweif ohne die Fehler von 1994
 
 Neben dem originalgetreuen Bau gibt es eine **inoffizielle Fehlerbehebung**: über 200 Fehler aus dem Original
@@ -60,9 +75,6 @@ Lesereihenfolge und Begriffe: [LIESMICH.md](LIESMICH.md). Gesamtbericht: [ABSCHL
 Das Originalprogramm wurde in Module zerlegt und als Assembler wieder bytegleich zusammengebaut. Danach wurde jede
 Funktion in C/C++ neu geschrieben und mit dem Original-Compiler gegen den Assembler geprüft, bis das Ergebnis
 übereinstimmte. Der Compiler ist dabei der Schiedsrichter: gleich oder nicht gleich.
-
-Dank an das Projekt **Bright-Eyes** (Henne, siebenstreich) für die Pionierarbeit an der Schicksalsklinge und an die
-Spieler im Crystals-DSA-Forum, deren Fehlermeldungen seit 2006 in die Fehlerliste eingeflossen sind.
 
 ## Rechte
 
