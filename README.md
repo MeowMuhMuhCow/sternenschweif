@@ -18,6 +18,20 @@ savegame compatible) behind compile-time switches. Documentation is in German.*
 | Fehler im Original | 268 dokumentiert, 18 kritisch, 22 Exploits ([Fehlerliste](Analyse/Fehlerliste_Sternenschweif.pdf)) |
 | Fehlerbehebung | per Schalter `FIX_BUGS` 1 (wichtig) / 2 (alles), `FIX_EXPLOITS`, jeder Fehler einzeln. Ohne Schalter bytegleich ([FIXES.md](Bauen/FIXES.md)) |
 
+## Schnellstart: Bugfix-Fassung spielen, ohne Compiler
+
+Für alle, die nur spielen wollen. Nötig sind Windows und Sternenschweif von GOG, sonst nichts: kein Python, kein Compiler.
+
+1. Oben rechts **Code → Download ZIP**, irgendwohin entpacken.
+2. **`PATCHEN.bat`** doppelklicken. Es findet den GOG-Spielordner (oder fragt danach), prüft per Prüfsumme, ob die
+   eigene EXE genau die passende ist, und erzeugt daraus `Build\SCHWEIF_FIX_WICHTIG.EXE` und `Build\SCHWEIF_FIX_ALLES.EXE`.
+   **Die Original-EXE wird nicht verändert**, das Spiel bleibt wie es ist.
+3. **`SCHWEIF_FIX_WICHTIG_STARTEN.bat`** (wichtige Fehler) oder **`SCHWEIF_FIX_ALLES_STARTEN.bat`** (alle) doppelklicken.
+   Das Spiel startet mit den GOG-Daten. Die Spielstände landen in eigenen Ordnern unter `Build\`, die echten bleiben unberührt.
+
+Der Patch (`Patch\*.ndp`, je 35–60 KB) enthält nur die geänderten Bytes, kein Originalprogramm. Ohne gekauftes
+Spiel lässt sich damit nichts anfangen.
+
 ## Danke
 
 Dieses Projekt (und schon sein Vorgehen) steht auf den Schultern von Menschen, die sich jahrelang, unbezahlt und aus reiner Liebe zu diesen
