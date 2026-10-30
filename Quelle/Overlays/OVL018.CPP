@@ -246,11 +246,31 @@ signed short Fight::run()
 	register signed short first = 1;
 	struct hero far *h;
 
+#if FIX_0377
+	/* Fix 377: der Kampf faellt aus, wenn alle lebenden Helden der Gruppe unsichtbar sind */
+	{
+		signed short vi;
+		signed short vseen = 0;
+		signed short vall = 1;
+
+		for (vi = 0; vi < 7; vi++) {
+			h = g_group->heroes[vi];
+			if (h != 0 && h->type != 0 && !h->dead) {
+				vseen = 1;
+				if (!h->invisible)
+					vall = 0;
+			}
+		}
+		if (vseen && vall)
+			return 3;
+	}
+#else
 	if ((signed short)g_group->nr_heroes == 1) {
 		h = get_first_active_hero(g_group);
 		if (h->invisible)
 			return 3;
 	}
+#endif
 	if (fight_count_monsters(this, id) == 0 || (g_sfight_won == 1 && id == FIGHT_ID_SPECIAL)) {
 		g_refresh = 1;
 		return 1;

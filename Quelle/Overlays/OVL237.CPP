@@ -127,8 +127,25 @@ void spell_visibili(CAST_PTR c)
 		if (test_spell(c->caster, SP_VISIBILI, c->mod) > 0) {
 			c->result = n * 5;
 			c->result += g_spell_cost_mod;
+#if !FIX_0377
 			pos = get_free_effect(c->caster);
 			add_effect_w(c->caster, pos, n * 450L, 0, 1, EFFECT_INVISIBLE);
+#else
+			/* Fix 377: wie Visibili in der Schicksalsklinge (Loesungsbuch: "macht die Gruppe unsichtbar"): alle lebenden
+			 * Helden der Gruppe werden unsichtbar, die Kosten zahlt der Zaubernde einmal */
+			{
+				signed short vi;
+				struct hero far *vh;
+
+				for (vi = 0; vi < 7; vi++) {
+					vh = g_group->heroes[vi];
+					if (vh != 0 && vh->type != 0 && !vh->dead && !vh->invisible) {
+						pos = get_free_effect(vh);
+						add_effect_w(vh, pos, n * 450L, 0, 1, EFFECT_INVISIBLE);
+					}
+				}
+			}
+#endif
 			sprintf(g_text_output_buf, c->txt[106], c->caster->name, grammar_pronoun(c->caster->sex, 0, 0));
 		} else {
 			c->fail_cost = n * 5 / 2;

@@ -278,6 +278,8 @@
  * FIX_0374   wichtig  mittel    ja      ja         Markthalle Lowangen: Ereignis bleibt haengen
  * FIX_0375   wichtig  kritisch  -       ja         Agdan-Quest: kein Lowangen-Schluessel
  * FIX_0376   alles    egal      -       nein       Textfehler "Rechstschritt"
+ * FIX_0377   wichtig  mittel    -       ja         Visibili wirkt nur auf den Zaubernden
+ * FIX_0378   wichtig  mittel    -       ja         Gardianum schuetzt nicht
  */
 #ifndef S_FIX_H
 #define S_FIX_H
@@ -1072,6 +1074,12 @@
 #endif
 #ifndef FIX_0376
 #define FIX_0376 FIX_STUFE_A
+#endif
+#ifndef FIX_0377
+#define FIX_0377 FIX_STUFE_W
+#endif
+#ifndef FIX_0378
+#define FIX_0378 FIX_STUFE_W
 #endif
 
 #endif

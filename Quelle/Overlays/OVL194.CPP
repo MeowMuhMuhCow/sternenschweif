@@ -267,6 +267,23 @@ void Spell::mon_spell_eisenrost()
 	}
 }
 
+#if FIX_0378
+/* Fix 378: Gardianum-Schild des getroffenen Helden (O233: AE + Stufe, O080: 0 nach dem Kampf) wurde nie ausgewertet */
+static signed short fix_gardianum(struct hero far *h, signed short dmg)
+{
+	if (h != 0 && h->gardianum > 0) {
+		if (h->gardianum >= dmg) {
+			h->gardianum -= dmg;
+			dmg = 0;
+		} else {
+			dmg -= h->gardianum;
+			h->gardianum = 0;
+		}
+	}
+	return dmg;
+}
+#endif
+
 void Spell::mon_spell_fulminictus()
 {
 	signed short dmg;
@@ -280,7 +297,12 @@ void Spell::mon_spell_fulminictus()
 	}
 	if (caster->ae < dmg)
 		dmg = caster->ae;
+#if !FIX_0378
 	damage(dmg);
+#else
+	/* Fix 378: der Gardianum-Schild des Helden faengt den Schaden ab, bis er verbraucht ist (Loesungsbuch DSA1) */
+	damage(fix_gardianum(ENEMY_TARGET_TYPE(caster) == TARGET_HERO ? hero : 0, dmg));
+#endif
 	result = dmg;
 }
 
@@ -301,8 +323,20 @@ void Spell::mon_spell_ignifaxius()
 	}
 	if (caster->ae < dmg)
 		dmg = caster->ae;
+#if !FIX_0378
 	damage(dmg);
 	rs_lost = dmg / 10;
+#else
+	/* Fix 378: Gardianum faengt ab; ganz abgewehrt -> keine Nebenwirkungen, die AE zahlt der Gegner trotzdem */
+	rs_lost = fix_gardianum(ENEMY_TARGET_TYPE(caster) == TARGET_HERO ? hero : 0, dmg);
+	if (rs_lost == 0 && dmg > 0) {
+		*g_text_output_buf = 0;
+		result = dmg;
+		return;
+	}
+	damage(rs_lost);
+	rs_lost = rs_lost / 10;
+#endif
 	if (ENEMY_TARGET_TYPE(caster) == TARGET_HERO) {
 		/* Ruestung (Platz 10) verliert RS, hoechstens bis zu ihrem RS */
 		if (hero->inv[10].item_id != 0 && rs_lost != 0) {

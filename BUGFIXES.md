@@ -1,8 +1,6 @@
 # Sternenschweif – Bugfix-Fassung: Änderungsliste
 
-**Version 1.0 vom 29.10.2026** · inoffiziell · zur deutschen GOG-Fassung C1.02 · **im Spiel noch ungetestet, Tester willkommen**
-
-## 225 Fehler behoben
+**Version 1.1 vom 30.10.2026** · inoffiziell · zur deutschen GOG-Fassung C1.02 · **im Spiel noch ungetestet, Tester willkommen**
 
 ## So geht's
 
@@ -14,12 +12,19 @@ Nötig: Windows und **„Realms of Arkania 2 - Star Trail Classic“ von GOG** (
 | 2 | **`PATCHEN.bat`** doppelklicken. Es findet den GOG-Ordner (oder fragt), prüft die eigene `SCHWEIF.EXE` per Prüfsumme und baut daraus die Bugfix-EXEs. **Das Original wird nicht verändert** |
 | 3 | **`SCHWEIF_FIX_WICHTIG_STARTEN.bat`** doppelklicken und spielen. Wer wirklich alles behoben haben will: `SCHWEIF_FIX_ALLES_STARTEN.bat` |
 
-**Funktionieren meine Spielstände weiter?** Ja. Die Bugfix-Fassung ändert das Speicherformat nicht, kein Feld, keine Größe. Eure alten Spielstände aus dem GOG-Ordner erscheinen beim Laden automatisch und lassen sich weiterspielen. Was ihr mit der Bugfix-Fassung neu speichert, landet in einem eigenen Ordner unter `Build\`. Eure Original-Spielstände werden dabei nie überschrieben. Und weil das Format gleich bleibt, kann man jederzeit zurück zum Original.  Speichern und Laden sind im Spiel getestet.
+Die Spielstände der Bugfix-Fassung liegen in eigenen Ordnern unter `Build\`. Alte Spielstände lassen sich dorthin kopieren und weiterspielen, das Format ist unverändert. Die echten Spielstände im GOG-Ordner bleiben unberührt.
 
 | Fassung | behebt |
 |---|---|
 | **WICHTIG** (empfohlen) | kritische und mittlere Fehler: Abstürze, Hänger, verlorene Ausrüstung, falsche Preise, Fehler, die man im Spiel merkt |
 | **ALLES** | zusätzlich viele kleine Fehler ohne große Spielwirkung |
+
+## Neu in Version 1.1
+
+Abgleich mit der Zauberliste im Lösungsbuch zur Schicksalsklinge. Zauber, die dort beschrieben sind, im Spiel aber nichts oder zu wenig tun:
+
+- **Visibili macht die ganze Gruppe unsichtbar**, wie das Lösungsbuch zur Schicksalsklinge den Zauber beschreibt. Sind alle Helden unsichtbar, fällt der Kampf aus. Bisher wurde nur der Zaubernde unsichtbar, und in einer Gruppe gab es trotzdem jeden Kampf (Wunsch aus dem Crystals-Forum) – Nr. 377 (WICHTIG)
+- **Gardianum schützt jetzt.** Der Schild (Stufe + eingesetzte AE) fängt feindliche Fulminictus und Ignifaxius ab, bis er verbraucht ist. Bisher kostete er nur AE – Nr. 378 (WICHTIG)
 
 ## Was ist neu
 
@@ -37,9 +42,9 @@ Nötig: Windows und **„Realms of Arkania 2 - Star Trail Classic“ von GOG** (
 
 | | ganz behoben | teilweise | Summe |
 |---|---:|---:|---:|
-| WICHTIG (steckt auch in ALLES) | 92 | 17 | 109 |
+| WICHTIG (steckt auch in ALLES) | 94 | 17 | 111 |
 | nur in ALLES | 103 | 13 | 116 |
-| **ALLES gesamt** | **195** | **30** | **225** |
+| **ALLES gesamt** | **197** | **30** | **227** |
 
 Davon 20 **Exploits** (Fehler, die dem Spieler nützen, z. B. Geld oder Werte aus dem Nichts). Sie sind standardmäßig mit behoben. Wer sie behalten will, baut selbst mit `FIX_EXPLOITS 0` (siehe README).
 
@@ -296,7 +301,7 @@ Davon 20 **Exploits** (Fehler, die dem Spieler nützen, z. B. Geld oder Werte au
 | 304 | **XMS-Vorgabe ohne Rücksprung** – Nichts – der Fehler tritt im Spiel nicht auf. | A |
 | 307 | **Kopierroutine verliert ungerades Byte** – Nichts – der Fehler tritt im Spiel nicht auf. | A |
 
-### Magie (9)
+### Magie (11)
 
 | Nr | Was behoben ist | Stufe |
 |---:|---|:---:|
@@ -306,6 +311,8 @@ Davon 20 **Exploits** (Fehler, die dem Spieler nützen, z. B. Geld oder Werte au
 | 173 | **Hexenspeichel heilt mehr, als die AE bezahlt** 💰 – Hexenspeichel müsste doppelt so viel AE kosten, wie er heilt, wird aber nie durch die vorhandene AE begrenzt – man heilt für wenig AE viel. | W |
 | 188 | **Zauberziel gegen Sondergegner falsch geprüft** – Gegen besondere Gegner werden manche Zauber und Gegenstände im Kampf fälschlich erlaubt oder verweigert. | W |
 | 220 | **Meditation mit wenig LE kostet AE** – Meditiert ein Held mit weniger als 8 LE, verliert er Astralenergie, statt sie zu gewinnen. | W |
+| 377 | **Visibili wirkt nur auf den Zaubernden** – Visibili macht nur den Zaubernden unsichtbar, und in einer Gruppe gibt es trotzdem jeden Kampf. | W |
+| 378 | **Gardianum schützt nicht** – Gardianum meldet „Schutzschirm aktiv“, kostet AE, wehrt aber nichts ab. | W |
 | 48 | **Brenne toter Stoff ohne Fackel: Meldung zufällig** – Ohne Fackel oder Lampe erscheint beim Zauber mal die Hinweismeldung, mal passiert gar nichts. | A |
 | 148 | **Nichtzauberer können das Zaubermenü öffnen** – Auch Helden ohne Magie können im Heldenbogen das Zaubermenü öffnen, scheitern dann aber. | A |
 | 163 | **Heldenzauber: Lesen hinter der Tabelle** *(teilweise)* – Nichts Sichtbares. | A |

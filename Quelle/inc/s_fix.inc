@@ -247,3 +247,17 @@ else
 FIX_0376 = 0
 endif
 endif
+ifndef FIX_0377
+if FIX_BUGS ge 1
+FIX_0377 = 1
+else
+FIX_0377 = 0
+endif
+endif
+ifndef FIX_0378
+if FIX_BUGS ge 1
+FIX_0378 = 1
+else
+FIX_0378 = 0
+endif
+endif

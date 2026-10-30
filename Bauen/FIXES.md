@@ -15,7 +15,7 @@ Kommentare an den `#if FIX_nnnn`-Stellen im Code, „Grund“ erklärt Teilumset
 
 | Stufe | ja | teilweise | nein | kein Fehler |
 |---|---|---|---|---|
-| wichtig | 92 | 17 | 9 | – |
+| wichtig | 94 | 17 | 9 | – |
 | alles | 103 | 13 | 24 | – |
 | – (kein Fehler/gewollt) | – | – | – | 10 |
 
@@ -24,6 +24,8 @@ Nr. 6 und Nr. 212 sind dieselbe Stelle (`FIX_0006` folgt `FIX_0212`). Nr. 20 und
 **Nr. 352–376** (am Code bestätigte Spielermeldungen, `abschluss/fehler_netz_geprueft.tsv`) kamen während dieser Runde dazu. Sie waren beim Abschluss
 schon eingebaut und sind in beiden Fix-EXEs enthalten (Standardbau weiter bytegleich, fixcheck und Startprobe in Ordnung), aber nur in der Cloud ohne Spieldaten
 geprüft. Wer sie in dieser Runde draußen lassen will, schaltet sie einzeln ab (`-DFIX_0352=0` usw.). Was davon nicht umgesetzt ist (nächste Runde bzw. mit Grund), steht in der Spalte „umgesetzt“.
+
+**Nr. 377–378** (Version 1.1, 30.10.2026): Abgleich mit der Zauberliste im Lösungsbuch zur Schicksalsklinge. Visibili macht die ganze Gruppe unsichtbar (Angleichung an die dort beschriebene Wirkung, Spielerwunsch aus dem Crystals-Forum), Gardianum wird bei feindlichen Fulminictus/Ignifaxius ausgewertet (der Wert wurde bisher nur geschrieben). Feuerbann und Große Gier wirken in Sternenschweif schon so, wie das Lösungsbuch es beschreibt.
 
 ## Tabelle
 
@@ -297,3 +299,5 @@ geprüft. Wer sie in dieser Runde draußen lassen will, schaltet sie einzeln ab 
 | 374 | Markthalle Lowangen: Ereignis bleibt hängen | mittel | ja | wichtig | ja | Merker nach dem Kampf zuruecksetzen (bei leerem Kampf laeuft fight_finish nicht und der naechste Kampf endet sonst mit Bettlerflucht) | OVL184.CPP |
 | 375 | Agdan-Quest: kein Lowangen-Schlüssel | kritisch | nein | wichtig | ja | Schluessel bei vollem Rucksack ueber die Gruppe geben (fragt nach Ablegen); Zustand nur bei Erfolg, sonst bietet Eolan ihn erneut an | OVL013.CPP |
 | 376 | Textfehler „Rechstschritt“ | egal | nein | alles | nein | Tippfehler in der Spieldatei BLUT3.LTX - kein Programmcode |  |
+| 377 | Visibili wirkt nur auf den Zaubernden | mittel | nein | wichtig | ja | alle lebenden Helden der Gruppe werden unsichtbar (Kosten einmal Spielrunden x 5 AE); der Kampf faellt aus, wenn alle unsichtbar sind | OVL018.CPP OVL237.CPP |
+| 378 | Gardianum schützt nicht | mittel | nein | wichtig | ja | Schaden feindlicher Fulminictus/Ignifaxius zuerst vom Schild des Helden (AE + Stufe) abziehen; ganz abgewehrt -> keine Nebenwirkungen | OVL194.CPP |

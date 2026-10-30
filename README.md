@@ -1,15 +1,17 @@
 # Sternenschweif – rekonstruierter Quelltext
 
-## 225 Fehler behoben – 32 Jahre nach Release
+## 227 Fehler behoben – 32 Jahre nach Release
 
 **Inoffizielle Bugfix-Fassung · spielbar ohne Compiler · das Original bleibt unangetastet · [gleich loslegen](#schnellstart-bugfix-fassung-spielen-ohne-compiler)**
+
+**Neu in Version 1.1:** **Visibili macht die ganze Gruppe unsichtbar** (alle unsichtbar = kein Kampf), wie das Lösungsbuch zur Schicksalsklinge den Zauber beschreibt, und **Gardianum** fängt jetzt feindliche Kampfzauber ab. Details in [BUGFIXES.md](BUGFIXES.md).
 
 > **Zum ersten Mal seit 1994:** Nach der Gefangennahme durch die Orks liegt eure Ausrüstung wirklich in den Truhen,
 > statt für immer zu verschwinden. Das Lagerhaus frisst euer Vermögen nicht mehr, Händler kassieren nur noch, was
 > sie auch liefern, der Horriphobus-Kampf endet, und zwei Gespräche geben endlich den großen AP-Bonus, den Attic
 > vorgesehen hatte. → [alle 225 Änderungen](BUGFIXES.md)
 
-**Zusammen mit der [Schicksalsklinge](https://github.com/MeowMuhMuhCow/schicksalsklinge): 473 Bugfixes für DSA 1 und DSA 2.**
+**Zusammen mit der [Schicksalsklinge](https://github.com/MeowMuhMuhCow/schicksalsklinge): 479 Bugfixes für DSA 1 und DSA 2.**
 
 **Das Schwarze Auge 2: Sternenschweif** (Attic, 1994), deutsche CD-Fassung C1.02, vollständig als C/C++-Quelltext
 rekonstruiert. Borland C++ 3.1 baut daraus eine `SCHWEIF.EXE`, die **Byte für Byte dem Original gleicht**
@@ -26,7 +28,7 @@ savegame compatible) behind compile-time switches. Documentation is in German.*
 | Code | 301 Module in C/C++ (rund 119.000 Zeilen), 16 Module in Attics eigenem Assembler, alle kommentiert |
 | Namen | alle 3.215 Funktionen und 1.941 Datenobjekte benannt (unsere Namen, Attics sind nicht erhalten) |
 | Daten | jedes Modul trägt seine Daten selbst, so wie bei Attic |
-| Fehler im Original | 268 dokumentiert, 18 kritisch, 22 Exploits ([Fehlerliste](Analyse/Fehlerliste_Sternenschweif.pdf)) |
+| Fehler im Original | 270 dokumentiert, 18 kritisch, 22 Exploits ([Fehlerliste](Analyse/Fehlerliste_Sternenschweif.pdf)) |
 | Fehlerbehebung | per Schalter `FIX_BUGS` 1 (wichtig) / 2 (alles), `FIX_EXPLOITS`, jeder Fehler einzeln. Ohne Schalter bytegleich ([FIXES.md](Bauen/FIXES.md)) |
 
 ## Schnellstart: Bugfix-Fassung spielen, ohne Compiler
@@ -35,7 +37,7 @@ savegame compatible) behind compile-time switches. Documentation is in German.*
 
 Für alle, die nur spielen wollen. Nötig sind Windows und Sternenschweif von GOG, sonst nichts: kein Python, kein Compiler.
 
-1. Rechts unter **Releases** das Paket `…_Bugfix_1.0.zip` herunterladen (oder oben **Code → Download ZIP**) und irgendwohin entpacken.
+1. Rechts unter **Releases** das Paket `…_Bugfix_1.1.zip` herunterladen (oder oben **Code → Download ZIP**) und irgendwohin entpacken.
 2. **`PATCHEN.bat`** doppelklicken. Es findet den GOG-Spielordner (oder fragt danach), prüft per Prüfsumme, ob die
    eigene EXE genau die passende ist, und erzeugt daraus `Build\SCHWEIF_FIX_WICHTIG.EXE` und `Build\SCHWEIF_FIX_ALLES.EXE`.
    **Die Original-EXE wird nicht verändert**, das Spiel bleibt wie es ist.

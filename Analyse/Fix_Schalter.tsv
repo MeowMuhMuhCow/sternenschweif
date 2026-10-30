@@ -267,3 +267,5 @@ nr	schalter	titel	kategorie	exploit	stufe	umgesetzt	grund	dateien
 374	FIX_0374	Markthalle Lowangen: Ereignis bleibt hängen	mittel	ja	wichtig	ja		OVL184.CPP
 375	FIX_0375	Agdan-Quest: kein Lowangen-Schlüssel	kritisch	nein	wichtig	ja		OVL013.CPP
 376	FIX_0376	Textfehler „Rechstschritt“	egal	nein	alles	nein	Tippfehler in der Spieldatei BLUT3.LTX - kein Programmcode	
+377	FIX_0377	Visibili wirkt nur auf den Zaubernden	mittel	nein	wichtig	ja		OVL018.CPP
+378	FIX_0378	Gardianum schützt nicht	mittel	nein	wichtig	ja		OVL194.CPP
