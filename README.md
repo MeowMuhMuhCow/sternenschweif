@@ -11,7 +11,7 @@
 > sie auch liefern, der Horriphobus-Kampf endet, und zwei Gespräche geben endlich den großen AP-Bonus, den Attic
 > vorgesehen hatte. → [alle 225 Änderungen](BUGFIXES.md)
 
-**Zusammen mit der [Schicksalsklinge](https://github.com/MeowMuhMuhCow/schicksalsklinge): 479 Bugfixes für DSA 1 und DSA 2.**
+**Zusammen mit der [Schicksalsklinge](https://github.com/MeowMuhMuhCow/schicksalsklinge): 508 Bugfixes für DSA 1 und DSA 2.**
 
 **Das Schwarze Auge 2: Sternenschweif** (Attic, 1994), deutsche CD-Fassung C1.02, vollständig als C/C++-Quelltext
 rekonstruiert. Borland C++ 3.1 baut daraus eine `SCHWEIF.EXE`, die **Byte für Byte dem Original gleicht**
