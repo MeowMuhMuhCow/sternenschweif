@@ -1,6 +1,6 @@
 # Sternenschweif – Bugfix-Fassung: Änderungsliste
 
-**Version 1.1 vom 30.10.2026** · inoffiziell · zur deutschen GOG-Fassung C1.02 · **im Spiel noch ungetestet, Tester willkommen**
+**Version 1.1.1 vom 31.10.2026** · inoffiziell · zur deutschen GOG-Fassung C1.02 · **im Spiel noch ungetestet, Tester willkommen**
 
 ## So geht's
 
@@ -12,12 +12,21 @@ Nötig: Windows und **„Realms of Arkania 2 - Star Trail Classic“ von GOG** (
 | 2 | **`PATCHEN.bat`** doppelklicken. Es findet den GOG-Ordner (oder fragt), prüft die eigene `SCHWEIF.EXE` per Prüfsumme und baut daraus die Bugfix-EXEs. **Das Original wird nicht verändert** |
 | 3 | **`SCHWEIF_FIX_WICHTIG_STARTEN.bat`** doppelklicken und spielen. Wer wirklich alles behoben haben will: `SCHWEIF_FIX_ALLES_STARTEN.bat` |
 
+**Linux:** `bash Linux/patchen.sh`, dann `bash Linux/starten.sh wichtig` (oder `alles`). Nötig sind Python 3 und DOSBox (Staging, klassisch oder DOSBox-X), Anleitung in `Linux/LIESMICH.md`. Die Bugfix-EXEs sind Byte für Byte dieselben wie unter Windows.
+
 Die Spielstände der Bugfix-Fassung liegen in eigenen Ordnern unter `Build\`. Alte Spielstände lassen sich dorthin kopieren und weiterspielen, das Format ist unverändert. Die echten Spielstände im GOG-Ordner bleiben unberührt.
 
 | Fassung | behebt |
 |---|---|
 | **WICHTIG** (empfohlen) | kritische und mittlere Fehler: Abstürze, Hänger, verlorene Ausrüstung, falsche Preise, Fehler, die man im Spiel merkt |
 | **ALLES** | zusätzlich viele kleine Fehler ohne große Spielwirkung |
+
+## Neu in Version 1.1.1
+
+Keine neuen Fehlerbehebungen, die Bugfix-EXEs sind Byte für Byte dieselben wie in Version 1.1. Neu ist die Unterstützung für Linux:
+
+- **Linux-Skripte** im Ordner `Linux/`: `patchen.sh` erzeugt die Bugfix-Fassungen aus der eigenen GOG-Fassung (gleiche Prüfsummen wie unter Windows), `starten.sh wichtig|alles` startet sie in DOSBox. Dazu `Patch/patchen.py` als Gegenstück zu `patchen.ps1`
+- Das Bright-Eyes-Repository von Henne direkt verlinkt
 
 ## Neu in Version 1.1
 
