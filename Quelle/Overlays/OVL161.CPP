@@ -44,6 +44,7 @@
  */
 #include <string.h>
 #include "schweif.h"
+#include "s_plog.h"	/* Probenlog (FIX_PROBENLOG) */
 
 #define MSG_ENEMY	1		/* Lst_add*: Objekt ist ein Gegner */
 #define MSG_HERO	2		/* Lst_add*: Objekt ist ein Held */
@@ -265,6 +266,15 @@ void fig_enemy_attack_hero(Fight far *f, struct enemy far *e, struct hero far *h
 	if (g_quick_fight)
 		e_at += 2;
 	r1 = random_schweif(20);
+	/* Probenlog: Zeile Art 6 (Gegner attackiert Helden: AT, W20, Gegnerart, 1) */
+#if FIX_PROBENLOG
+	{
+		signed short w[4];
+
+		w[0] = e_at; w[1] = r1; w[2] = e->mon_id; w[3] = 1;
+		probenlog(6, h->name, 4, w);
+	}
+#endif
 	if (r1 == 20 && random_schweif(20) > e_at - 9) {
 		/* Angriffspatzer des Gegners */
 		if (check_hero(h)) {
@@ -297,6 +307,15 @@ void fig_enemy_attack_hero(Fight far *f, struct enemy far *e, struct hero far *h
 		if (!t2->parried && check_hero(h)) {
 			/* Parade des Helden */
 			r2 = random_schweif(20);
+			/* Probenlog: Zeile Art 7 (Held pariert gegen den Gegner: PA, W20, Gegnerart, 1) */
+#if FIX_PROBENLOG
+			{
+				signed short w[4];
+
+				w[0] = pa; w[1] = r2; w[2] = e->mon_id; w[3] = 1;
+				probenlog(7, h->name, 4, w);
+			}
+#endif
 			if (r2 == 20 && random_schweif(20) > pa - 7) {
 				/* Paradepatzer */
 				hit = 1;

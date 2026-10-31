@@ -18,6 +18,7 @@ cd sternenschweif
 bash Linux/patchen.sh            # erzeugt Build/SCHWEIF_FIX_WICHTIG.EXE und Build/SCHWEIF_FIX_ALLES.EXE
 bash Linux/starten.sh wichtig    # kritische + mittlere Fehler behoben
 bash Linux/starten.sh alles      # alle behebbaren Fehler
+bash Linux/starten.sh wichtig log  # dazu das Probenlog: jede Probe erscheint live im Terminal (siehe Probenlog/LIESMICH.md)
 ```
 
 Beim ersten Mal sucht `patchen.sh` den Spielordner (unter `~/GOG Games`, `~/Games`, `~/Spiele`, Wine und Steam) oder
@@ -28,12 +29,39 @@ auch: `SPIEL=~/Spiele/Sternenschweif bash Linux/patchen.sh`.
 
 | | |
 |---|---|
-| Spielordner | wird nicht angefasst. Beim ersten Start kopiert `starten.sh` ihn (ohne CD-Abbild und DOSBox) nach `Build/Linux_C_<Fassung>`. Dort liegen auch die Spielstände dieser Fassung. Spätere Starts überschreiben dort nichts außer der EXE |
+| Spielordner | wird nicht angefasst. Beim ersten Start kopiert `starten.sh` ihn (ohne CD-Abbild und DOSBox) in den Ablageordner der Fassung, Standard `Build/Linux_C_<Fassung>`. Dort liegen auch die Spielstände dieser Fassung. Spätere Starts überschreiben dort nichts |
 | Laufwerke in DOSBox | C: = die Kopie, D: = CD-Abbild von GOG (`gamea.ins` + `gameb.ins`, für die CD-Prüfung), E: = die Fix-EXE als `SCHWEIF.EXE` |
 | Einstellungen | `dosbox_realms2.conf` aus dem Spielordner (Grafik, Sound) wird mitgeladen, falls vorhanden. Ohne: `OHNE_GOGCONF=1 bash Linux/starten.sh wichtig` |
 | andere DOSBox | `DOSBOX=/pfad/zu/dosbox bash Linux/starten.sh wichtig` |
+| eigenes CD-Abbild | z. B. aus der alten NLT-Sammlung: `CD=~/Spiele/NLT_Images/dsa2.cue bash Linux/starten.sh wichtig`, mehrere Teile durch Leerzeichen getrennt (sonst werden `gamea.ins` und `gameb.ins` aus dem GOG-Ordner genommen) |
 
-Selbst bauen (bytegleich aus dem Quelltext) braucht Borland C++ 3.1 in DOSBox, siehe `Bauen/BAUEN.md`. Die gebaute
-EXE startet `bash Linux/starten.sh quelltext`.
+## Einstellungen
+
+Alle als Umgebungsvariable beim Aufruf, z. B. `VOLLBILD=1 bash Linux/starten.sh wichtig`, oder dauerhaft in
+einer Datei **`Linux/starten.conf`** (wird nicht ins Repo übernommen), eine Einstellung pro Zeile:
+
+```
+ABLAGE=~/Spiele/Sternenschweif_Spielstaende
+CD=~/Spiele/NLT_Images/dsa2.cue
+VOLLBILD=1
+```
+
+Was beim Aufruf angegeben wird, hat Vorrang vor der Datei.
+
+| Einstellung | Wirkung |
+|---|---|
+| `ABLAGE=ordner` | Spielstände und Probenlogs liegen in `<ordner>/<Fassung>` statt in `Build/` im Clone. So überleben sie ein Löschen und neues Klonen des Repos |
+| `SPEICHERN=overlay` | nur DOSBox Staging oder DOSBox-X: kein Kopieren, der Spielordner ist C:, alles Geschriebene (Spielstände, Probenlog) landet als Overlay in der Ablage. Mit der klassischen DOSBox 0.74 wird weiter kopiert (die kann keine Overlays) |
+| `VOLLBILD=1` | Vollbild |
+| `CYCLES=3000` | Tempo in DOSBox-Zyklen (bei Staging als `cpu_cycles`) |
+| `SPIEL=ordner` | Spielordner (sonst gesucht bzw. aus `Linux/SPIELPFAD.txt`) |
+| `CD=pfad` | eigenes CD-Abbild (siehe oben) |
+| `DOSBOX=pfad` | andere DOSBox |
+| `OHNE_GOGCONF=1` | ohne die DOSBox-Einstellungen von GOG |
+
+## Selbst bauen
+
+Bytegleich aus dem Quelltext braucht Borland C++ 3.1 in DOSBox, siehe `Bauen/BAUEN.md`. Die gebaute EXE startet
+`bash Linux/starten.sh quelltext`.
 
 Alle Behebungen sind im Spiel noch ungetestet. Rückmeldungen sind willkommen.

@@ -450,7 +450,7 @@ def stufe_fix(B, dos, T, flags, fn, ausgabe):
     for n, o, d in mods:
         m = nm(n)
         f = m + '.CPP' if os.path.exists(os.path.join(B, 'csrc', m + '.CPP')) else m + '.C'
-        if not re.search(rb'FIX_[0-9]', open(os.path.join(B, 'csrc', f), 'rb').read()): continue
+        if not re.search(rb'FIX_([0-9]|PROBENLOG)', open(os.path.join(B, 'csrc', f), 'rb').read()): continue
         copyfile(os.path.join(B, 'csrc', f), os.path.join(F, f))
         cbat.append(f'..\\bc\\BIN\\BCC.EXE -mlarge {o} {flags} -c -Y -I..\\names\\inc -E..\\bc\\BIN\\TASM.EXE {f} > {m}.TXT')
         fm.append((n, m, d))

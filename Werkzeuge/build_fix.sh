@@ -22,7 +22,7 @@ F=$ROOT/cfix; LF=$ROOT/lnkfix; rm -rf $F $LF; mkdir -p $F $LF $ROOT/fixexe
 python3 -I tools/cnamen.py $ROOT/cbau $L/asm1 > $F/cnamen.tsv
 # 7a. C-Module mit Schaltern neu uebersetzen (Bloecke zu 40 wie oben)
 grep -v '^#' $ROOT/c_module.tsv | while IFS=$'\t' read n o d; do m=$(nm $n); f=$m.C; [ -f csrc/$m.CPP ] && f=$m.CPP
-  grep -q 'FIX_[0-9]' csrc/$f || continue
+  grep -qE 'FIX_([0-9]|PROBENLOG)' csrc/$f || continue
   cp csrc/$f $F/
   printf '..\\bc\\BIN\\BCC.EXE -mlarge %s %s -c -Y -I..\\names\\inc -E..\\bc\\BIN\\TASM.EXE %s > %s.TXT\r\n' "$o" "$FIXFLAGS" $f $m
 done > $F/C.BAT

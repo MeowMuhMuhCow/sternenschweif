@@ -1,6 +1,6 @@
 # Sternenschweif – Bugfix-Fassung: Änderungsliste
 
-**Version 1.1.1 vom 31.10.2026** · inoffiziell · zur deutschen GOG-Fassung C1.02 · **im Spiel noch ungetestet, Tester willkommen**
+**Version 1.2 vom 31.10.2026** · inoffiziell · zur deutschen GOG-Fassung C1.02 · **im Spiel noch ungetestet, Tester willkommen**
 
 ## So geht's
 
@@ -20,6 +20,18 @@ Die Spielstände der Bugfix-Fassung liegen in eigenen Ordnern unter `Build\`. Al
 |---|---|
 | **WICHTIG** (empfohlen) | kritische und mittlere Fehler: Abstürze, Hänger, verlorene Ausrüstung, falsche Preise, Fehler, die man im Spiel merkt |
 | **ALLES** | zusätzlich viele kleine Fehler ohne große Spielwirkung |
+
+## Neu in Version 1.2: Probenlog
+
+Wie in der Schicksalsklinge 1.3, auf vielfachen Wunsch aus dem Crystals-DSA-Forum: **Jetzt sieht man, was das Spiel würfelt.** Jede Probe erscheint live in einem zweiten Fenster neben dem Spiel und wird mitgeschrieben, auch die versteckten Proben, die man sonst nie mitbekommt. Gestartet wird das mit `SCHWEIF_FIX_WICHTIG_MIT_PROBENLOG_STARTEN.bat` (Linux: `bash Linux/starten.sh wichtig log`). Ohne diese Startdatei läuft alles wie bisher. Beschreibung: `Probenlog/LIESMICH.md`. Keine neuen Fehlerbehebungen.
+
+- **Eigenschaftsproben** (MU, KL, KK …) mit Wert, Zuschlag, W20 und Ergebnis
+- **Talent- und Zauberproben** mit Talent bzw. Zauber, Talentwert, Zuschlag, den drei Eigenschaften und **jedem der drei W20**, dazu die Restpunkte
+- **Fernkampf** und **jede Attacke und Parade** im Kampf, von Helden und Gegnern
+- **`Probenlog/Probenlog_Sternenschweif.html`** zeigt eine Sitzung hinterher als Tabelle mit Erfolgsquote je Held, Talent und Zauber (in Chrome/Edge auch live)
+- Windows: Die Startdateien kopieren den Spielordner jetzt in den Spielstand-Ordner und nehmen diesen als Laufwerk C:. Die DOSBox von GOG kann kein Overlay-Laufwerk, dadurch landeten bisher Spielstände im Spielordner statt im Spielstand-Ordner
+- Linux: Ablageordner für Spielstände (`ABLAGE=`), Overlay mit DOSBox Staging, Vollbild, Tempo und dauerhafte Einstellungen in `Linux/starten.conf`, siehe `Linux/LIESMICH.md`
+- Die Proben laufen exakt gleich ab (gleich viele Würfe in derselben Reihenfolge), das Spielstandformat ist unverändert. Im Spiel noch ungetestet
 
 ## Neu in Version 1.1.1
 

@@ -26,6 +26,7 @@
  */
 #include <string.h>
 #include "schweif.h"
+#include "s_plog.h"	/* Probenlog (FIX_PROBENLOG) */
 
 #define MSG_ENEMY	1		/* Lst_add*: Objekt ist ein Gegner */
 #define MON_SPELL_FLASH	7		/* Gegnerzauber mit Aufblitzen (screen_flash) */
@@ -58,6 +59,15 @@ void fig_enemy_attack_enemy(Fight far *f, struct enemy far *att, struct enemy fa
 	if (g_quick_fight)
 		at += 2;
 	r1 = random_schweif(20);
+	/* Probenlog: Zeile Art 6 (Gegner attackiert Gegner: AT, W20, Gegnerart des Angreifers, 2) */
+#if FIX_PROBENLOG
+	{
+		signed short w[4];
+
+		w[0] = at; w[1] = r1; w[2] = att->mon_id; w[3] = 2;
+		probenlog(6, (char far *)0, 4, w);
+	}
+#endif
 	if (r1 == 20 && random_schweif(20) > at - 9) {
 		/* Angriffspatzer */
 		Lst_add2(g_fight_list, 3, 0, MSG_ENEMY, HERO(att));
@@ -110,6 +120,15 @@ void fig_enemy_attack_enemy(Fight far *f, struct enemy far *att, struct enemy fa
 		e2 = enemy_target_enemy(att);
 		if (!e2->parried) {
 			r2 = random_schweif(20);
+			/* Probenlog: Zeile Art 7 (Gegner pariert gegen Gegner: PA, W20, Gegnerart des Angreifers, 2) */
+#if FIX_PROBENLOG
+			{
+				signed short w[4];
+
+				w[0] = def_pa; w[1] = r2; w[2] = att->mon_id; w[3] = 2;
+				probenlog(7, (char far *)0, 4, w);
+			}
+#endif
 			if (r2 == 20 && random_schweif(20) > def_pa - 7) {
 				/* Paradepatzer */
 				hit = 1;

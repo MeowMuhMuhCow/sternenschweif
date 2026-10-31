@@ -18,17 +18,22 @@ call "%HIER%SPIELPFAD_SUCHEN.cmd"
 if not defined SPIEL goto keinspiel
 set "GOG=%SPIEL%"
 if not exist "%SAVES%" mkdir "%SAVES%"
+rem --- Spielordner in den Spielstand-Ordner spiegeln: nur fehlende Dateien, vorhandene (Spielstaende) bleiben.
+rem     Die DOSBox 0.74 von GOG kennt keine Overlay-Laufwerke, deshalb ist dieser Ordner das ganze Laufwerk C:.
+rem     Alte Spielstaende des Originals (Windows-VirtualStore) kommen mit.
+robocopy "%GOG%" "%SAVES%" /E /XC /XN /XO /R:1 /W:1 /XD DOSBOX MUSIC __support cloud_saves /XF *.gog *.ins *.inst *.pdf *.jpg *.zip *.lnk *.ico *.dll *.ini *.info *.hashdb *.script unins000.* goggame* >nul
+set "VSTORE=%LOCALAPPDATA%\VirtualStore%GOG:~2%"
+if exist "%VSTORE%" robocopy "%VSTORE%" "%SAVES%" /E /XC /XN /XO /R:1 /W:1 >nul
 
 rem --- DOSBox-Startbefehle in eine kleine Zusatz-Konfiguration schreiben
-rem     C: = Spielordner (nur lesen), Aenderungen gehen nach Testspielstaende
+rem     C: = Spielstand-Ordner (Kopie des Spielordners, dort landen auch die Spielstaende)
 rem     D: = CD-Abbild von GOG (fuer die CD-Pruefung cd_check)
 rem     E: = unser Build
 > "%CONF%" echo [sdl]
 >>"%CONF%" echo fullscreen=false
 >>"%CONF%" echo [autoexec]
 >>"%CONF%" echo @echo off
->>"%CONF%" echo mount C "%GOG%"
->>"%CONF%" echo mount C "%SAVES%" -t overlay
+>>"%CONF%" echo mount C "%SAVES%"
 if exist "%GOG%\gamea.ins" >>"%CONF%" echo imgmount D "%GOG%\gamea.ins" "%GOG%\gameb.ins" -t iso
 >>"%CONF%" echo mount E "%BUILD%"
 >>"%CONF%" echo C:

@@ -41,6 +41,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "schweif.h"
+#include "s_plog.h"	/* Probenlog (FIX_PROBENLOG) */
 
 /* Phase B: eigene Daten des Moduls (ds:5974..5988, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
 signed short g_name_buf_no = 0;
@@ -210,6 +211,19 @@ void add_hero_le(struct hero far *h, register signed short le)
 
 signed short test_attrib(struct hero far *h, register signed short at, signed short hc)
 {
+#if FIX_PROBENLOG
+	/* Probenlog: dieselbe Probe (gleich viele Wuerfe, gleiches Ergebnis), dazu eine Zeile Art 1:
+	 * Eigenschaft, Eigenschaftswert, Zuschlag, W20, Ergebnis */
+	signed short w[5];
+
+	w[3] = random_schweif(20);
+	w[0] = at;
+	w[1] = (signed char)(h->attrib[at].cur + h->attrib[at].mod);
+	w[2] = hc;
+	w[4] = (w[3] == 20) ? -99 : (w[1] - (w[3] + hc) + 1);
+	probenlog(1, h->name, 5, w);
+	return w[4];
+#else
 	signed short tmp;
 	signed short r;
 
@@ -220,10 +234,32 @@ signed short test_attrib(struct hero far *h, register signed short at, signed sh
 		r += hc;
 	tmp = (signed char)(h->attrib[at].cur + h->attrib[at].mod);
 	return tmp - r + 1;
+#endif
 }
 
 signed short test_attrib3(struct hero far *h, signed short a1, signed short a2, signed short a3, signed char hc)
 {
+#if FIX_PROBENLOG
+	/* Probenlog: dieselbe Probe (gleich viele Wuerfe in gleicher Reihenfolge, gleiches Ergebnis), dazu eine Zeile
+	 * Art 3: drei Eigenschaften, ihre Werte, Zuschlag, drei W20 (0 = nicht mehr gewuerfelt), Ergebnis */
+	signed short w[11];
+	signed short i;
+	signed short n20 = 0;
+
+	w[0] = a1; w[1] = a2; w[2] = a3;
+	w[3] = (signed char)(h->attrib[a1].cur + h->attrib[a1].mod);
+	w[4] = (signed char)(h->attrib[a2].cur + h->attrib[a2].mod);
+	w[5] = (signed char)(h->attrib[a3].cur + h->attrib[a3].mod);
+	w[6] = hc;
+	w[7] = w[8] = w[9] = 0;
+	for (i = 0; i < 3; i++) {
+		if ((w[7 + i] = random_schweif(20)) == 20 && ++n20 == 2)
+			break;
+	}
+	w[10] = (n20 == 2) ? -99 : (w[3] + w[4] + w[5] - (w[7] + w[8] + w[9] + hc) + 1);
+	probenlog(3, h->name, 11, w);
+	return w[10];
+#else
 	signed short sum = 0;
 	signed short i;
 	signed short n20 = 0;
@@ -240,6 +276,7 @@ signed short test_attrib3(struct hero far *h, signed short a1, signed short a2, 
 	tmp = (signed char)(h->attrib[a1].cur + h->attrib[a1].mod) + (signed char)(h->attrib[a2].cur + h->attrib[a2].mod) +
 		(signed char)(h->attrib[a3].cur + h->attrib[a3].mod);
 	return tmp - sum + 1;
+#endif
 }
 
 void add_mr_mod(struct hero far *h, signed char v)
@@ -304,6 +341,18 @@ signed short test_skill(struct hero far *h, register signed short sk, signed cha
 				(signed char)(h->attrib[ATTRIB_KK].cur + h->attrib[ATTRIB_KK].mod)) / 4;
 			v += get_skill_value(h, sk);
 			v -= hc;
+#if FIX_PROBENLOG
+			/* Probenlog: dieselbe Fernkampfprobe, dazu eine Zeile Art 4: Talent, Zielwert, Zuschlag, 1, W20, Ergebnis */
+			{
+				signed short w[6];
+
+				w[0] = sk; w[1] = v; w[2] = hc; w[3] = 1;
+				w[4] = r = random_schweif(20);
+				w[5] = (r == 20) ? -1 : ((r == 1) ? 99 : ((r <= v) ? (v - r + 1) : 0));
+				probenlog(4, h->name, 6, w);
+				return w[5];
+			}
+#else
 			r = random_schweif(20);
 			if (r == 20)
 				return -1;
@@ -311,7 +360,18 @@ signed short test_skill(struct hero far *h, register signed short sk, signed cha
 				return 99;
 			if (r <= v)
 				return v - r + 1;
+#endif
 		} else {
+#if FIX_PROBENLOG
+			/* Probenlog: Zeile Art 4 vor der Dreifachprobe (Wuerfe und Ergebnis in der folgenden Zeile Art 3):
+			 * Talent, Talentwert, Zuschlag, 0, 0, 0 */
+			{
+				signed short w[6];
+
+				w[0] = sk; w[1] = get_skill_value(h, sk); w[2] = hc; w[3] = w[4] = w[5] = 0;
+				probenlog(4, h->name, 6, w);
+			}
+#endif
 			hc -= get_skill_value(h, sk);
 			return test_attrib3(h, g_skill_attribs[sk].a1, g_skill_attribs[sk].a2, g_skill_attribs[sk].a3, hc);
 		}

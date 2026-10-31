@@ -301,6 +301,13 @@
 #define FIX_STUFE_WX (FIX_BUGS >= 1 && FIX_EXPLOITS)
 #define FIX_STUFE_AX (FIX_BUGS >= 2 && FIX_EXPLOITS)
 
+/* Zusatzfunktion, keine Fehlerbehebung: Probenlog. Jede Probe wird als Zahlenzeile an PROBEN.CSV im Spielordner
+ * angehaengt, aber nur, wenn diese Datei schon da ist (Datei anlegen = Log an). Spiel und Spielstand bleiben gleich.
+ * Umsetzung: s_plog.h (static je Overlay), Aufrufe in O076, O091, O158..O161. */
+#ifndef FIX_PROBENLOG
+#define FIX_PROBENLOG FIX_STUFE_W
+#endif
+
 #ifndef FIX_0001
 #define FIX_0001 FIX_STUFE_W
 #endif

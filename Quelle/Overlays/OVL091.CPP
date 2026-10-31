@@ -38,6 +38,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "schweif.h"
+#include "s_plog.h"	/* Probenlog (FIX_PROBENLOG) */
 
 /* Phase B: eigene Daten des Moduls (ds:5ca0..5cb2, dsana) - initialisierte Daten in Adressreihenfolge */
 struct select_spell_tmpl g_select_spell_tmpl = { { "%s~%d" }, { { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } } };
@@ -276,6 +277,16 @@ signed short test_spell(struct hero far *h, signed short spell, signed char mod)
 			if (g_spell_by_item != 0)
 				retval = 99;
 			else {
+#if FIX_PROBENLOG
+				/* Probenlog: Zeile Art 5 vor der Dreifachprobe (Wuerfe und Ergebnis in der folgenden Zeile Art 3):
+				 * Zauber, Zauberfertigkeit, Zuschlag (mit Magieresistenz des Ziels) */
+				{
+					signed short w[3];
+
+					w[0] = spell; w[1] = h->spells[spell]; w[2] = mod;
+					probenlog(5, h->name, 3, w);
+				}
+#endif
 				mod -= h->spells[spell];
 				retval = test_attrib3(h, p->a1, p->a2, p->a3, mod);
 			}

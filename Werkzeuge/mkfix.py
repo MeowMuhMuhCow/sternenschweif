@@ -114,7 +114,11 @@ def main():
           '#ifndef FIX_EXPLOITS', '#if FIX_BUGS > 0', '#define FIX_EXPLOITS 1', '#else', '#define FIX_EXPLOITS 0', '#endif', '#endif',
           '', '/* Vorgaben je Stufe (X = Exploit: nur mit FIX_EXPLOITS) */',
           '#define FIX_STUFE_W  (FIX_BUGS >= 1)', '#define FIX_STUFE_A  (FIX_BUGS >= 2)',
-          '#define FIX_STUFE_WX (FIX_BUGS >= 1 && FIX_EXPLOITS)', '#define FIX_STUFE_AX (FIX_BUGS >= 2 && FIX_EXPLOITS)', '']
+          '#define FIX_STUFE_WX (FIX_BUGS >= 1 && FIX_EXPLOITS)', '#define FIX_STUFE_AX (FIX_BUGS >= 2 && FIX_EXPLOITS)', '',
+          '/* Zusatzfunktion, keine Fehlerbehebung: Probenlog. Jede Probe wird als Zahlenzeile an PROBEN.CSV im Spielordner',
+          ' * angehaengt, aber nur, wenn diese Datei schon da ist (Datei anlegen = Log an). Spiel und Spielstand bleiben gleich.',
+          ' * Umsetzung: s_plog.h (static je Overlay), Aufrufe in O076, O091, O158..O161. */',
+          '#ifndef FIX_PROBENLOG', '#define FIX_PROBENLOG FIX_STUFE_W', '#endif', '']
     A = ['; s_fix.inc - Fehlerbehebungen per Schalter fuer TASM (erzeugt von tools/mkfix.py, siehe names/inc/s_fix.h)',
          'ifndef FIX_BUGS', 'FIX_BUGS = 0', 'endif', 'ifndef FIX_EXPLOITS', 'if FIX_BUGS gt 0', 'FIX_EXPLOITS = 1', 'else',
          'FIX_EXPLOITS = 0', 'endif', 'endif']

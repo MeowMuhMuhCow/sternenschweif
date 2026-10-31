@@ -33,6 +33,7 @@
 #include <string.h>
 #include <mem.h>
 #include "schweif.h"
+#include "s_plog.h"	/* Probenlog (FIX_PROBENLOG) */
 
 #define WEAPON_BF(h)	((h)->inv[INV_SLOT_RIGHT_HAND].bf)
 #define BF_UP(h) if ((WEAPON_BF(h) == -99 ? 0 : 1) && WEAPON_BF(h) < 20) WEAPON_BF(h)++; else ;
@@ -242,6 +243,15 @@ void fig_hero_attack_enemy(Fight far *f, struct hero far *h, struct enemy far *e
 	if (g_quick_fight)
 		at += 2;
 	roll1 = random_schweif(20);
+	/* Probenlog: Zeile Art 6 (Held attackiert Gegner: AT, W20, Gegnerart, 0) */
+#if FIX_PROBENLOG
+	{
+		signed short w[4];
+
+		w[0] = at; w[1] = roll1; w[2] = e->mon_id; w[3] = 0;
+		probenlog(6, h->name, 4, w);
+	}
+#endif
 	if (roll1 == 20 && random_schweif(20) > at - 9) {
 		/* Angriffspatzer */
 		dmg = 0;
@@ -287,6 +297,15 @@ void fig_hero_attack_enemy(Fight far *f, struct hero far *h, struct enemy far *e
 			if ((unsigned char)e->tame || (unsigned char)e->renegade)
 				pa = 0;
 			roll2 = random_schweif(20);
+			/* Probenlog: Zeile Art 7 (Gegner pariert gegen den Helden: PA, W20, Gegnerart, 0) */
+#if FIX_PROBENLOG
+			{
+				signed short w[4];
+
+				w[0] = pa; w[1] = roll2; w[2] = e->mon_id; w[3] = 0;
+				probenlog(7, h->name, 4, w);
+			}
+#endif
 			if (roll2 == 20 && random_schweif(20) > pa - 7) {
 				/* Paradepatzer */
 				hit = 1;
