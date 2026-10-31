@@ -52,6 +52,7 @@ Was beim Aufruf angegeben wird, hat Vorrang vor der Datei.
 |---|---|
 | `ABLAGE=ordner` | Spielstände und Probenlogs liegen in `<ordner>/<Fassung>` statt in `Build/` im Clone. So überleben sie ein Löschen und neues Klonen des Repos |
 | `SPEICHERN=overlay` | nur DOSBox Staging oder DOSBox-X: kein Kopieren, der Spielordner ist C:, alles Geschriebene (Spielstände, Probenlog) landet als Overlay in der Ablage. Mit der klassischen DOSBox 0.74 wird weiter kopiert (die kann keine Overlays) |
+| Overlay: Spielstand überschreiben | Überschreibt man im Spiel einen Spielstand, der im Spielordner liegt, löscht das Spiel die alte Datei. DOSBox Staging legt dafür in der Ablage eine Markierung `DBOVERLAY_DEL_<NAME>` an (z. B. `DBOVERLAY_DEL_SPIEL1.GAM`). Das Original im Spielordner bleibt erhalten, ist in DOSBox aber ausgeblendet, solange die Markierung existiert. Markierung löschen = Original wieder sichtbar |
 | `VOLLBILD=1` | Vollbild |
 | `CYCLES=3000` | Tempo in DOSBox-Zyklen (bei Staging als `cpu_cycles`) |
 | `SPIEL=ordner` | Spielordner (sonst gesucht bzw. aus `Linux/SPIELPFAD.txt`) |
