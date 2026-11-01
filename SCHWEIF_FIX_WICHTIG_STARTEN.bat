@@ -24,11 +24,13 @@ if not defined SPIEL goto keinspiel
 set "GOG=%SPIEL%"
 if not exist "%SAVES%" mkdir "%SAVES%"
 rem --- Spielordner in den Spielstand-Ordner spiegeln: nur fehlende Dateien, vorhandene (Spielstaende) bleiben.
+rem     Der Bugfix-Ordner selbst und Build sind ausgeschlossen, falls das Paket im Spielordner liegt
+rem     (sonst wuerde es sich selbst immer tiefer hineinkopieren).
 rem     Die DOSBox 0.74 von GOG kennt keine Overlay-Laufwerke, deshalb ist dieser Ordner das ganze Laufwerk C:.
 rem     Alte Spielstaende des Originals (Windows-VirtualStore) kommen mit.
-robocopy "%GOG%" "%SAVES%" /E /XC /XN /XO /R:1 /W:1 /XD DOSBOX MUSIC __support cloud_saves /XF *.gog *.ins *.inst *.pdf *.jpg *.zip *.lnk *.ico *.dll *.ini *.info *.hashdb *.script unins000.* goggame* >nul
+robocopy "%GOG%" "%SAVES%" /E /XC /XN /XO /R:1 /W:1 /XD "%HIER:~0,-1%" "%BUILD%" Build DOSBOX MUSIC __support cloud_saves /XF *.gog *.ins *.inst *.pdf *.jpg *.zip *.lnk *.ico *.dll *.ini *.info *.hashdb *.script unins000.* goggame* >nul
 set "VSTORE=%LOCALAPPDATA%\VirtualStore%GOG:~2%"
-if exist "%VSTORE%" robocopy "%VSTORE%" "%SAVES%" /E /XC /XN /XO /R:1 /W:1 >nul
+if exist "%VSTORE%" robocopy "%VSTORE%" "%SAVES%" /E /XC /XN /XO /R:1 /W:1 /XD Build >nul
 if not exist "%RUN%" mkdir "%RUN%"
 copy /y "%FIXEXE%" "%RUN%\SCHWEIF.EXE" >nul
 

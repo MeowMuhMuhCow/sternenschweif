@@ -1,6 +1,6 @@
 # Sternenschweif – Bugfix-Fassung: Änderungsliste
 
-**Version 1.2 vom 31.10.2026** · inoffiziell · zur deutschen GOG-Fassung C1.02 · **im Spiel noch ungetestet, Tester willkommen**
+**Version 1.2.1 vom 01.11.2026** · inoffiziell · zur deutschen GOG-Fassung C1.02 · **im Spiel noch ungetestet, Tester willkommen**
 
 ## So geht's
 
@@ -20,6 +20,11 @@ Die Spielstände der Bugfix-Fassung liegen in eigenen Ordnern unter `Build\`. Al
 |---|---|
 | **WICHTIG** (empfohlen) | kritische und mittlere Fehler: Abstürze, Hänger, verlorene Ausrüstung, falsche Preise, Fehler, die man im Spiel merkt |
 | **ALLES** | zusätzlich viele kleine Fehler ohne große Spielwirkung |
+
+## Neu in Version 1.2.1: Startdateien repariert
+
+Keine Änderung am Spiel, die EXEs sind dieselben wie in 1.2. Die Windows-Startdateien schließen beim Kopieren des Spielordners jetzt den Bugfix-Ordner selbst aus. Lag das Paket im Spielordner, kopierte es sich sonst immer tiefer in sich hinein, und DOSBox startete nicht (gemeldet von Andrean im Crystals-Forum für die Schicksalsklinge). Unter Linux ist dasselbe für einen Clone im Spielordner abgesichert.
+
 
 ## Neu in Version 1.2: Probenlog
 
