@@ -15,7 +15,7 @@
 > **Zum ersten Mal seit 1994:** Nach der Gefangennahme durch die Orks liegt eure Ausrüstung wirklich in den Truhen,
 > statt für immer zu verschwinden. Das Lagerhaus frisst euer Vermögen nicht mehr, Händler kassieren nur noch, was
 > sie auch liefern, der Horriphobus-Kampf endet, und zwei Gespräche geben endlich den großen AP-Bonus, den Attic
-> vorgesehen hatte. → [alle 225 Änderungen](BUGFIXES.md)
+> vorgesehen hatte. → [alle 227 Änderungen](BUGFIXES.md)
 
 **Zusammen mit der [Schicksalsklinge](https://github.com/MeowMuhMuhCow/schicksalsklinge): 508 Bugfixes für DSA 1 und DSA 2.**
 
