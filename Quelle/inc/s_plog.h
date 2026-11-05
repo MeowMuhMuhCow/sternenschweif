@@ -11,6 +11,9 @@
  *   Art 5 Zauber             (Zauber, Zauberfertigkeit, Zuschlag mit MR); die Dreifachprobe folgt
  *   Art 6 Attacke, 7 Parade  (Wert, W20, Gegnerart (-1 = Held), Richtung 0 Held greift an, 1 Gegner greift Held an,
  *                            2 Gegner gegen Gegner)
+ *   Art 8 Stufenanstieg      (Typ, Nr., alter Wert, Wurf, Ergebnis; Typ 1 Talent, 2 Zauber, 3 positive Eigenschaft +1,
+ *                            4 negative Eigenschaft senken mit 3 W20 (Nr., Wert, W20, W20, W20, Ergebnis), 5 LE-Wurf,
+ *                            6 AE-Tausch des Magiers; Aufrufe in O086/O087)
  * Klartext daraus machen Probenlog/probenlog_fenster.ps1, probenlog.py und Probenlog_Sternenschweif.html.
  *
  * Die Funktion ist static: jedes Overlay, das sie braucht, bekommt seine eigene Kopie (ein Aufruf in ein anderes

@@ -22,6 +22,21 @@
  *   g_skill_max_incs greift dort also nie.
  */
 #include "schweif.h"
+#include "s_plog.h"	/* Probenlog (FIX_PROBENLOG) */
+#if FIX_PROBENLOG
+/* Probenlog: Wuerfe beim Stufenanstieg (Art 8). Werte: Typ, Nr., alter Wert, Wurf, Ergebnis.
+ * Typ 1 Talent steigern, 2 Zauber steigern (Ergebnis 1 = gelungen), 3 positive Eigenschaft +1 (kein Wurf),
+ * 4 negative Eigenschaft senken (3 W20, siehe O086 dec_attrib), 5 LE-Wurf (Ergebnis = Punkte),
+ * 6 Magier tauscht 10 Zaubersteigerungen gegen AE (Ergebnis = AE) */
+static void stufenlog(struct hero far *h, signed short typ, signed short nr, signed short alt, signed short wurf,
+			signed short erg)
+{
+	signed short w[5];
+
+	w[0] = typ; w[1] = nr; w[2] = alt; w[3] = wurf; w[4] = erg;
+	probenlog(8, h->name, 5, w);
+}
+#endif
 
 /* add_skill_value mit Wort-Parameter (das Original uebergibt den Betrag hier als short: push 1) */
 #define add_skill_value_w ((void (*)(struct hero far *, signed short, signed short))add_skill_value)
@@ -61,6 +76,9 @@ void Lvl::inc_spell(register signed short id)
 		r = random_interval(3, 18);
 	else
 		r = random_interval(2, 12);
+#if FIX_PROBENLOG
+	stufenlog(hero, 2, id, hero->spells[id], r, hero->spells[id] < r);
+#endif
 	if (hero->spells[id] < r) {
 		dlg_message(g_dialog, txt[61]);
 		hero->inc_spell(id);
@@ -91,6 +109,9 @@ void Lvl::inc_skill(register signed short id)
 		r = random_interval(3, 18);
 	else
 		r = random_interval(2, 12);
+#if FIX_PROBENLOG
+	stufenlog(hero, 1, id, get_skill_value(hero, id), r, get_skill_value(hero, id) < r);
+#endif
 	if (get_skill_value(hero, id) < r) {
 		dlg_message(g_dialog, txt[61]);
 		add_skill_value_w(hero, id, 1);
@@ -145,6 +166,9 @@ void Lvl::inc_skill_auto(register signed short id)
 				r = random_interval(3, 18);
 			else
 				r = random_interval(2, 12);
+#if FIX_PROBENLOG
+			stufenlog(hero, 1, id, get_skill_value(hero, id), r, get_skill_value(hero, id) < r);
+#endif
 			if (get_skill_value(hero, id) < r) {
 				add_skill_value_w(hero, id, 1);
 #if FIX_0002
@@ -201,6 +225,9 @@ void Lvl::inc_spell_auto(register signed short id)
 				r = random_interval(3, 18);
 			else
 				r = random_interval(2, 12);
+#if FIX_PROBENLOG
+			stufenlog(hero, 2, id, hero->spells[id], r, hero->spells[id] < r);
+#endif
 			if (hero->spells[id] < r) {
 				hero->inc_spell(id);
 				g_inc_spells[id].tries = 0;

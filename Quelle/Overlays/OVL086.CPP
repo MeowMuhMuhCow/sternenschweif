@@ -42,6 +42,21 @@
  */
 #include <stdio.h>
 #include "schweif.h"
+#include "s_plog.h"	/* Probenlog (FIX_PROBENLOG) */
+#if FIX_PROBENLOG
+/* Probenlog: Wuerfe beim Stufenanstieg (Art 8). Werte: Typ, Nr., alter Wert, Wurf, Ergebnis.
+ * Typ 1 Talent steigern, 2 Zauber steigern (Ergebnis 1 = gelungen), 3 positive Eigenschaft +1 (kein Wurf),
+ * 4 negative Eigenschaft senken (3 W20, siehe O086 dec_attrib), 5 LE-Wurf (Ergebnis = Punkte),
+ * 6 Magier tauscht 10 Zaubersteigerungen gegen AE (Ergebnis = AE) */
+static void stufenlog(struct hero far *h, signed short typ, signed short nr, signed short alt, signed short wurf,
+			signed short erg)
+{
+	signed short w[5];
+
+	w[0] = typ; w[1] = nr; w[2] = alt; w[3] = wurf; w[4] = erg;
+	probenlog(8, h->name, 5, w);
+}
+#endif
 
 /* Phase B: eigene Daten des Moduls (ds:5a80..5c7e, dsana) in Adressreihenfolge */
 struct attrib_prio g_lvl_attrib_order[12] = {	/* je Typ 1..12 (Index type - 1): Eigenschaften in Versuchsreihenfolge */
@@ -162,6 +177,9 @@ void Lvl::inc_attrib()
 					}
 				}
 			} while (sel == -1);
+#if FIX_PROBENLOG
+			stufenlog(hero, 3, sel, hero->attrib[sel].normal, 0, 1);
+#endif
 			change_attrib_normal(hero, sel, 1);
 			return;
 		}
@@ -173,6 +191,9 @@ void Lvl::inc_attrib()
 				dlg_message(g_dialog, txt[64]);
 			}
 		} while (sel == -2);
+#if FIX_PROBENLOG
+		stufenlog(hero, 3, sel, hero->attrib[sel].normal, 0, 1);
+#endif
 		change_attrib_normal(hero, sel, 1);
 		redraw();
 	}
@@ -183,6 +204,9 @@ void Lvl::dec_attrib()
 	signed short ok = 0;
 	signed short i;
 	signed short hit;
+#if FIX_PROBENLOG
+	signed short plog[7];
+#endif
 
 	for (i = ATTRIB_AG; i <= ATTRIB_JZ; i++)
 		if (hero->attrib[i].normal > 2)
@@ -199,9 +223,18 @@ void Lvl::dec_attrib()
 				}
 			} while (sel == -1);
 			hit = 0;
+#if FIX_PROBENLOG
+			/* Probenlog: die drei W20 merken (Typ 4: Nr., Wert, W20, W20, W20, Ergebnis) */
+			for (i = 0; i < 3; i++)
+				if ((plog[3 + i] = random_schweif(20)) <= hero->attrib[sel].normal)
+					hit = 1;
+			plog[0] = 4; plog[1] = sel; plog[2] = hero->attrib[sel].normal; plog[6] = hit;
+			probenlog(8, hero->name, 7, plog);
+#else
 			for (i = 0; i < 3; i++)
 				if (random_schweif(20) <= hero->attrib[sel].normal)
 					hit = 1;
+#endif
 			if (hit) {
 				change_attrib_normal(hero, sel, -1);
 				redraw();
@@ -218,9 +251,17 @@ void Lvl::dec_attrib()
 			}
 		} while (sel == -2);
 		hit = 0;
+#if FIX_PROBENLOG
+		for (i = 0; i < 3; i++)
+			if ((plog[3 + i] = random_schweif(20)) <= ((signed char far *)hero)[sel * 3 + 0x5b])
+				hit = 1;
+		plog[0] = 4; plog[1] = sel + ATTRIB_AG; plog[2] = ((signed char far *)hero)[sel * 3 + 0x5b]; plog[6] = hit;
+		probenlog(8, hero->name, 7, plog);
+#else
 		for (i = 0; i < 3; i++)
 			if (random_schweif(20) <= ((signed char far *)hero)[sel * 3 + 0x5b])
 				hit = 1;
+#endif
 		if (hit) {
 			dlg_message(g_dialog, txt[61]);
 			change_attrib_normal(hero, sel + ATTRIB_AG, -1);
@@ -236,6 +277,9 @@ void Lvl::inc_le()
 	signed short r;
 
 	r = random_schweif(6) + 1;
+#if FIX_PROBENLOG
+	stufenlog(hero, 5, 0, hero->le_max, r, hero->is_mage() ? r + 2 : r);
+#endif
 	if (lvl_auto) {
 		if (hero->is_mage()) {
 			r += 2;
@@ -261,6 +305,9 @@ void Lvl::inc_le()
 		if (hero->type == HERO_TYPE_MAGE && g_game_mode == GAME_MODE_ADVANCED && dlg_yes_no(g_dialog, txt[68]) == 1) {
 			hero->spell_incs += (signed char)-10;
 			r = random_interval(3, 8);
+#if FIX_PROBENLOG
+			stufenlog(hero, 6, 0, hero->ae_max, r, r);
+#endif
 			add_hero_ae2(hero, r);
 		}
 	} else {
