@@ -62,6 +62,7 @@
       "status_wenn_exe_fehlt": "noch nicht verfuegbar",
       "port_ordner": ".",
       "port_ordner_alternativen": [
+        "release",
         "sternenschweif",
         "../Sternenschweif_Nativ",
         "../Port/build",
