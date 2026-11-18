@@ -1,0 +1,10 @@
+Die Quellen liegen im Ordner Port, eine Ebene über release. Sie werden hier nicht ein zweites Mal abgelegt.
+
+Port/src            Spiellogik, eingesetzt aus Quelle/ über tools/prepare_sources.py
+Port/platform       Fenster, Eingabe, Zeit, Dateien, Ton (waveOut, stb_vorbis)
+Port/tools          prepare_sources.py, bauen_port.py, generate_bridges.py, abdeckung.py, vergleich.py
+Port/third_party    stb_vorbis (Public Domain), SDL2 (zlib)
+Port/bauen_port.py  ein Bauaufruf für alle Stufen
+
+Quelle/, Bauen/, Original/ und die Nachbarprojekte bleiben unangetastet.
+Keine Spieldaten und keine EXE in release/.

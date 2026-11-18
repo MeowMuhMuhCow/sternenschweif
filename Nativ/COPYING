@@ -1,0 +1,57 @@
+GNU GENERAL PUBLIC LICENSE
+Version 3, 29 June 2007
+
+Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+Everyone is permitted to copy and distribute verbatim copies of this license
+document, but changing it is not allowed.
+
+===============================================================================
+HERKUNFTS- UND LIZENZHINWEISE (CREDITS & THIRD-PARTY LICENSES)
+===============================================================================
+
+Dieses Softwarepaket (Nativer Port von "Das Schwarze Auge: Sternenschweif"
+C1.02 de) wird unter den Bedingungen der GNU General Public License Version 3
+(GPLv3) veröffentlicht. Es enthält KEINE Original-Spieldaten von Attic
+Entertainment Software.
+
+1. Bright-Eyes (Decompilierung & Rekonstruktion der Nordlandtrilogie)
+   - Projekt:    https://github.com/shihan42/Bright-Eyes
+   - Autoren:    shihan42 und Mitwirkende des Bright-Eyes-Projekts
+   - Lizenz:     GNU General Public License v3.0 (GPLv3)
+   - Verwendung: Rekonstruierter C/C++-Quellcode der Segmente und Overlays
+                 (SEG002..OVL271) sowie die Fehlerkorrekturen (s_fix.h).
+
+2. BrightEyes-SDL2 / MobileEyes (Portierungs-Referenz & PP20-Entpacker)
+   - Projekt:    https://github.com/Kerygma83/mobile-eyes
+   - Autoren:    Gero Ohrner (Kerygma83), Hynek und Mitwirkende
+   - Lizenz:     GNU General Public License v3.0 (GPLv3)
+   - Verwendung: Adaption des PowerPacker-2.0-Entpackers (ppDecrunch in SEG033)
+                 und Portierungs-Referenz fuer 32-Bit-Plattformen.
+
+3. stb_vorbis (Ogg-Vorbis-Decoder in third_party/stb_vorbis/)
+   - Projekt:    https://github.com/nothings/stb
+   - Autor:      Sean Barrett
+   - Lizenz:     Public Domain (Unlicense) / MIT License
+   - Verwendung: Dekodierung der CD-Audio-Spuren MUSIC/Track02.ogg .. Track22.ogg.
+
+4. Simple DirectMedia Layer (SDL2)
+   - Projekt:    https://www.libsdl.org/
+   - Autoren:    Sam Lantinga und Mitwirkende
+   - Lizenz:     zlib License
+
+===============================================================================
+                    GNU GENERAL PUBLIC LICENSE
+                       Version 3, 29 June 2007
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
