@@ -147,6 +147,9 @@ void          SDL_DestroyWindow(SDL_Window *window);
 void          SDL_SetWindowTitle(SDL_Window *window, const char *title);
 void          SDL_SetWindowSize(SDL_Window *window, int w, int h);
 void          SDL_GetWindowSize(SDL_Window *window, int *w, int *h);
+int           SDL_SetWindowFullscreen(SDL_Window *window, Uint32 flags);
+void          SDL_SetWindowViewport(SDL_Window *window, int vx, int vy, int vw, int vh);
+void          SDL_SetFullscreenOverrideRes(int w, int h);
 
 SDL_Renderer *SDL_CreateRenderer(SDL_Window *window, int index, Uint32 flags);
 void          SDL_DestroyRenderer(SDL_Renderer *renderer);

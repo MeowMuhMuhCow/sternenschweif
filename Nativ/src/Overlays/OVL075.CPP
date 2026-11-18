@@ -385,14 +385,16 @@ void drag_hero_portrait(signed short src)
 				portrait->put(g_vga_buf, g_mouse_posx, 0x9d);
 				g_mouse_busy = 0;
 				g_mouse_posx_bak = g_mouse_posx;
+			} else {
+				wait_for_vsync();
 			}
 		}
 		mouse_clear_left();
 		g_mouse_event = 0;
 		under->put(g_vga_buf, g_mouse_posx_bak, 0x9d);
 		/* Originalfehler: ohne Untergrenze (liest g_portrait_x[-1] ...) */
-#if FIX_0062
-		/* Fix #62: Untergrenze: nicht vor g_portrait_x[0] lesen */
+#if FIX_0062 || !defined(__BORLANDC__)
+		/* Fix #62 / nativ: Untergrenze: nicht vor g_portrait_x[0] lesen */
 		for (dst = 6; dst > 0 && g_portrait_x[--dst] > g_mouse_posx + 25; )
 			;
 #else

@@ -172,7 +172,14 @@ void Outro2::plain()
 				snd_speech(g_snd_speech, snd);
 				snd = 0;
 				while (snd_speech_busy(g_snd_speech)) {
-					game_idle();
+					poll_input();
+					if (g_action || g_mouse_lclick || g_mouse_rclick) {
+						mouse_clear_left();
+						mouse_clear_right();
+						g_mouse_event = g_mouse_ldclick = 0;
+						Speech_stop(g_snd_speech);
+						break;
+					}
 					wait_for_vsync();
 				}
 			} else
@@ -315,7 +322,14 @@ void Outro2::voice()
 				snd_speech(g_snd_speech, snd);
 				snd = 0;
 				while (snd_speech_busy(g_snd_speech)) {
-					game_idle();
+					poll_input();
+					if (g_action || g_mouse_lclick || g_mouse_rclick) {
+						mouse_clear_left();
+						mouse_clear_right();
+						g_mouse_event = g_mouse_ldclick = 0;
+						Speech_stop(g_snd_speech);
+						break;
+					}
 					wait_for_vsync();
 				}
 			}
@@ -483,7 +497,14 @@ void Outro1::plain()
 				snd_speech(g_snd_speech, snd);
 				snd = 0;
 				while (snd_speech_busy(g_snd_speech)) {
-					game_idle();
+					poll_input();
+					if (g_action || g_mouse_lclick || g_mouse_rclick) {
+						mouse_clear_left();
+						mouse_clear_right();
+						g_mouse_event = g_mouse_ldclick = 0;
+						Speech_stop(g_snd_speech);
+						break;
+					}
 					wait_for_vsync();
 				}
 			} else
@@ -606,7 +627,14 @@ void Outro1::voice()
 				snd_speech(g_snd_speech, snd);
 				snd = 0;
 				while (snd_speech_busy(g_snd_speech)) {
-					game_idle();
+					poll_input();
+					if (g_action || g_mouse_lclick || g_mouse_rclick) {
+						mouse_clear_left();
+						mouse_clear_right();
+						g_mouse_event = g_mouse_ldclick = 0;
+						Speech_stop(g_snd_speech);
+						break;
+					}
 					wait_for_vsync();
 				}
 			}

@@ -313,11 +313,18 @@ def build_stufe(fix_bugs: int, exe_name: str, extra_defines: list[str], copy_to_
         sys.exit(1)
 
     patch_pe_rdata_writable(out_exe)
+    release_dirs = [PORT_DIR / "release"] + list(ROOT_DIR.parent.glob("*Schicksalsklinge*/Starter/release"))
+    for rdir in release_dirs:
+        if rdir.exists():
+            shutil.copy2(out_exe, rdir / exe_name)
     if copy_to_default:
         default_exe = build_dir / "SCHWEIF_PORT.EXE"
         if out_exe != default_exe:
             shutil.copy2(out_exe, default_exe)
             print(f"      Kopiert nach {default_exe.relative_to(ROOT_DIR)} ({default_exe.stat().st_size:,} Bytes)")
+        for rdir in release_dirs:
+            if rdir.exists():
+                shutil.copy2(default_exe, rdir / "SCHWEIF_PORT.EXE")
     return out_exe
 
 
@@ -331,7 +338,9 @@ def main() -> int:
         elif a != "--prepare":
             stufe_arg = a.lower()
 
-    if not (PORT_DIR / "src" / "inc" / "schweif.h").exists() or "--prepare" in args:
+    prep_py = PORT_DIR / "tools" / "prepare_sources.py"
+    schweif_h = PORT_DIR / "src" / "inc" / "schweif.h"
+    if not schweif_h.exists() or "--prepare" in args or prep_py.stat().st_mtime > schweif_h.stat().st_mtime:
         print("[1/4] Bereite Quellen in Port/src/ vor...")
         subprocess.run(
             [sys.executable, str(PORT_DIR / "tools" / "prepare_sources.py")],

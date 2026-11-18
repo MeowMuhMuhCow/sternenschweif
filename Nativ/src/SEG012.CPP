@@ -506,6 +506,7 @@ void far draw_hud(void)
 	copy_3d_to_screen();
 	if (m)
 		mouse_show(0);
+	wait_for_vsync();
 }
 
 void far pick_rect(signed short x1, signed short y1, signed short x2, signed short y2)
@@ -586,7 +587,8 @@ void far draw_stars(void)
 	unsigned char far *scr = (unsigned char far *)g_renderbuf_ptr;
 	unsigned char col;
 	struct vtx q, p;
-	register signed short off, i;
+	register unsigned short off;
+	register signed short i;
 
 	for (i = 0; i <= 99; i++) {
 		p = g_stars[i];

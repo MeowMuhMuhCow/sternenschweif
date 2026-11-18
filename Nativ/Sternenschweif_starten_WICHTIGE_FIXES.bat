@@ -38,115 +38,126 @@ if "%SPIELPFAD%"=="" (
     )
 )
 if not "%SPIELPFAD%"=="" (
-    if not exist "%SPIELPFAD%\DATA\STAR.DAT" if not exist "%SPIELPFAD%\STAR.DAT" if not exist "%SPIELPFAD%\SCHWEIF.EXE" (
-        set "SPIELPFAD="
+    if not exist "%SPIELPFAD%\DATA\STAR.DAT" if not exist "%SPIELPFAD%\STAR.DAT" if not exist "%SPIELPFAD%\SCHWEIF.EXE" set "SPIELPFAD="
+)
+
+REM 3. Automatische Erkennung ueblicher GOG- und Projekt-Orte
+if "%SPIELPFAD%"=="" (
+    if exist "%CD%\DATA\STAR.DAT" (
+        set "SPIELPFAD=%CD%"
+    ) else if exist "%SCRIPT_DIR%DATA\STAR.DAT" (
+        set "SPIELPFAD=%SCRIPT_DIR%"
+    ) else if exist "%SCRIPT_DIR%..\Original\CD\DATA\STAR.DAT" (
+        set "SPIELPFAD=%SCRIPT_DIR%..\Original\CD"
+    ) else if exist "%ProgramFiles(x86)%\GOG Galaxy\Games\Realms of Arkania 2\DATA\STAR.DAT" (
+        set "SPIELPFAD=%ProgramFiles(x86)%\GOG Galaxy\Games\Realms of Arkania 2"
+    ) else if exist "%ProgramFiles%\GOG Galaxy\Games\Realms of Arkania 2\DATA\STAR.DAT" (
+        set "SPIELPFAD=%ProgramFiles%\GOG Galaxy\Games\Realms of Arkania 2"
+    ) else if exist "C:\GOG Games\Realms of Arkania 2\DATA\STAR.DAT" (
+        set "SPIELPFAD=C:\GOG Games\Realms of Arkania 2"
+    ) else if exist "D:\GOG Games\Realms of Arkania 2\DATA\STAR.DAT" (
+        set "SPIELPFAD=D:\GOG Games\Realms of Arkania 2"
+    ) else if exist "E:\GOG Games\Realms of Arkania 2\DATA\STAR.DAT" (
+        set "SPIELPFAD=E:\GOG Games\Realms of Arkania 2"
+    ) else if exist "C:\Program Files (x86)\GOG Galaxy\Games\Realms of Arkania 2\DATA\STAR.DAT" (
+        set "SPIELPFAD=C:\Program Files (x86)\GOG Galaxy\Games\Realms of Arkania 2"
     )
 )
 
-REM 3. Automatische Suche in typischen Ordnern
-if "%SPIELPFAD%"=="" (
-    for %%D in (
-        "%SCRIPT_DIR%."
-        "%SCRIPT_DIR%.."
-        "%SCRIPT_DIR%..\Original\CD"
-        "C:\GOG Games\Realms of Arkania 2"
-        "D:\GOG Games\Realms of Arkania 2"
-        "E:\GOG Games\Realms of Arkania 2"
-        "C:\Program Files (x86)\GOG Galaxy\Games\Realms of Arkania 2"
-        "C:\Program Files\GOG Galaxy\Games\Realms of Arkania 2"
-        "D:\Program Files (x86)\GOG Galaxy\Games\Realms of Arkania 2"
-        "C:\Program Files (x86)\Steam\steamapps\common\Realms of Arkania 2"
-        "C:\Spiele\Sternenschweif"
-        "D:\Spiele\Sternenschweif"
-    ) do (
-        if "%SPIELPFAD%"=="" (
-            if exist "%%~D\DATA\STAR.DAT" (
-                set "SPIELPFAD=%%~fD"
-            ) else if exist "%%~D\STAR.DAT" (
-                set "SPIELPFAD=%%~fD"
-            ) else if exist "%%~D\SCHWEIF.EXE" (
-                set "SPIELPFAD=%%~fD"
-            )
-        )
-    )
-)
+if not "%SPIELPFAD%"=="" goto spielpfad_ok
 
-REM 4. Einmalig nachfragen und in SPIELPFAD.txt merken
-:FRAG_PFAD
-if "%SPIELPFAD%"=="" (
-    echo ============================================================================
-    echo Spielordner mit DATA\STAR.DAT ^(bzw. SCHWEIF.EXE^) wurde nicht automatisch gefunden.
-    echo Bitte den Pfad zu deiner Sternenschweif-Installation eingeben
-    echo ^(z. B. C:\GOG Games\Realms of Arkania 2^):
-    echo ============================================================================
-    set /p SPIELPFAD="Spielpfad: "
-    set "SPIELPFAD=%SPIELPFAD:"=%"
-)
+echo [FEHLER] DATA\STAR.DAT ^(bzw. SCHWEIF.EXE^) wurde nicht gefunden!
+echo Bitte setzen Sie die Umgebungsvariable SPIELPFAD auf den Ordner Ihres Originalspiels
+echo oder uebergeben Sie den Pfad als Parameter:
+echo   start_sternenschweif.bat "C:\GOG Games\Realms of Arkania 2"
+pause
+exit /b 1
 
-if "%SPIELPFAD%"=="" goto :EOF
-if not exist "%SPIELPFAD%\DATA\STAR.DAT" if not exist "%SPIELPFAD%\STAR.DAT" if not exist "%SPIELPFAD%\SCHWEIF.EXE" (
-    echo.
-    echo [FEHLER] In "%SPIELPFAD%" wurde weder DATA\STAR.DAT noch SCHWEIF.EXE gefunden!
-    set "SPIELPFAD="
-    goto :FRAG_PFAD
-)
-
-REM Gefundenen Pfad fuer den naechsten Start speichern
+:spielpfad_ok
 > "%SCRIPT_DIR%SPIELPFAD.txt" echo %SPIELPFAD%
 
-REM EXE suchen (entweder direkt neben dem Skript oder unter build\)
-set "EXE=%SCRIPT_DIR%%PORT_EXE_NAME%"
-if not exist "%EXE%" set "EXE=%SCRIPT_DIR%build\%PORT_EXE_NAME%"
-if not exist "%EXE%" set "EXE=%SCRIPT_DIR%SCHWEIF_PORT.EXE"
-if not exist "%EXE%" set "EXE=%SCRIPT_DIR%build\SCHWEIF_PORT.EXE"
-if not exist "%EXE%" (
-    echo [FEHLER] %PORT_EXE_NAME% wurde nicht gefunden!
-    echo Bitte zuerst bauen: python Port\bauen_port.py
-    pause
-    exit /b 1
+REM 4. Port-EXE suchen (lokal oder in build\)
+set "PORT_EXE="
+if exist "%SCRIPT_DIR%%PORT_EXE_NAME%" (
+    set "PORT_EXE=%SCRIPT_DIR%%PORT_EXE_NAME%"
+) else if exist "%SCRIPT_DIR%build\%PORT_EXE_NAME%" (
+    set "PORT_EXE=%SCRIPT_DIR%build\%PORT_EXE_NAME%"
+) else if exist "%SCRIPT_DIR%..\build\%PORT_EXE_NAME%" (
+    set "PORT_EXE=%SCRIPT_DIR%..\build\%PORT_EXE_NAME%"
+) else if exist "%SCRIPT_DIR%SCHWEIF_PORT.EXE" (
+    set "PORT_EXE=%SCRIPT_DIR%SCHWEIF_PORT.EXE"
+) else if exist "%SCRIPT_DIR%build\SCHWEIF_PORT.EXE" (
+    set "PORT_EXE=%SCRIPT_DIR%build\SCHWEIF_PORT.EXE"
 )
 
-REM Pruefen, ob der Spielordner beschreibbar ist; sonst Spielstaende\ neben der EXE nutzen
-set "LOG_DIR=%SPIELPFAD%"
-copy /y nul "%SPIELPFAD%\.schweif_write_test.tmp" >nul 2>&1
-if errorlevel 1 (
-    set "LOG_DIR=%SCRIPT_DIR%Spielstaende"
-    if not exist "%SCRIPT_DIR%Spielstaende" mkdir "%SCRIPT_DIR%Spielstaende" >nul 2>&1
-) else (
-    del /q "%SPIELPFAD%\.schweif_write_test.tmp" >nul 2>&1
+if not "%PORT_EXE%"=="" goto exe_ok
+echo [HINWEIS] %PORT_EXE_NAME% noch nicht gebaut. Starte Build via bauen_port.py ...
+python "%SCRIPT_DIR%bauen_port.py"
+if exist "%SCRIPT_DIR%build\%PORT_EXE_NAME%" (
+    set "PORT_EXE=%SCRIPT_DIR%build\%PORT_EXE_NAME%"
+    goto exe_ok
+)
+echo [FEHLER] %PORT_EXE_NAME% konnte nicht gefunden oder gebaut werden.
+pause
+exit /b 1
+
+:exe_ok
+REM 5. Pruefen, ob der Spielordner beschreibbar ist; sonst Spielstaende/PROBEN.CSV
+REM    in den Ordner "Spielstaende" neben der EXE umleiten.
+set "SAVEDIR=%SPIELPFAD%"
+if "%DSA_FORCE_READONLY_GAMEDIR%"=="1" goto umleiten_spielstaende
+set "WTEST=%SPIELPFAD%\.schweif_wtest_%RANDOM%.tmp"
+type nul > "%WTEST%" 2>nul
+if not exist "%WTEST%" goto umleiten_spielstaende
+del "%WTEST%" >nul 2>nul
+goto ordner_bereit
+
+:umleiten_spielstaende
+for %%D in ("%PORT_EXE%") do set "EXE_DIR=%%~dpD"
+set "SAVEDIR=%EXE_DIR%Spielstaende"
+set "DSA_SAVE_DIR=%SAVEDIR%"
+if not exist "%SAVEDIR%" mkdir "%SAVEDIR%"
+if not exist "%SAVEDIR%\GAMES" mkdir "%SAVEDIR%\GAMES"
+if not exist "%SAVEDIR%\TEMP" mkdir "%SAVEDIR%\TEMP"
+if not exist "%SAVEDIR%\CTEMP" mkdir "%SAVEDIR%\CTEMP"
+for %%F in ("%SPIELPFAD%\GAMES\*.*") do (
+    if not exist "%SAVEDIR%\GAMES\%%~nxF" copy /y "%%~fF" "%SAVEDIR%\GAMES\%%~nxF" >nul 2>nul
+)
+echo [HINWEIS] Der Spielordner "%SPIELPFAD%" ist nicht beschreibbar.
+echo           Spielstaende und PROBEN.CSV werden in den Ordner "Spielstaende" neben der EXE umgeleitet:
+echo           "%SAVEDIR%"
+
+:ordner_bereit
+REM 6. Probenlog (Zusatzfunktion): alte PROBEN.CSV mit Datum nach Probenlogs\ verschieben.
+REM    Bei PROBENLOG=1 neue PROBEN.CSV anlegen und das Live-Fenster (probenlog_fenster.ps1) oeffnen.
+set "LOGTAG=Fix_Alles"
+if /i "%PORT_EXE_NAME%"=="SCHWEIF_PORT_WICHTIG.EXE" set "LOGTAG=Fix_Wichtig"
+
+if exist "%SAVEDIR%\PROBEN.CSV" for %%A in ("%SAVEDIR%\PROBEN.CSV") do if %%~zA==0 del "%SAVEDIR%\PROBEN.CSV" >nul 2>nul
+if not exist "%SAVEDIR%\PROBEN.CSV" goto nach_archiv_probenlog
+
+if not exist "%SCRIPT_DIR%Probenlogs" mkdir "%SCRIPT_DIR%Probenlogs"
+set "ZEITSTEMPEL="
+for /f %%t in ('powershell -NoProfile -Command "Get-Date -Format yyyy-MM-dd_HH-mm-ss"') do set "ZEITSTEMPEL=%%t"
+if not defined ZEITSTEMPEL set "ZEITSTEMPEL=alt"
+if /i not "%SAVEDIR%\Probenlogs"=="%SCRIPT_DIR%Probenlogs" (
+    if not exist "%SAVEDIR%\Probenlogs" mkdir "%SAVEDIR%\Probenlogs" 2>nul
+    copy /y "%SAVEDIR%\PROBEN.CSV" "%SAVEDIR%\Probenlogs\PROBEN_%LOGTAG%_%ZEITSTEMPEL%.CSV" >nul 2>nul
+)
+move /y "%SAVEDIR%\PROBEN.CSV" "%SCRIPT_DIR%Probenlogs\PROBEN_%LOGTAG%_%ZEITSTEMPEL%.CSV" >nul 2>nul
+
+:nach_archiv_probenlog
+if not "%PROBENLOG%"=="1" goto start_spiel
+type nul > "%SAVEDIR%\PROBEN.CSV"
+set "PS1_PFAD="
+if exist "%SCRIPT_DIR%Probenlog\probenlog_fenster.ps1" set "PS1_PFAD=%SCRIPT_DIR%Probenlog\probenlog_fenster.ps1"
+if not defined PS1_PFAD if exist "%SCRIPT_DIR%..\Probenlog\probenlog_fenster.ps1" set "PS1_PFAD=%SCRIPT_DIR%..\Probenlog\probenlog_fenster.ps1"
+if not defined PS1_PFAD if exist "%SCRIPT_DIR%probenlog_fenster.ps1" set "PS1_PFAD=%SCRIPT_DIR%probenlog_fenster.ps1"
+if defined PS1_PFAD if not "%DSA_NO_PROBENLOG_WINDOW%"=="1" (
+    start "Probenlog Sternenschweif" powershell -NoProfile -ExecutionPolicy Bypass -File "%PS1_PFAD%" -Datei "%SAVEDIR%\PROBEN.CSV" -Spiel "Sternenschweif"
 )
 
-set "CSV_DATEI=%LOG_DIR%\PROBEN.CSV"
-set "ARCHIV_DIR=%LOG_DIR%\Probenlogs"
-
-REM Vorhandene PROBEN.CSV mit Zeitstempel nach Probenlogs\ sichern, damit ohne Probenlog nichts weitergeschrieben wird
-if exist "%CSV_DATEI%" (
-    for %%A in ("%CSV_DATEI%") do if %%~zA GTR 0 (
-        if not exist "%ARCHIV_DIR%" mkdir "%ARCHIV_DIR%" >nul 2>&1
-        for /f %%T in ('powershell -NoProfile -Command "(Get-Item -LiteralPath \"%CSV_DATEI%\").LastWriteTime.ToString(\"yyyy-MM-dd_HH-mm-ss\")"') do (
-            move /y "%CSV_DATEI%" "%ARCHIV_DIR%\PROBEN_%%T.CSV" >nul 2>&1
-        )
-    )
-    if exist "%CSV_DATEI%" del /q "%CSV_DATEI%" >nul 2>&1
-)
-
-REM Falls Probenlog gewuenscht: leere PROBEN.CSV anlegen und Live-Fenster starten
-if "%PROBENLOG%"=="1" (
-    type nul > "%CSV_DATEI%"
-    set "PS1_SKRIPT=%SCRIPT_DIR%Probenlog\probenlog_fenster.ps1"
-    if not exist "%SCRIPT_DIR%Probenlog\probenlog_fenster.ps1" (
-        if exist "%SCRIPT_DIR%..\Probenlog\probenlog_fenster.ps1" (
-            set "PS1_SKRIPT=%SCRIPT_DIR%..\Probenlog\probenlog_fenster.ps1"
-        )
-    )
-    if exist "%SCRIPT_DIR%Probenlog\probenlog_fenster.ps1" (
-        start "Probenlog Sternenschweif" powershell -NoExit -ExecutionPolicy Bypass -File "%SCRIPT_DIR%Probenlog\probenlog_fenster.ps1" -Datei "%CSV_DATEI%" -Spiel "Sternenschweif"
-    ) else if exist "%SCRIPT_DIR%..\Probenlog\probenlog_fenster.ps1" (
-        start "Probenlog Sternenschweif" powershell -NoExit -ExecutionPolicy Bypass -File "%SCRIPT_DIR%..\Probenlog\probenlog_fenster.ps1" -Datei "%CSV_DATEI%" -Spiel "Sternenschweif"
-    ) else (
-        echo [HINWEIS] Probenlog\probenlog_fenster.ps1 nicht gefunden - PROBEN.CSV wird trotzdem geschrieben.
-    )
-)
-
-echo Starte %PORT_EXE_NAME% mit Spielordner: "%SPIELPFAD%"
-"%EXE%" --gamedir "%SPIELPFAD%" %1 %2 %3 %4 %5 %6 %7 %8 %9
+:start_spiel
+echo Starte Sternenschweif (%PORT_EXE_NAME%) mit Spieldaten aus: "%SPIELPFAD%"
+"%PORT_EXE%" --gamedir "%SPIELPFAD%" %1 %2 %3 %4 %5 %6 %7 %8 %9
+endlocal

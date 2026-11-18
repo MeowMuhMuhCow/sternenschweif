@@ -506,3 +506,22 @@ extern "C" int dsa_platform_play_voc(const unsigned char *voc_data, uint32_t voc
     g_voc_raw_len = 0;
     return dsa_platform_submit_voc_chunk(voc_data, voc_len);
 }
+
+extern "C" int dsa_platform_voc_is_playing(void) {
+    cd_lock();
+    int active = (g_voc != NULL && g_voc_pos < g_voc_len && g_wave != NULL) ? 1 : 0;
+    cd_unlock();
+    return active;
+}
+
+extern "C" void dsa_platform_stop_voc(void) {
+    cd_lock();
+    if (g_voc) {
+        free(g_voc);
+        g_voc = NULL;
+    }
+    g_voc_len = 0;
+    g_voc_pos = 0;
+    g_voc_raw_len = 0;
+    cd_unlock();
+}

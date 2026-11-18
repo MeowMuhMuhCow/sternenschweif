@@ -474,6 +474,7 @@ void view_suspend(void)
 		mouse_hide(0);
 		copy_3d_to_screen();
 		mouse_show(0);
+		wait_for_vsync();
 	} else
 		view_free_frame();
 	view_free_lists();

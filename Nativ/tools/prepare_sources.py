@@ -168,6 +168,53 @@ def transform_source(rel_path, txt):
         txt = replace_func_body(txt, r"^void set_palette\([^)]*\)\s*\{", set_pal_c)
         txt = replace_func_body(txt, r"^void set_color\([^)]*\)\s*\{", set_col_c)
 
+    # 2a. OVL075.CPP: drag_hero_portrait Polling in while (g_mouse_ldown) + Untergrenze dst >= 0 (Fix #62 auch fuer ORIG/WICHTIG)
+    elif base == "OVL075.CPP":
+        txt = txt.replace(
+            """\t\twhile (g_mouse_ldown) {
+\t\t\tif (g_mouse_posx != g_mouse_posx_bak) {
+\t\t\t\twait_for_vsync();
+\t\t\t\tunder->put(g_vga_buf, g_mouse_posx_bak, 0x9d);
+\t\t\t\tg_mouse_busy = 1;
+\t\t\t\tunder->get(g_vga_buf, g_mouse_posx, 0x9d);
+\t\t\t\tportrait->put(g_vga_buf, g_mouse_posx, 0x9d);
+\t\t\t\tg_mouse_busy = 0;
+\t\t\t\tg_mouse_posx_bak = g_mouse_posx;
+\t\t\t}
+\t\t}""",
+            """\t\twhile (g_mouse_ldown) {
+\t\t\tif (g_mouse_posx != g_mouse_posx_bak) {
+\t\t\t\twait_for_vsync();
+\t\t\t\tunder->put(g_vga_buf, g_mouse_posx_bak, 0x9d);
+\t\t\t\tg_mouse_busy = 1;
+\t\t\t\tunder->get(g_vga_buf, g_mouse_posx, 0x9d);
+\t\t\t\tportrait->put(g_vga_buf, g_mouse_posx, 0x9d);
+\t\t\t\tg_mouse_busy = 0;
+\t\t\t\tg_mouse_posx_bak = g_mouse_posx;
+\t\t\t} else {
+\t\t\t\twait_for_vsync();
+\t\t\t}
+\t\t}""",
+        )
+        txt = txt.replace(
+            """#if FIX_0062
+\t\t/* Fix #62: Untergrenze: nicht vor g_portrait_x[0] lesen */
+\t\tfor (dst = 6; dst > 0 && g_portrait_x[--dst] > g_mouse_posx + 25; )
+\t\t\t;
+#else
+\t\tfor (dst = 6; g_portrait_x[--dst] > g_mouse_posx + 25; )
+\t\t\t;
+#endif""",
+            """#if FIX_0062 || !defined(__BORLANDC__)
+\t\t/* Fix #62 / nativ: Untergrenze: nicht vor g_portrait_x[0] lesen */
+\t\tfor (dst = 6; dst > 0 && g_portrait_x[--dst] > g_mouse_posx + 25; )
+\t\t\t;
+#else
+\t\tfor (dst = 6; g_portrait_x[--dst] > g_mouse_posx + 25; )
+\t\t\t;
+#endif""",
+        )
+
     # 2b. SEG045.C: wait_for_vsync + lvalue cast in do_h_line/do_v_line
     elif base == "SEG045.C":
         txt = replace_func_body(txt, r"^void wait_for_vsync\([^)]*\)\s*\{", "    extern void dsa_platform_wait_vsync(void);\n    dsa_platform_wait_vsync();")
@@ -211,6 +258,17 @@ def transform_source(rel_path, txt):
         txt = txt.replace(
             "\t\t\t\t\t\t((unsigned short*)&q)[0] += 2;",
             "#if !defined(__BORLANDC__)\n\t\t\t\t\t\tq += 2;\n#else\n\t\t\t\t\t\t((unsigned short*)&q)[0] += 2;\n#endif"
+        )
+
+    # 4c. SEG012.CPP: draw_stars 16-Bit-Offset off = q.x + q.y * 320 (>= 32768 darf nicht negativ vorzeichenerweitert werden)
+    elif base == "SEG012.CPP":
+        txt = txt.replace(
+            "\tregister signed short off, i;",
+            "\tregister unsigned short off;\n\tregister signed short i;"
+        )
+        txt = txt.replace(
+            "\tcopy_3d_to_screen();\n\tif (m)\n\t\tmouse_show(0);",
+            "\tcopy_3d_to_screen();\n\tif (m)\n\t\tmouse_show(0);\n\twait_for_vsync();"
         )
 
     # 5. SEG014.C: guru_meditation asm + W1 Absturz-Logger
@@ -350,6 +408,13 @@ def transform_source(rel_path, txt):
             '\t\t\tif (dsa_platform_consume_readonly_notice()) {\n\t\t\t\tdlg_message(g_dialog, (char *)"Hinweis: Der Spielordner ist schreibgesch\\x81tzt.@Spielst\\x84nde und PROBEN.CSV werden im Ordner@<Spielstaende> neben der Programmdatei gespeichert.");\n\t\t\t}\n\t\t\tmain_loop();'
         )
         txt = replace_func_body(txt, r"^signed short dos_files_total\([^)]*\)\s*\{", "    return 40;")
+
+    # 14b. OVL041.CPP: Sprachzeilen in Outro1/Outro2 (Schiffsreise/Traum) per Taste/Mausklick ueberspringbar
+    elif base == "OVL041.CPP":
+        txt = txt.replace(
+            "\t\t\t\twhile (snd_speech_busy(g_snd_speech)) {\n\t\t\t\t\tgame_idle();\n\t\t\t\t\twait_for_vsync();\n\t\t\t\t}",
+            "\t\t\t\twhile (snd_speech_busy(g_snd_speech)) {\n\t\t\t\t\tpoll_input();\n\t\t\t\t\tif (g_action || g_mouse_lclick || g_mouse_rclick) {\n\t\t\t\t\t\tmouse_clear_left();\n\t\t\t\t\t\tmouse_clear_right();\n\t\t\t\t\t\tg_mouse_event = g_mouse_ldclick = 0;\n\t\t\t\t\t\tSpeech_stop(g_snd_speech);\n\t\t\t\t\t\tbreak;\n\t\t\t\t\t}\n\t\t\t\t\twait_for_vsync();\n\t\t\t\t}"
+        )
 
     # 15. OVL096.C: view_alloc_lists + view_load_palette + pal_find_nearest
     elif base == "OVL096.C":
@@ -703,6 +768,10 @@ def transform_source(rel_path, txt):
         txt = txt.replace(
             "mem_free(g_cells);",
             "g_cells = (struct map_cell (far *)[MAP_SIZE])mem_free(g_cells);"
+        )
+        txt = txt.replace(
+            "\t\tmouse_hide(0);\n\t\tcopy_3d_to_screen();\n\t\tmouse_show(0);",
+            "\t\tmouse_hide(0);\n\t\tcopy_3d_to_screen();\n\t\tmouse_show(0);\n\t\twait_for_vsync();"
         )
 
     # 16m. OVL230/OVL174: Ortsname nur innerhalb der geladenen Textliste

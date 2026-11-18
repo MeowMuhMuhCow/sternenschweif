@@ -60,6 +60,8 @@ void     dsa_platform_set_music_volume(int vol_0_100);
 int      dsa_platform_get_music_volume(void);
 int      dsa_platform_play_voc(const unsigned char *voc_data, uint32_t voc_len);
 int      dsa_platform_submit_voc_chunk(const unsigned char *data, uint32_t len);
+int      dsa_platform_voc_is_playing(void);
+void     dsa_platform_stop_voc(void);
 void     dsa_platform_set_sfx_volume(int vol_0_100);
 int      dsa_platform_get_sfx_volume(void);
 int      dsa_platform_voc_plays(void);

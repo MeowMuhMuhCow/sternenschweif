@@ -17,6 +17,21 @@
 
 static DWORD g_autoquit_ms = 0;
 
+static int dsa_is_headless_run(void) {
+    if ((getenv("DSA_PORT_AUTOTEST") && getenv("DSA_PORT_AUTOTEST")[0] == '1') ||
+        (getenv("SCHICK_PORT_AUTOTEST") && getenv("SCHICK_PORT_AUTOTEST")[0] == '1') ||
+        (getenv("RIVA_PORT_AUTOTEST") && getenv("RIVA_PORT_AUTOTEST")[0] == '1') ||
+        (getenv("DSA_HIDDEN") && getenv("DSA_HIDDEN")[0] == '1') ||
+        (getenv("SCHICK_PORT_HIDDEN") && getenv("SCHICK_PORT_HIDDEN")[0] == '1')) {
+        return 1;
+    }
+    const char *cmd = GetCommandLineA();
+    if (cmd && (strstr(cmd, "--replay") != NULL || strstr(cmd, "--headless") != NULL)) {
+        return 1;
+    }
+    return 0;
+}
+
 static DWORD WINAPI dsa_autoquit_thread(LPVOID param) {
     DWORD ms = (DWORD)(uintptr_t)param;
     Sleep(ms);
@@ -72,6 +87,7 @@ static void          (__cdecl *p_SDL_DestroyWindow)(SDL_Window *) = NULL;
 static void          (__cdecl *p_SDL_SetWindowTitle)(SDL_Window *, const char *) = NULL;
 static void          (__cdecl *p_SDL_SetWindowSize)(SDL_Window *, int, int) = NULL;
 static void          (__cdecl *p_SDL_GetWindowSize)(SDL_Window *, int *, int *) = NULL;
+static int           (__cdecl *p_SDL_SetWindowFullscreen)(SDL_Window *, Uint32) = NULL;
 static SDL_Renderer *(__cdecl *p_SDL_CreateRenderer)(SDL_Window *, int, Uint32) = NULL;
 static void          (__cdecl *p_SDL_DestroyRenderer)(SDL_Renderer *) = NULL;
 static int           (__cdecl *p_SDL_RenderSetLogicalSize)(SDL_Renderer *, int, int) = NULL;
@@ -97,9 +113,35 @@ struct SDL_Window {
     HDC  hdc;
     int  win_w;
     int  win_h;
+    int  saved_win_w;
+    int  saved_win_h;
     int  logical_w;
     int  logical_h;
+    int  vp_x;
+    int  vp_y;
+    int  vp_w;
+    int  vp_h;
+    int  fullscreen;
 };
+
+static SDL_Window *g_main_win = NULL;
+static int g_fs_override_w = 0;
+static int g_fs_override_h = 0;
+
+void SDL_SetFullscreenOverrideRes(int w, int h) {
+    g_fs_override_w = w;
+    g_fs_override_h = h;
+}
+
+void SDL_SetWindowViewport(SDL_Window *window, int vx, int vy, int vw, int vh) {
+    if (!window) window = g_main_win;
+    if (window) {
+        window->vp_x = vx;
+        window->vp_y = vy;
+        window->vp_w = vw;
+        window->vp_h = vh;
+    }
+}
 
 struct SDL_Renderer {
     SDL_Window  *window;
@@ -119,7 +161,6 @@ struct SDL_Texture {
 static SDL_Event   g_evq[EVQ_CAP];
 static int         g_evq_head = 0;
 static int         g_evq_tail = 0;
-static SDL_Window *g_main_win = NULL;
 static int         g_mouse_x = 0;
 static int         g_mouse_y = 0;
 static Uint32      g_mouse_buttons = 0;
@@ -136,7 +177,7 @@ static void evq_push(const SDL_Event *ev) {
 
 static void scale_client_to_logical(HWND hwnd, int cx, int cy, int *lx, int *ly) {
     RECT rc;
-    int cw, ch, log_w, log_h;
+    int cw, ch, log_w, log_h, vx, vy, vw, vh;
     GetClientRect(hwnd, &rc);
     cw = rc.right - rc.left;
     ch = rc.bottom - rc.top;
@@ -144,8 +185,29 @@ static void scale_client_to_logical(HWND hwnd, int cx, int cy, int *lx, int *ly)
     log_h = (g_main_win && g_main_win->logical_h > 0) ? g_main_win->logical_h : 200;
     if (cw <= 0) cw = 1;
     if (ch <= 0) ch = 1;
-    *lx = (cx * log_w) / cw;
-    *ly = (cy * log_h) / ch;
+
+    if (g_main_win && g_main_win->vp_w > 0 && g_main_win->vp_h > 0) {
+        vx = g_main_win->vp_x;
+        vy = g_main_win->vp_y;
+        vw = g_main_win->vp_w;
+        vh = g_main_win->vp_h;
+    } else {
+        /* 4:3 Standard-Viewport in (cw, ch) */
+        if (cw * 3 <= ch * 4) {
+            vw = cw;
+            vh = (cw * 3 + 2) / 4;
+        } else {
+            vh = ch;
+            vw = (ch * 4 + 1) / 3;
+        }
+        if (vw <= 0) vw = 1;
+        if (vh <= 0) vh = 1;
+        vx = (cw - vw) / 2;
+        vy = (ch - vh) / 2;
+    }
+
+    *lx = ((cx - vx) * log_w) / vw;
+    *ly = ((cy - vy) * log_h) / vh;
     if (*lx < 0) *lx = 0;
     if (*ly < 0) *ly = 0;
     if (*lx >= log_w) *lx = log_w - 1;
@@ -260,10 +322,38 @@ static LRESULT CALLBACK dsa_wndproc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM l
         ev.key.keysym.scancode = -dos_scan; /* Negativ markiert direkten DOS-Set-1-Scancode */
         ev.key.keysym.sym = (SDL_Keycode)wParam;
         ev.key.keysym.mod = get_win32_kmod();
+        if (msg == WM_SYSKEYDOWN || msg == WM_SYSKEYUP || (lParam & (1 << 29))) {
+            ev.key.keysym.mod |= KMOD_LALT;
+        }
         ev.key.keysym.unused = ((Uint32)(dos_scan & 0xFF) << 8) | (Uint32)ascii_ch;
         evq_push(&ev);
         return 0;
     }
+
+    case WM_SYSCHAR:
+        /* Verhindert System-Signalton bei Alt+Enter */
+        if (wParam == VK_RETURN) return 0;
+        break;
+
+    case WM_ACTIVATEAPP:
+        /* Im echten Vollbild: Bei Fokusverlust (Alt+Tab) Topmost freigeben und minimieren,
+         * bei Reaktivierung sofort wieder rahmenlos ueber den gesamten Monitor inkl. Taskleiste legen. */
+        if (g_main_win && g_main_win->hwnd == hwnd && g_main_win->fullscreen) {
+            int is_at = dsa_is_headless_run();
+            if (!is_at) {
+                if (wParam) {
+                    int sw = g_main_win->win_w > 0 ? g_main_win->win_w : GetSystemMetrics(SM_CXSCREEN);
+                    int sh = g_main_win->win_h > 0 ? g_main_win->win_h : GetSystemMetrics(SM_CYSCREEN);
+                    SetWindowLongA(hwnd, GWL_EXSTYLE, WS_EX_APPWINDOW | WS_EX_TOPMOST);
+                    SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, sw, sh, SWP_FRAMECHANGED | SWP_SHOWWINDOW);
+                } else {
+                    SetWindowLongA(hwnd, GWL_EXSTYLE, WS_EX_APPWINDOW);
+                    SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+                    ShowWindow(hwnd, SW_MINIMIZE);
+                }
+            }
+        }
+        break;
 
     case WM_CLOSE:
     case WM_DESTROY:
@@ -275,6 +365,62 @@ static LRESULT CALLBACK dsa_wndproc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM l
     return DefWindowProcA(hwnd, msg, wParam, lParam);
 }
 
+static void enable_win32_dpi_awareness(void) {
+    HMODULE hUser32 = GetModuleHandleA("user32.dll");
+    if (hUser32) {
+        typedef BOOL (WINAPI *PFN_SetProcessDpiAwarenessContext)(HANDLE);
+        typedef BOOL (WINAPI *PFN_SetProcessDPIAware)(void);
+        PFN_SetProcessDpiAwarenessContext pCtx =
+            (PFN_SetProcessDpiAwarenessContext)GetProcAddress(hUser32, "SetProcessDpiAwarenessContext");
+        if (pCtx) {
+            /* DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 = (HANDLE)-4 */
+            if (pCtx((HANDLE)(intptr_t)-4)) return;
+            /* DPI_AWARENESS_CONTEXT_SYSTEM_AWARE = (HANDLE)-2 */
+            if (pCtx((HANDLE)(intptr_t)-2)) return;
+        }
+        PFN_SetProcessDPIAware pAware =
+            (PFN_SetProcessDPIAware)GetProcAddress(hUser32, "SetProcessDPIAware");
+        if (pAware) {
+            pAware();
+        }
+    }
+}
+
+static void query_fullscreen_monitor_rect(HWND hwnd, int *out_x, int *out_y, int *out_w, int *out_h) {
+    if (g_fs_override_w > 0 && g_fs_override_h > 0) {
+        *out_x = 0;
+        *out_y = 0;
+        *out_w = g_fs_override_w;
+        *out_h = g_fs_override_h;
+        return;
+    }
+    HMONITOR hmon = hwnd
+        ? MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST)
+        : MonitorFromPoint((POINT){0, 0}, MONITOR_DEFAULTTOPRIMARY);
+    if (hmon) {
+        MONITORINFO mi;
+        memset(&mi, 0, sizeof(mi));
+        mi.cbSize = sizeof(mi);
+        if (GetMonitorInfoA(hmon, &mi)) {
+            int mw = mi.rcMonitor.right - mi.rcMonitor.left;
+            int mh = mi.rcMonitor.bottom - mi.rcMonitor.top;
+            if (mw > 0 && mh > 0) {
+                *out_x = (int)mi.rcMonitor.left;
+                *out_y = (int)mi.rcMonitor.top;
+                *out_w = mw;
+                *out_h = mh;
+                return;
+            }
+        }
+    }
+    int sw = GetSystemMetrics(SM_CXSCREEN);
+    int sh = GetSystemMetrics(SM_CYSCREEN);
+    *out_x = 0;
+    *out_y = 0;
+    *out_w = (sw > 0) ? sw : 1920;
+    *out_h = (sh > 0) ? sh : 1080;
+}
+
 int SDL_PortUsingExternalDLL(void) {
     return g_using_dll;
 }
@@ -283,7 +429,8 @@ int SDL_Init(Uint32 flags) {
     const char *aq = getenv("DSA_PORT_AUTOQUIT_MS");
     if (!aq && getenv("DSA_PORT_AUTOTEST") && getenv("DSA_PORT_AUTOTEST")[0] == '1') aq = "15000";
     SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX);
-    SetUnhandledExceptionFilter(dsa_seh_handler);
+    (void)dsa_seh_handler;
+    enable_win32_dpi_awareness();
     if (aq && aq[0]) {
         g_autoquit_ms = (DWORD)atoi(aq);
         if (g_autoquit_ms > 0) {
@@ -302,6 +449,7 @@ int SDL_Init(Uint32 flags) {
             p_SDL_SetWindowTitle       = (void *)GetProcAddress(g_sdl_dll, "SDL_SetWindowTitle");
             p_SDL_SetWindowSize        = (void *)GetProcAddress(g_sdl_dll, "SDL_SetWindowSize");
             p_SDL_GetWindowSize        = (void *)GetProcAddress(g_sdl_dll, "SDL_GetWindowSize");
+            p_SDL_SetWindowFullscreen  = (void *)GetProcAddress(g_sdl_dll, "SDL_SetWindowFullscreen");
             p_SDL_CreateRenderer       = (void *)GetProcAddress(g_sdl_dll, "SDL_CreateRenderer");
             p_SDL_DestroyRenderer      = (void *)GetProcAddress(g_sdl_dll, "SDL_DestroyRenderer");
             p_SDL_RenderSetLogicalSize = (void *)GetProcAddress(g_sdl_dll, "SDL_RenderSetLogicalSize");
@@ -345,10 +493,13 @@ const char *SDL_GetError(void) {
 SDL_Window *SDL_CreateWindow(const char *title, int x, int y, int w, int h, Uint32 flags) {
     WNDCLASSEXA wc;
     RECT rc;
-    int is_at = (getenv("DSA_PORT_AUTOTEST") && getenv("DSA_PORT_AUTOTEST")[0] == '1');
-    DWORD style = is_at ? WS_OVERLAPPEDWINDOW : (WS_OVERLAPPEDWINDOW | WS_VISIBLE);
+    int is_at = dsa_is_headless_run();
+    int want_fs = (flags & (SDL_WINDOW_FULLSCREEN | SDL_WINDOW_FULLSCREEN_DESKTOP)) != 0;
+    DWORD vis = is_at ? 0u : WS_VISIBLE;
+    DWORD style = want_fs ? (WS_POPUP | vis | WS_CLIPCHILDREN | WS_CLIPSIBLINGS) : (WS_OVERLAPPEDWINDOW | vis);
+    DWORD ex_style = want_fs ? (is_at ? 0u : (WS_EX_APPWINDOW | WS_EX_TOPMOST)) : WS_EX_APPWINDOW;
     SDL_Window *win;
-    (void)x; (void)y; (void)flags;
+    (void)x; (void)y;
 
     if (g_using_dll && p_SDL_CreateWindow) {
         return p_SDL_CreateWindow(title, x, y, w, h, flags);
@@ -364,23 +515,64 @@ SDL_Window *SDL_CreateWindow(const char *title, int x, int y, int w, int h, Uint
     wc.lpszClassName = "DSA_SDL2_WindowClass";
     RegisterClassExA(&wc);
 
-    rc.left = 0; rc.top = 0; rc.right = w; rc.bottom = h;
-    AdjustWindowRect(&rc, style, FALSE);
-
     win = (SDL_Window *)calloc(1, sizeof(SDL_Window));
-    win->win_w = w;
-    win->win_h = h;
-    win->logical_w = 320;
-    win->logical_h = 200;
+    win->saved_win_w = w;
+    win->saved_win_h = h;
+    win->logical_w   = 320;
+    win->logical_h   = 200;
+
+    int create_x = CW_USEDEFAULT, create_y = CW_USEDEFAULT;
+    int create_w = w, create_h = h;
+
+    if (want_fs) {
+        int mx = 0, my = 0, mw = 1920, mh = 1080;
+        query_fullscreen_monitor_rect(NULL, &mx, &my, &mw, &mh);
+        create_x = mx;
+        create_y = my;
+        create_w = mw;
+        create_h = mh;
+        win->win_w = mw;
+        win->win_h = mh;
+        win->vp_x  = 0;
+        win->vp_y  = 0;
+        win->vp_w  = mw;
+        win->vp_h  = mh;
+        win->fullscreen = 1;
+    } else {
+        rc.left = 0; rc.top = 0; rc.right = w; rc.bottom = h;
+        AdjustWindowRectEx(&rc, style, FALSE, ex_style);
+        create_w = rc.right - rc.left;
+        create_h = rc.bottom - rc.top;
+        int mx = 0, my = 0, mw = 1920, mh = 1080;
+        query_fullscreen_monitor_rect(NULL, &mx, &my, &mw, &mh);
+        create_x = mx + (mw > create_w ? (mw - create_w) / 2 : 0);
+        create_y = my + (mh > create_h ? (mh - create_h) / 2 : 0);
+        win->win_w = w;
+        win->win_h = h;
+        win->vp_x  = 0;
+        win->vp_y  = 0;
+        win->vp_w  = w;
+        win->vp_h  = h;
+        win->fullscreen = 0;
+    }
+
     win->hwnd = CreateWindowExA(
-        0, "DSA_SDL2_WindowClass", title ? title : "DSA - Sternenschweif",
-        style, CW_USEDEFAULT, CW_USEDEFAULT,
-        rc.right - rc.left, rc.bottom - rc.top,
+        ex_style, "DSA_SDL2_WindowClass", title ? title : "DSA - Sternenschweif",
+        style, create_x, create_y,
+        create_w, create_h,
         NULL, NULL, wc.hInstance, NULL
     );
     win->hdc = GetDC(win->hwnd);
-    if (!is_at) { ShowWindow(win->hwnd, SW_SHOW); UpdateWindow(win->hwnd); }
     g_main_win = win;
+
+    if (want_fs) {
+        SDL_SetWindowFullscreen(win, flags);
+    } else if (!is_at) {
+        ShowWindow(win->hwnd, SW_SHOW);
+        UpdateWindow(win->hwnd);
+        SetForegroundWindow(win->hwnd);
+        SetFocus(win->hwnd);
+    }
     return win;
 }
 
@@ -411,11 +603,21 @@ void SDL_SetWindowSize(SDL_Window *window, int w, int h) {
         return;
     }
     if (window && window->hwnd) {
+        DWORD style = (DWORD)GetWindowLongA(window->hwnd, GWL_STYLE);
+        DWORD ex_style = (DWORD)GetWindowLongA(window->hwnd, GWL_EXSTYLE);
         RECT rc = {0, 0, w, h};
-        AdjustWindowRect(&rc, (DWORD)GetWindowLongA(window->hwnd, GWL_STYLE), FALSE);
-        SetWindowPos(window->hwnd, NULL, 0, 0, rc.right - rc.left, rc.bottom - rc.top, SWP_NOMOVE | SWP_NOZORDER);
+        AdjustWindowRectEx(&rc, style, FALSE, ex_style);
+        int full_w = rc.right - rc.left;
+        int full_h = rc.bottom - rc.top;
+        int mx = 0, my = 0, mw = 1920, mh = 1080;
+        query_fullscreen_monitor_rect(window->hwnd, &mx, &my, &mw, &mh);
+        int sx = mx + (mw > full_w ? (mw - full_w) / 2 : 0);
+        int sy = my + (mh > full_h ? (mh - full_h) / 2 : 0);
+        SetWindowPos(window->hwnd, NULL, sx, sy, full_w, full_h, SWP_NOZORDER);
         window->win_w = w;
         window->win_h = h;
+        window->saved_win_w = w;
+        window->saved_win_h = h;
     }
 }
 
@@ -424,12 +626,97 @@ void SDL_GetWindowSize(SDL_Window *window, int *w, int *h) {
         p_SDL_GetWindowSize(window, w, h);
         return;
     }
-    if (window && window->hwnd) {
-        RECT rc;
-        GetClientRect(window->hwnd, &rc);
-        if (w) *w = rc.right - rc.left;
-        if (h) *h = rc.bottom - rc.top;
+    if (window) {
+        if (window->fullscreen && g_fs_override_w > 0 && g_fs_override_h > 0) {
+            if (w) *w = g_fs_override_w;
+            if (h) *h = g_fs_override_h;
+            return;
+        }
+        if (window->hwnd) {
+            RECT rc;
+            GetClientRect(window->hwnd, &rc);
+            int cw = rc.right - rc.left;
+            int ch = rc.bottom - rc.top;
+            if (cw > 0 && ch > 0) {
+                if (w) *w = cw;
+                if (h) *h = ch;
+                return;
+            }
+        }
+        if (w) *w = window->win_w;
+        if (h) *h = window->win_h;
     }
+}
+
+int SDL_SetWindowFullscreen(SDL_Window *window, Uint32 flags) {
+    if (g_using_dll && p_SDL_SetWindowFullscreen) {
+        return p_SDL_SetWindowFullscreen(window, flags);
+    }
+    if (!window || !window->hwnd) return -1;
+    int is_at = dsa_is_headless_run();
+    DWORD vis = is_at ? 0u : WS_VISIBLE;
+
+    if (flags & (SDL_WINDOW_FULLSCREEN | SDL_WINDOW_FULLSCREEN_DESKTOP)) {
+        if (!window->fullscreen) {
+            RECT crc;
+            if (GetClientRect(window->hwnd, &crc) && (crc.right - crc.left) >= 320 && (crc.bottom - crc.top) >= 200) {
+                window->saved_win_w = crc.right - crc.left;
+                window->saved_win_h = crc.bottom - crc.top;
+            }
+        }
+        int mx = 0, my = 0, sw = 1920, sh = 1080;
+        query_fullscreen_monitor_rect(window->hwnd, &mx, &my, &sw, &sh);
+
+        SetWindowLongA(window->hwnd, GWL_STYLE, (LONG)(WS_POPUP | vis | WS_CLIPCHILDREN | WS_CLIPSIBLINGS));
+        SetWindowLongA(window->hwnd, GWL_EXSTYLE, (LONG)(is_at ? 0u : (WS_EX_APPWINDOW | WS_EX_TOPMOST)));
+        SetWindowPos(
+            window->hwnd,
+            is_at ? HWND_TOP : HWND_TOPMOST,
+            mx, my, sw, sh,
+            SWP_FRAMECHANGED | (is_at ? SWP_NOACTIVATE : SWP_SHOWWINDOW)
+        );
+        if (!is_at) {
+            ShowWindow(window->hwnd, SW_SHOW);
+            UpdateWindow(window->hwnd);
+            SetForegroundWindow(window->hwnd);
+            SetFocus(window->hwnd);
+        }
+        window->win_w = sw;
+        window->win_h = sh;
+        window->fullscreen = 1;
+    } else {
+        int ww = (window->saved_win_w >= 320) ? window->saved_win_w : 1280;
+        int wh = (window->saved_win_h >= 240) ? window->saved_win_h : 960;
+        DWORD style = WS_OVERLAPPEDWINDOW | vis;
+        DWORD ex_style = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
+        RECT rc = {0, 0, ww, wh};
+        AdjustWindowRectEx(&rc, style, FALSE, ex_style);
+        int full_w = rc.right - rc.left;
+        int full_h = rc.bottom - rc.top;
+        int mx = 0, my = 0, mw = 1920, mh = 1080;
+        query_fullscreen_monitor_rect(window->hwnd, &mx, &my, &mw, &mh);
+        int sx = mx + (mw > full_w ? (mw - full_w) / 2 : 0);
+        int sy = my + (mh > full_h ? (mh - full_h) / 2 : 0);
+
+        SetWindowLongA(window->hwnd, GWL_EXSTYLE, (LONG)ex_style);
+        SetWindowLongA(window->hwnd, GWL_STYLE, (LONG)style);
+        SetWindowPos(
+            window->hwnd,
+            HWND_NOTOPMOST,
+            sx, sy, full_w, full_h,
+            SWP_FRAMECHANGED | (is_at ? SWP_NOACTIVATE : SWP_SHOWWINDOW)
+        );
+        if (!is_at) {
+            ShowWindow(window->hwnd, SW_SHOWNORMAL);
+            UpdateWindow(window->hwnd);
+            SetForegroundWindow(window->hwnd);
+            SetFocus(window->hwnd);
+        }
+        window->win_w = ww;
+        window->win_h = wh;
+        window->fullscreen = 0;
+    }
+    return 0;
 }
 
 SDL_Renderer *SDL_CreateRenderer(SDL_Window *window, int index, Uint32 flags) {

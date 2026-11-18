@@ -118,6 +118,7 @@ void view_leave(void)
 		mouse_hide(0);
 		copy_3d_to_screen();
 		mouse_show(0);
+		wait_for_vsync();
 		gb_delete(g_render_bmp, 3);
 		g_render_bmp = 0;
 		g_renderbuf_ptr = mem_free(g_renderbuf_ptr);

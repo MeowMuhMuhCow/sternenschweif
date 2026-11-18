@@ -771,19 +771,34 @@ static void schweif_platform_tick(void) {
     g_mouse_rdown = (mb & 2) ? 1 : 0;
 
     if (lc > 0) {
-        g_mouse_ldown  = 1;
         g_mouse_clickx = (signed short)mx;
         g_mouse_clicky = (signed short)my;
-        if (g_mouse_lpending == 0) {
-            g_mouse_lpending = 1;
-            g_mouse_lclick   = 1;
-            g_mouse_event    = 1;
-            g_mouse_lclick_time = g_random_seed2;
+        if (g_has_replay) {
+            g_mouse_ldown = 1;
+            if (g_mouse_lpending == 0 && lc == 1) {
+                g_mouse_lpending = 1;
+                g_mouse_lclick   = 1;
+                g_mouse_event    = 1;
+                g_mouse_lclick_time = g_random_seed2;
+            } else {
+                g_mouse_ldclick  = 1;
+                g_mouse_lpending = 0;
+                g_mouse_lclick   = 0;
+                g_mouse_event    = 1;
+            }
         } else {
-            g_mouse_ldclick  = 1;
-            g_mouse_lpending = 0;
-            g_mouse_lclick   = 0;
-            g_mouse_event    = 1;
+            /* Exakt wie im DOS-Original (Quelle/SEG023.C, mouse_isr + timer_isr):
+             * Erster Klick setzt nur g_mouse_lpending = 1; kommt innerhalb von 4 Timer-Ticks
+             * kein zweiter Klick, loest timer_isr() den Einfachklick (g_mouse_lclick = 1, g_mouse_event = 1) aus. */
+            if (g_mouse_lpending == 0 && lc == 1) {
+                g_mouse_lpending = 1;
+                g_mouse_lclick_time = g_random_seed2;
+            } else {
+                g_mouse_ldclick  = 1;
+                g_mouse_lpending = 0;
+                g_mouse_lclick   = 0;
+                g_mouse_event    = 1;
+            }
         }
         g_idle_ticks = 0;
         g_saver_due = 0;
@@ -797,8 +812,11 @@ static void schweif_platform_tick(void) {
         g_saver_due = 0;
     }
 
-    if (g_mouse_moved && !g_mouse_locked && g_vga_buf) {
+    if (g_mouse_moved && !g_mouse_locked && !g_mouse_busy && g_mouse_show_cnt >= 0 && g_vga_buf) {
         mouse_update();
+        if (g_mouse_moved) {
+            mouse_update();
+        }
     }
 
     /* 3. 18,2-Hz-Timer (timer_isr + FLI/Finale-Zaehler) */
@@ -808,7 +826,7 @@ static void schweif_platform_tick(void) {
         g_last_tick_18hz++;
         g_finale_ticks++;
         g_fli_ticks += 4;
-        if (g_mouse_lpending != 0 && g_random_seed2 - g_mouse_lclick_time >= 4) {
+        if (g_has_replay && g_mouse_lpending != 0 && g_random_seed2 - g_mouse_lclick_time >= 4) {
             g_mouse_lpending = 0;
         }
         timer_isr();
@@ -875,8 +893,8 @@ static uint32_t voc_declared_span(const unsigned char *v) {
         if (scan > 0x2800u) break;
     }
     if (end < 0x200u) end = 0x200u;
-    /* Eine Sprachzeile, nicht das ganze Archiv hinter dem Block. */
-    if (end > 160u * 1024u) end = 160u * 1024u;
+    /* Eine Sprachzeile (z. B. MOB_0.VOC mit 353 KB), nicht das ganze Archiv hinter dem Block. */
+    if (end > 512u * 1024u) end = 512u * 1024u;
     return end;
 }
 
@@ -910,7 +928,11 @@ void AIL_start_digital_playback(short h) {
     /* Die Puffer kommen ueber AIL_register_sound_buffer. Hier nur merken, dass gestartet wurde. */
     dsa_platform_ton_log(g_ail_last_voc ? "ail_start" : "ail_start_leer");
 }
-void AIL_stop_digital_playback(short h) { (void)h; g_ail_last_voc = NULL; }
+void AIL_stop_digital_playback(short h) {
+    (void)h;
+    g_ail_last_voc = NULL;
+    dsa_platform_stop_voc();
+}
 void AIL_pause_digital_playback(short h) { (void)h; }
 void AIL_resume_digital_playback(short h) { (void)h; AIL_start_digital_playback(h); }
 void AIL_set_digital_playback_volume(short h, short vol) {
@@ -919,7 +941,14 @@ void AIL_set_digital_playback_volume(short h, short vol) {
 }
 short AIL_sound_buffer_status(short h, short b) {
     (void)h; (void)b;
-    /* Der Mischer spielt fuer sich. Der Spielcode soll den Puffer als fertig sehen. */
+    /* Solange noch weitere 0x2800-Bloecke derselben VOC-Datei in SEG004.C (SND->remain > 0)
+     * anstehen, sofort DAC_DONE (3) melden, damit snd_service alle Teile in den Mischer laedt.
+     * Sobald alle Teile im Mischer sind (remain <= 0), DAC_PLAYING (2) melden, solange die
+     * Sprach-/Effektausgabe tatsaechlich noch laeuft (ausser im automatisierten Replay-Schnelllauf). */
+    if (g_has_replay) return 3;
+    struct sound *s = (struct sound *)g_snd_fx;
+    if (s && s->remain > 0) return 3;
+    if (dsa_platform_voc_is_playing()) return 2;
     return 3;
 }
 unsigned short AIL_state_table_size(short h) { (void)h; return 64; }
@@ -1390,7 +1419,6 @@ void copy_3d_to_screen(void) {
     for (int y = 0; y < VIEW_H_3D; ++y) {
         memcpy(dst + y * 320, src + y * 320, VIEW_W_3D);
     }
-    dsa_platform_wait_vsync();
 }
 
 /* --- SEG025.ASM: 3D-Clipping, Projektion & Flat-Copy --- */
@@ -2114,39 +2142,36 @@ void blit_lines(short x, short y, short w, short h, short unused,
         uint8_t *dst = dst_base + (draw_y + row) * 320 + draw_x;
 
         switch (mode) {
-            case 1: /* BLIT_COPY */
+            case 0: /* BLIT_COPY (SEG046.ASM @@mode_copy) */
                 memcpy(dst, src, (size_t)draw_w);
                 break;
-            case 2: /* BLIT_DARK */
+            case 1: /* BLIT_OR (SEG046.ASM @@mode_or) */
                 for (int i = 0; i < draw_w; ++i) {
-                    uint8_t c = src[i];
-                    dst[i] = (c < 0xc8) ? (uint8_t)(c + 0x20) : c;
+                    dst[i] |= src[i];
                 }
                 break;
-            case 3: /* BLIT_FLIP_X */
+            case 2: /* BLIT_XOR (SEG046.ASM @@mode_xor) */
                 for (int i = 0; i < draw_w; ++i) {
-                    uint8_t c = lines[src_row][w - 1 - (skip_left + i)];
+                    dst[i] ^= src[i];
+                }
+                break;
+            case 3: /* BLIT_AND (SEG046.ASM @@mode_and) */
+                for (int i = 0; i < draw_w; ++i) {
+                    dst[i] &= src[i];
+                }
+                break;
+            case 4: /* BLIT_MASKED (SEG046.ASM @@mode_masked: 0 durchsichtig) */
+                for (int i = 0; i < draw_w; ++i) {
+                    uint8_t c = src[i];
                     if (c != 0) dst[i] = c;
                 }
                 break;
-            case 4: /* BLIT_MASKED */
+            case 5: /* BLIT_BEHIND (SEG046.ASM @@mode_behind: nur wo Ziel < 0xa0) */
                 for (int i = 0; i < draw_w; ++i) {
-                    uint8_t c = src[i];
-                    if (c != 0) dst[i] = c;
+                    if (dst[i] < 0xa0) dst[i] = src[i];
                 }
                 break;
-            case 5: /* BLIT_BEHIND */
-                for (int i = 0; i < draw_w; ++i) {
-                    if (dst[i] == 0) dst[i] = src[i];
-                }
-                break;
-            case 6: /* BLIT_GRAY */
-                for (int i = 0; i < draw_w; ++i) {
-                    uint8_t c = src[i];
-                    if (c != 0) dst[i] = (uint8_t)((c >> 3) + 0xc0);
-                }
-                break;
-            case 7: /* BLIT_MASKED_FF */
+            case 6: /* BLIT_MASKED_FF (SEG046.ASM @@mode_masked_ff: 0xff durchsichtig) */
                 for (int i = 0; i < draw_w; ++i) {
                     uint8_t c = src[i];
                     if (c != 0xff) dst[i] = c;
@@ -2158,7 +2183,9 @@ void blit_lines(short x, short y, short w, short h, short unused,
         }
     }
     if (dst_ptr == g_vga_buf) {
-        dsa_platform_present();
+        if ((!g_mouse_busy && g_mouse_show_cnt >= 0) || (g_mouse_busy && mode == 4 && g_mouse_show_cnt == 0)) {
+            dsa_platform_present();
+        }
     }
 }
 
@@ -2867,6 +2894,10 @@ int main(int argc, char **argv) {
             g_no_intro = 1;
         } else if (strcmp(argv[i], "--intro") == 0) {
             g_force_intro = 1;
+        } else if (strcmp(argv[i], "--savedir") == 0 && i + 1 < argc) {
+            ++i;
+        } else if (strncmp(argv[i], "--", 2) == 0) {
+            /* Starter-/Anzeigeoptionen (--fenster=*, --skalierung=*, --vollbild, --fenstermodus) nicht an dsa_game_main durchreichen */
         } else if (game_argc < 31) {
             game_argv[game_argc++] = argv[i];
         }
