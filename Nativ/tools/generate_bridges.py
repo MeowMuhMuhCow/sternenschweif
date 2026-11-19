@@ -7,8 +7,12 @@ import re
 import glob
 import csv
 import subprocess
+import sys
 
-ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+PORT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.path.dirname(PORT_DIR)
+if not os.path.exists(os.path.join(ROOT, "Analyse", "Namen", "namen.tsv")):
+    ROOT = os.path.dirname(ROOT)
 _parts = ROOT.split(os.sep)
 _win_root = os.path.join(os.sep, _parts[1], _parts[2]) if len(_parts) >= 3 and len(_parts[2]) == 1 else "/tmp"
 MINGW = os.environ.get(
@@ -116,22 +120,48 @@ def demangle_cls_meth(sym):
     return None
 
 
-def main():
-    env = os.environ.copy()
-    env["PATH"] = MINGW + ":" + env.get("PATH", "")
-    env["WSLENV"] = "PATH/l"
+def _strip_coff_underscore(s: str, is_elf: bool) -> str:
+    if is_elf and s.startswith("_"):
+        return s[1:]
+    return s
 
-    # 1. Write Port/build/data_aliases.ld
-    ld_path = os.path.join(ROOT, "Port/build/data_aliases.ld")
+
+def main():
+    is_elf = "--elf" in sys.argv[1:]
+    obj_dir = os.path.join(PORT_DIR, "build", "objs")
+    ld_path = os.path.join(PORT_DIR, "build", "data_aliases.ld")
+    out_cpp = os.path.join(PORT_DIR, "src", "port_bridges.cpp")
+    for a in sys.argv[1:]:
+        if a.startswith("--obj-dir="):
+            obj_dir = a.split("=", 1)[1]
+        elif a.startswith("--out-ld="):
+            ld_path = a.split("=", 1)[1]
+        elif a.startswith("--out-cpp="):
+            out_cpp = a.split("=", 1)[1]
+
+    env = os.environ.copy()
+    if not is_elf:
+        env["PATH"] = MINGW + ":" + env.get("PATH", "")
+        env["WSLENV"] = "PATH/l"
+
+    # 1. Write data_aliases.ld
+    os.makedirs(os.path.dirname(ld_path), exist_ok=True)
     with open(ld_path, "w", encoding="utf-8") as f:
         for alias, expr in GLOBAL_ALIASES:
-            f.write(f"{alias} = {expr};\n")
+            if is_elf:
+                alias_out = alias[1:] if alias.startswith("_") else alias
+                expr_out = re.sub(r"\b_([A-Za-z_][A-Za-z0-9_]*)", r"\1", expr)
+                f.write(f"{alias_out} = {expr_out};\n")
+            else:
+                f.write(f"{alias} = {expr};\n")
 
     # 2. Inspect all object files (excluding port_bridges.o)
     os.chdir(ROOT)
-    objs = [p for p in sorted(glob.glob("Port/build/objs/*.o"))
+    rel_obj_dir = os.path.relpath(obj_dir, ROOT).replace("\\", "/")
+    objs = [p.replace("\\", "/") for p in sorted(glob.glob(os.path.join(rel_obj_dir, "*.o")))
             if not p.endswith("port_bridges.o")]
-    r = subprocess.run([f"{MINGW}/nm.exe", "-n", "-A"] + objs,
+    nm_bin = "nm" if is_elf else f"{MINGW}/nm.exe"
+    r = subprocess.run([nm_bin, "-n", "-A"] + objs,
                        env=env, capture_output=True, stdin=subprocess.DEVNULL, text=True, timeout=30)
 
     defined = {}
@@ -146,10 +176,15 @@ def main():
         if not toks:
             continue
         if toks[0] == "U" and len(toks) >= 2:
-            undef.add(toks[1])
+            raw_sym = toks[1]
+            sym = ("_" + raw_sym) if is_elf else raw_sym
+            undef.add(sym)
         elif len(toks) >= 3:
             t = toks[1]
-            sym = toks[2]
+            raw_sym = toks[2]
+            if is_elf and raw_sym.startswith("__x86.get_pc_thunk"):
+                continue
+            sym = ("_" + raw_sym) if is_elf else raw_sym
             if t in ("T", "D", "B", "R", "C", "W", "V", "A"):
                 defined[sym] = f
             if t == "T" and not sym.startswith("__GLOBAL_") and not sym.startswith("___") and sym not in ("_dsa_noop_isr", "__Z7sprintfPcPKcz"):
@@ -396,7 +431,8 @@ def main():
     lines.append('extern "C" void _wrap_Bmp_dtor(void *self) { gb_delete(self, 2); }')
     lines.append('extern "C" void _wrap_Nvf_dtor(void *self) { nvf_delete(self, 2); }')
     lines.append('extern "C" void *dsa_mk_fp(unsigned short seg, unsigned long off);')
-    lines.append('extern "C" signed long Nvf_load8_call(void *self, short id, void *dst, void *src, short nr, signed char type, short *w, short *h, short stride) __asm__("__ZN3Nvf4loadEsPvS0_saPsS1_s");')
+    nvf_load8_asm = _strip_coff_underscore("__ZN3Nvf4loadEsPvS0_saPsS1_s", is_elf)
+    lines.append(f'extern "C" signed long Nvf_load8_call(void *self, short id, void *dst, void *src, short nr, signed char type, short *w, short *h, short stride) __asm__("{nvf_load8_asm}");')
     lines.append('extern "C" void _wrap_Nvf_load9(void *self, short id, void *dst, short src_lo, short src_hi, short nr, short type, short *w, short *h, short stride) {')
     lines.append('    void *src = (src_lo == 0 && src_hi == 0) ? 0 : dsa_mk_fp((unsigned short)src_hi, (unsigned short)src_lo);')
     lines.append('    Nvf_load8_call(self, id, dst, src, nr, (signed char)type, w, h, stride);')
@@ -405,7 +441,9 @@ def main():
 
     lines.append("/* C++ -> C/C++ Jump-Stubs */")
     for cpp_sym, target in sorted(cpp_to_c.items()):
-        lines.append(f'__asm__(".text\\n\\t.p2align 2\\n\\t.globl {cpp_sym}\\n{cpp_sym}:\\n\\tjmp {target}");')
+        cpp_out = _strip_coff_underscore(cpp_sym, is_elf)
+        tgt_out = _strip_coff_underscore(target, is_elf)
+        lines.append(f'__asm__(".text\\n\\t.p2align 2\\n\\t.globl {cpp_out}\\n{cpp_out}:\\n\\tjmp {tgt_out}");')
     lines.append("")
 
     lines.append("/* C -> C++ Konstruktor-, Destruktor- und Methoden-Bruecken */")
@@ -413,24 +451,26 @@ def main():
         if c_sym in defined or c_sym not in undef:
             continue
         c_name = c_sym[1:]
+        c_out = _strip_coff_underscore(c_sym, is_elf)
+        cpp_out = _strip_coff_underscore(cpp_sym, is_elf)
         if "_ctor" in c_name:
-            lines.append(f'extern "C" void {cpp_sym}_call(void *self, int a1, int a2, int a3, int a4, int a5, int a6, int a7, int a8) __asm__("{cpp_sym}");')
+            lines.append(f'extern "C" void {cpp_sym}_call(void *self, int a1, int a2, int a3, int a4, int a5, int a6, int a7, int a8) __asm__("{cpp_out}");')
             lines.append(f'extern "C" void *{c_name}(void *self, int a1, int a2, int a3, int a4, int a5, int a6, int a7, int a8) {{')
             lines.append(f'    if (!self) self = mem_alloc(4192);')
             lines.append(f'    {cpp_sym}_call(self, a1, a2, a3, a4, a5, a6, a7, a8);')
             lines.append(f'    return self;')
             lines.append(f'}}')
         elif "_dtor" in c_name:
-            lines.append(f'extern "C" void {cpp_sym}_call(void *self) __asm__("{cpp_sym}");')
+            lines.append(f'extern "C" void {cpp_sym}_call(void *self) __asm__("{cpp_out}");')
             lines.append(f'extern "C" void {c_name}(void *self, short flags) {{')
             lines.append(f'    if (!self) return;')
             lines.append(f'    {cpp_sym}_call(self);')
             lines.append(f'    if (flags & 1) mem_free(self);')
             lines.append(f'}}')
         else:
-            lines.append(f'__asm__(".text\\n\\t.p2align 2\\n\\t.globl {c_sym}\\n{c_sym}:\\n\\tjmp {cpp_sym}");')
+            lines.append(f'__asm__(".text\\n\\t.p2align 2\\n\\t.globl {c_out}\\n{c_out}:\\n\\tjmp {cpp_out}");')
 
-    out_cpp = os.path.join(ROOT, "Port/src/port_bridges.cpp")
+    os.makedirs(os.path.dirname(out_cpp), exist_ok=True)
     new_content = "\n".join(lines) + "\n"
     old_content = ""
     if os.path.exists(out_cpp):

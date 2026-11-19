@@ -6,9 +6,16 @@
  * F10 bleibt die Pause des Originals. Lautstaerke: F11/F12, mit Strg die Effekte.
  * General MIDI und AdLib sind hier nicht nachgebaut.
  */
+#ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <mmsystem.h>
+#else
+#include <SDL2/SDL.h>
+#include <pthread.h>
+#include <dirent.h>
+#include <strings.h>
+#endif
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -23,10 +30,16 @@ extern "C" {
 
 enum { CD_BUFS = 4, CD_FRAMES = 2048 };
 
+#ifdef _WIN32
 static CRITICAL_SECTION g_cd_lock;
 static int g_cd_lock_ready = 0;
 static HWAVEOUT g_wave = NULL;
 static WAVEHDR g_hdr[CD_BUFS];
+#else
+static pthread_mutex_t g_cd_lock = PTHREAD_MUTEX_INITIALIZER;
+static SDL_AudioDeviceID g_sdl_dev = 0;
+static int g_headless_audio = 0;
+#endif
 static int16_t g_pcm[CD_BUFS][CD_FRAMES * 2];
 static stb_vorbis *g_vorb = NULL;
 static int g_channels = 2;
@@ -44,6 +57,7 @@ static int g_voc_plays = 0;
 static int g_pending_submit = 0;
 static int g_voc_dumped = 0;
 static volatile int g_wave_closing = 0;
+static volatile int g_voc_loading = 0;
 
 static void ton_log(const char *msg) {
     const char *path = getenv("DSA_TON_LOG");
@@ -59,15 +73,23 @@ extern "C" void dsa_platform_ton_log(const char *msg) {
 }
 
 static void cd_lock(void) {
+#ifdef _WIN32
     if (!g_cd_lock_ready) {
         InitializeCriticalSection(&g_cd_lock);
         g_cd_lock_ready = 1;
     }
     EnterCriticalSection(&g_cd_lock);
+#else
+    pthread_mutex_lock(&g_cd_lock);
+#endif
 }
 
 static void cd_unlock(void) {
+#ifdef _WIN32
     LeaveCriticalSection(&g_cd_lock);
+#else
+    pthread_mutex_unlock(&g_cd_lock);
+#endif
 }
 
 static void apply_volume(int16_t *dst, const int16_t *src, int n) {
@@ -124,6 +146,14 @@ static void fill_buffer(int16_t *dst) {
     }
 }
 
+#ifdef _WIN32
+static int is_headless_no_ton_log(void) {
+    const char *tlog = getenv("DSA_TON_LOG");
+    if (tlog && tlog[0]) return 0;
+    const char *cmd = GetCommandLineA();
+    return (cmd && strstr(cmd, "--headless") != NULL) ? 1 : 0;
+}
+
 static void CALLBACK wave_proc(HWAVEOUT, UINT msg, DWORD_PTR, DWORD_PTR p1, DWORD_PTR) {
     if (msg != WOM_DONE || g_wave_closing) return;
     WAVEHDR *hdr = (WAVEHDR *)p1;
@@ -174,7 +204,7 @@ static void ensure_wave_locked(void) {
     fmt.wBitsPerSample = 16;
     fmt.nBlockAlign = 4;
     fmt.nAvgBytesPerSec = (DWORD)g_rate * 4u;
-    if (waveOutOpen(&g_wave, WAVE_MAPPER, &fmt, (DWORD_PTR)wave_proc, 0, CALLBACK_FUNCTION) != MMSYSERR_NOERROR) {
+    if (is_headless_no_ton_log() || waveOutOpen(&g_wave, WAVE_MAPPER, &fmt, (DWORD_PTR)wave_proc, 0, CALLBACK_FUNCTION) != MMSYSERR_NOERROR) {
         g_wave = NULL;
         g_playing = 1;
         return;
@@ -199,6 +229,84 @@ static void submit_pending(void) {
     for (int i = 0; i < CD_BUFS; ++i)
         waveOutWrite(g_wave, &g_hdr[i], sizeof(WAVEHDR));
 }
+#else
+static void sdl_audio_cb(void *, Uint8 *stream, int len) {
+    if (g_wave_closing || len <= 0) {
+        if (len > 0) memset(stream, 0, (size_t)len);
+        return;
+    }
+    cd_lock();
+    if (!g_wave_closing && g_playing) {
+        int frames_left = len / (2 * (int)sizeof(int16_t));
+        int16_t *out = (int16_t *)stream;
+        while (frames_left >= CD_FRAMES) {
+            fill_buffer(out);
+            out += CD_FRAMES * 2;
+            frames_left -= CD_FRAMES;
+        }
+        if (frames_left > 0) {
+            int16_t tmp[CD_FRAMES * 2];
+            fill_buffer(tmp);
+            memcpy(out, tmp, (size_t)frames_left * 2 * sizeof(int16_t));
+        }
+    } else {
+        memset(stream, 0, (size_t)len);
+    }
+    cd_unlock();
+}
+
+static void close_wave(void) {
+    SDL_AudioDeviceID dev = g_sdl_dev;
+    stb_vorbis *vorb = g_vorb;
+    g_sdl_dev = 0;
+    g_vorb = NULL;
+    g_playing = 0;
+    g_pending_submit = 0;
+    g_wave_closing = 1;
+    cd_unlock();
+    if (dev != 0) {
+        SDL_CloseAudioDevice(dev);
+    }
+    if (vorb)
+        stb_vorbis_close(vorb);
+    cd_lock();
+    g_wave_closing = 0;
+}
+
+static void ensure_wave_locked(void) {
+    if (g_sdl_dev != 0 || g_playing) return;
+    if (g_rate <= 0) g_rate = 44100;
+    if (!(SDL_WasInit(SDL_INIT_AUDIO) & SDL_INIT_AUDIO)) {
+        SDL_InitSubSystem(SDL_INIT_AUDIO);
+    }
+    SDL_AudioSpec want, have;
+    memset(&want, 0, sizeof(want));
+    want.freq = g_rate;
+    want.format = AUDIO_S16LSB;
+    want.channels = 2;
+    want.samples = CD_FRAMES;
+    want.callback = sdl_audio_cb;
+    g_sdl_dev = SDL_OpenAudioDevice(NULL, 0, &want, &have, 0);
+    g_playing = 1;
+    if (g_sdl_dev == 0) {
+        g_headless_audio = 1;
+        for (int i = 0; i < CD_BUFS; ++i)
+            fill_buffer(g_pcm[i]);
+        return;
+    }
+    g_headless_audio = 0;
+    g_pending_submit = 1;
+}
+
+static void submit_pending(void) {
+    if (!g_pending_submit || g_sdl_dev == 0) {
+        g_pending_submit = 0;
+        return;
+    }
+    g_pending_submit = 0;
+    SDL_PauseAudioDevice(g_sdl_dev, 0);
+}
+#endif
 
 static void write_probe_wav(const char *path) {
     if (!path || !path[0] || !g_vorb) return;
@@ -251,13 +359,40 @@ extern "C" int dsa_platform_play_cd_track(int track_no) {
     g_peak = 0;
     const char *dir = dsa_platform_get_gamedir();
     char path[1024];
-    snprintf(path, sizeof(path), "%s\\MUSIC\\Track%02d.ogg", dir && dir[0] ? dir : ".", track_no);
     int err = 0;
+#ifdef _WIN32
+    snprintf(path, sizeof(path), "%s\\MUSIC\\Track%02d.ogg", dir && dir[0] ? dir : ".", track_no);
     g_vorb = stb_vorbis_open_filename(path, &err, NULL);
     if (!g_vorb) {
         snprintf(path, sizeof(path), "%s/MUSIC/Track%02d.ogg", dir && dir[0] ? dir : ".", track_no);
         g_vorb = stb_vorbis_open_filename(path, &err, NULL);
     }
+#else
+    const char *base_dir = (dir && dir[0]) ? dir : ".";
+    const char *music_dirs[] = { "MUSIC", "music", "Music" };
+    char track_want[32];
+    snprintf(track_want, sizeof(track_want), "Track%02d.ogg", track_no);
+    for (int md = 0; md < 3 && !g_vorb; ++md) {
+        char mdir[1024];
+        snprintf(mdir, sizeof(mdir), "%s/%s", base_dir, music_dirs[md]);
+        snprintf(path, sizeof(path), "%s/%s", mdir, track_want);
+        g_vorb = stb_vorbis_open_filename(path, &err, NULL);
+        if (!g_vorb) {
+            DIR *d = opendir(mdir);
+            if (d) {
+                struct dirent64 *de;
+                while ((de = readdir64(d)) != NULL) {
+                    if (strcasecmp(de->d_name, track_want) == 0) {
+                        snprintf(path, sizeof(path), "%s/%s", mdir, de->d_name);
+                        g_vorb = stb_vorbis_open_filename(path, &err, NULL);
+                        break;
+                    }
+                }
+                closedir(d);
+            }
+        }
+    }
+#endif
     if (!g_vorb) {
         cd_unlock();
         ton_log("cd_fehlt");
@@ -269,6 +404,7 @@ extern "C" int dsa_platform_play_cd_track(int track_no) {
     const char *dump = getenv("DSA_DUMP_WAV");
     if (dump && dump[0]) write_probe_wav(dump);
 
+#ifdef _WIN32
     WAVEFORMATEX fmt;
     memset(&fmt, 0, sizeof(fmt));
     fmt.wFormatTag = WAVE_FORMAT_PCM;
@@ -277,7 +413,7 @@ extern "C" int dsa_platform_play_cd_track(int track_no) {
     fmt.wBitsPerSample = 16;
     fmt.nBlockAlign = 4;
     fmt.nAvgBytesPerSec = (DWORD)g_rate * 4;
-    if (waveOutOpen(&g_wave, WAVE_MAPPER, &fmt, (DWORD_PTR)wave_proc, 0, CALLBACK_FUNCTION) != MMSYSERR_NOERROR) {
+    if (is_headless_no_ton_log() || waveOutOpen(&g_wave, WAVE_MAPPER, &fmt, (DWORD_PTR)wave_proc, 0, CALLBACK_FUNCTION) != MMSYSERR_NOERROR) {
         g_wave = NULL;
         g_playing = 1; /* Datei ist offen; Wiedergabe ohne Geraet bleibt still, der Titel gilt als laufend */
         cd_unlock();
@@ -301,6 +437,39 @@ extern "C" int dsa_platform_play_cd_track(int track_no) {
     snprintf(msg, sizeof(msg), "cd track=%d rate=%d geraet=1", track_no, g_rate);
     ton_log(msg);
     return 1;
+#else
+    if (!(SDL_WasInit(SDL_INIT_AUDIO) & SDL_INIT_AUDIO)) {
+        SDL_InitSubSystem(SDL_INIT_AUDIO);
+    }
+    SDL_AudioSpec want, have;
+    memset(&want, 0, sizeof(want));
+    want.freq = g_rate;
+    want.format = AUDIO_S16LSB;
+    want.channels = 2;
+    want.samples = CD_FRAMES;
+    want.callback = sdl_audio_cb;
+    g_sdl_dev = SDL_OpenAudioDevice(NULL, 0, &want, &have, 0);
+    g_playing = 1;
+    if (g_sdl_dev == 0) {
+        g_headless_audio = 1;
+        for (int i = 0; i < CD_BUFS; ++i)
+            fill_buffer(g_pcm[i]);
+        cd_unlock();
+        char msg[80];
+        snprintf(msg, sizeof(msg), "cd track=%d rate=%d geraet=0", track_no, g_rate);
+        ton_log(msg);
+        return 1;
+    }
+    g_headless_audio = 0;
+    for (int i = 0; i < CD_BUFS; ++i)
+        fill_buffer(g_pcm[i]);
+    cd_unlock();
+    SDL_PauseAudioDevice(g_sdl_dev, 0);
+    char msg[80];
+    snprintf(msg, sizeof(msg), "cd track=%d rate=%d geraet=1", track_no, g_rate);
+    ton_log(msg);
+    return 1;
+#endif
 }
 
 extern "C" void dsa_platform_stop_cd_audio(void) {
@@ -465,6 +634,12 @@ static int voc_decode(const unsigned char *voc_data, uint32_t voc_len,
     return 1;
 }
 
+extern "C" void dsa_platform_voc_begin_load(int active) {
+    cd_lock();
+    g_voc_loading = active ? 1 : 0;
+    cd_unlock();
+}
+
 extern "C" int dsa_platform_submit_voc_chunk(const unsigned char *data, uint32_t len) {
     if (!data || len == 0) return 0;
     int fresh = (len >= 26 && memcmp(data, "Creative Voice File\x1a", 20) == 0);
@@ -483,13 +658,19 @@ extern "C" int dsa_platform_submit_voc_chunk(const unsigned char *data, uint32_t
     int16_t *pcm = NULL;
     uint32_t count = 0, rate = 44100;
     int peak = 0;
-    if (!voc_decode(g_voc_raw, g_voc_raw_len, &pcm, &count, &rate, &peak)) return 0;
+    if (!voc_decode(g_voc_raw, g_voc_raw_len, &pcm, &count, &rate, &peak)) {
+        cd_lock();
+        g_voc_loading = 0;
+        cd_unlock();
+        return 0;
+    }
     write_voc_probe(pcm, count, (int)rate);
     char msg[96];
     snprintf(msg, sizeof(msg), "%s samples=%u peak=%d rate=%u",
              fresh ? "voc_ok" : "voc_weiter", count, peak, rate);
     ton_log(msg);
     cd_lock();
+    g_voc_loading = 0;
     uint32_t keep = fresh ? 0 : g_voc_pos;
     if (g_voc) free(g_voc);
     g_voc = pcm;
@@ -509,13 +690,22 @@ extern "C" int dsa_platform_play_voc(const unsigned char *voc_data, uint32_t voc
 
 extern "C" int dsa_platform_voc_is_playing(void) {
     cd_lock();
-    int active = (g_voc != NULL && g_voc_pos < g_voc_len && g_wave != NULL) ? 1 : 0;
+#ifdef _WIN32
+    int active = (g_voc_loading || (g_voc != NULL && g_voc_pos < g_voc_len && g_wave != NULL)) ? 1 : 0;
+#else
+    if (g_headless_audio && g_voc != NULL) {
+        int16_t tmp[CD_FRAMES * 2];
+        fill_buffer(tmp);
+    }
+    int active = (g_voc_loading || (g_voc != NULL && g_voc_pos < g_voc_len && (g_sdl_dev != 0 || g_headless_audio))) ? 1 : 0;
+#endif
     cd_unlock();
     return active;
 }
 
 extern "C" void dsa_platform_stop_voc(void) {
     cd_lock();
+    g_voc_loading = 0;
     if (g_voc) {
         free(g_voc);
         g_voc = NULL;

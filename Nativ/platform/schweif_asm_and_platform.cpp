@@ -14,14 +14,30 @@
 #include <stdint.h>
 #include <ctype.h>
 #include <fcntl.h>
+#ifndef _WIN32
+#define mkdir __posix_mkdir_2arg
 #include <sys/stat.h>
-#include <dos.h>
-#include <dir.h>
-#include <bios.h>
+#undef mkdir
+#else
+#include <sys/stat.h>
+#endif
 #include <alloc.h>
+#ifndef _WIN32
+#include <unistd.h>
+#include <dirent.h>
+#include <strings.h>
+#include <signal.h>
+#include <pthread.h>
+#define _stricmp  strcasecmp
+#define _strnicmp strncasecmp
+#define _getcwd   getcwd
+#endif
 
 #include "dsa_platform.h"
 #pragma pack(push, 1)
+#include <dos.h>
+#include <dir.h>
+#include <bios.h>
 #include "schweif.h"
 #pragma pack(pop)
 
@@ -196,15 +212,29 @@ static void iso_scan_dir(FILE *fp, int disc, uint32_t dir_lba, uint32_t dir_len,
     free(data);
 }
 
+#ifndef _WIN32
+static void dsa_resolve_existing_ci_posix(char *full_path, size_t max_len);
+#endif
+
 static void iso_init_images(const char *gamedir) {
     const char *names[2] = { "gamea.gog", "gameb.gog" };
     for (int d = 0; d < 2; ++d) {
         char path[1024];
         snprintf(path, sizeof(path), "%s\\%s", gamedir, names[d]);
+#ifdef __linux__
+        dsa_resolve_existing_ci_posix(path, sizeof(path));
+        FILE *fp = fopen64(path, "rb");
+#else
         FILE *fp = fopen(path, "rb");
+#endif
         if (!fp) {
             snprintf(path, sizeof(path), "%s/%s", gamedir, names[d]);
+#ifdef __linux__
+            dsa_resolve_existing_ci_posix(path, sizeof(path));
+            fp = fopen64(path, "rb");
+#else
             fp = fopen(path, "rb");
+#endif
         }
         if (!fp) continue;
         uint8_t pvd[2048];
@@ -258,8 +288,10 @@ static int iso_open_virtual(const char *dos_path) {
     return -1;
 }
 
+#ifdef _WIN32
 extern "C" void * __stdcall GetModuleHandleA(const char *lpModuleName);
 extern "C" void * __stdcall GetProcAddress(void *hModule, const char *lpProcName);
+#endif
 
 typedef int  (*pfn_open_t)(const char *, int, ...);
 typedef int  (*pfn_read_t)(int, void *, unsigned int);
@@ -271,6 +303,7 @@ typedef long (*pfn_tell_t)(int);
 typedef int  (*pfn_unlink_t)(const char *);
 typedef int  (*pfn_chdir_t)(const char *);
 typedef int  (*pfn_mkdir_t)(const char *);
+typedef int  (*pfn_chmod_t)(const char *, int);
 
 static pfn_open_t       crt_open_fn       = NULL;
 static pfn_read_t       crt_read_fn       = NULL;
@@ -282,9 +315,159 @@ static pfn_tell_t       crt_tell_fn       = NULL;
 static pfn_unlink_t     crt_unlink_fn     = NULL;
 static pfn_chdir_t      crt_chdir_fn      = NULL;
 static pfn_mkdir_t      crt_mkdir_fn      = NULL;
+static pfn_chmod_t      crt_chmod_fn      = NULL;
+
+#ifndef _WIN32
+extern "C" int   __real_open(const char *path, int oflag, ...);
+extern "C" ssize_t __real_read(int fd, void *buf, size_t cnt);
+extern "C" ssize_t __real_write(int fd, const void *buf, size_t cnt);
+extern "C" off_t __real_lseek(int fd, off_t offset, int origin);
+extern "C" int   __real_close(int fd);
+extern "C" int   __real_unlink(const char *path);
+extern "C" int   __real_chdir(const char *path);
+extern "C" int   __real_mkdir(const char *path, mode_t mode);
+
+static void dsa_resolve_existing_ci_posix(char *full_path, size_t max_len) {
+    if (!full_path || !full_path[0]) return;
+    for (char *q = full_path; *q; ++q) {
+        if (*q == '\\') *q = '/';
+    }
+    if (access(full_path, F_OK) == 0) return;
+
+    char built[1024];
+    size_t bi = 0;
+    const char *p = full_path;
+    if (*p == '/') {
+        built[bi++] = '/';
+        built[bi] = '\0';
+        while (*p == '/') ++p;
+    } else {
+        built[0] = '\0';
+    }
+    while (*p) {
+        const char *slash = strchr(p, '/');
+        size_t clen = slash ? (size_t)(slash - p) : strlen(p);
+        if (clen == 0) {
+            if (slash) { p = slash + 1; continue; }
+            break;
+        }
+        char comp[256];
+        if (clen >= sizeof(comp)) clen = sizeof(comp) - 1;
+        memcpy(comp, p, clen);
+        comp[clen] = '\0';
+
+        char candidate[1024];
+        if (bi == 0) snprintf(candidate, sizeof(candidate), "%s", comp);
+        else if (bi == 1 && built[0] == '/') snprintf(candidate, sizeof(candidate), "/%s", comp);
+        else snprintf(candidate, sizeof(candidate), "%s/%s", built, comp);
+
+        if (strcmp(comp, ".") != 0 && strcmp(comp, "..") != 0 && access(candidate, F_OK) != 0) {
+            const char *dir_to_open = (bi == 0) ? "." : built;
+            DIR *d = opendir(dir_to_open);
+            if (d) {
+                struct dirent64 *de;
+                while ((de = readdir64(d)) != NULL) {
+                    if (strcasecmp(de->d_name, comp) == 0) {
+                        if (bi == 0) snprintf(candidate, sizeof(candidate), "%s", de->d_name);
+                        else if (bi == 1 && built[0] == '/') snprintf(candidate, sizeof(candidate), "/%s", de->d_name);
+                        else snprintf(candidate, sizeof(candidate), "%s/%s", built, de->d_name);
+                        break;
+                    }
+                }
+                closedir(d);
+            }
+        }
+        strncpy(built, candidate, sizeof(built) - 1);
+        built[sizeof(built) - 1] = '\0';
+        bi = strlen(built);
+        if (slash) {
+            p = slash + 1;
+            while (*p == '/') ++p;
+        } else {
+            break;
+        }
+    }
+    strncpy(full_path, built, max_len - 1);
+    full_path[max_len - 1] = '\0';
+}
+
+static int posix_crt_open(const char *path, int oflag, ...) {
+    if (!path || !path[0]) return -1;
+    char pbuf[1024];
+    strncpy(pbuf, path, sizeof(pbuf) - 1);
+    pbuf[sizeof(pbuf) - 1] = '\0';
+    dsa_resolve_existing_ci_posix(pbuf, sizeof(pbuf));
+    if (!pbuf[0]) return -1;
+    int fd = __real_open(pbuf, oflag, 0666);
+    if (fd >= 0) {
+        struct stat64 st;
+        if (fstat64(fd, &st) == 0 && S_ISDIR(st.st_mode)) {
+            __real_close(fd);
+            return -1;
+        }
+    }
+    return fd;
+}
+static int posix_crt_read(int fd, void *buf, unsigned int cnt) {
+    return (int)__real_read(fd, buf, (size_t)cnt);
+}
+static int posix_crt_write(int fd, const void *buf, unsigned int cnt) {
+    return (int)__real_write(fd, buf, (size_t)cnt);
+}
+static long posix_crt_lseek(int fd, long offset, int origin) {
+    return (long)__real_lseek(fd, (off_t)offset, origin);
+}
+static int posix_crt_close(int fd) {
+    return __real_close(fd);
+}
+static long posix_crt_filelength(int fd) {
+    off_t cur = __real_lseek(fd, 0, SEEK_CUR);
+    if (cur < 0) return -1;
+    off_t end = __real_lseek(fd, 0, SEEK_END);
+    __real_lseek(fd, cur, SEEK_SET);
+    return (long)end;
+}
+static long posix_crt_tell(int fd) {
+    return (long)__real_lseek(fd, 0, SEEK_CUR);
+}
+static int posix_crt_unlink(const char *path) {
+    if (!path) return -1;
+    char pbuf[1024];
+    strncpy(pbuf, path, sizeof(pbuf) - 1);
+    pbuf[sizeof(pbuf) - 1] = '\0';
+    dsa_resolve_existing_ci_posix(pbuf, sizeof(pbuf));
+    chmod(pbuf, 0666);
+    return __real_unlink(pbuf);
+}
+static int posix_crt_chdir(const char *path) {
+    if (!path) return -1;
+    char pbuf[1024];
+    strncpy(pbuf, path, sizeof(pbuf) - 1);
+    pbuf[sizeof(pbuf) - 1] = '\0';
+    dsa_resolve_existing_ci_posix(pbuf, sizeof(pbuf));
+    return __real_chdir(pbuf);
+}
+static int posix_crt_mkdir(const char *path) {
+    if (!path) return -1;
+    char pbuf[1024];
+    strncpy(pbuf, path, sizeof(pbuf) - 1);
+    pbuf[sizeof(pbuf) - 1] = '\0';
+    dsa_resolve_existing_ci_posix(pbuf, sizeof(pbuf));
+    return __real_mkdir(pbuf, 0755);
+}
+static int posix_crt_chmod(const char *path, int mode) {
+    if (!path) return -1;
+    char pbuf[1024];
+    strncpy(pbuf, path, sizeof(pbuf) - 1);
+    pbuf[sizeof(pbuf) - 1] = '\0';
+    dsa_resolve_existing_ci_posix(pbuf, sizeof(pbuf));
+    return chmod(pbuf, (mode_t)mode);
+}
+#endif
 
 static void init_crt_io(void) {
     if (crt_open_fn) return;
+#ifdef _WIN32
     void *m = GetModuleHandleA("msvcrt.dll");
     crt_open_fn       = (pfn_open_t)GetProcAddress(m, "_open");
     crt_read_fn       = (pfn_read_t)GetProcAddress(m, "_read");
@@ -296,14 +479,65 @@ static void init_crt_io(void) {
     crt_unlink_fn     = (pfn_unlink_t)GetProcAddress(m, "_unlink");
     crt_chdir_fn      = (pfn_chdir_t)GetProcAddress(m, "_chdir");
     crt_mkdir_fn      = (pfn_mkdir_t)GetProcAddress(m, "_mkdir");
+    crt_chmod_fn      = (pfn_chmod_t)GetProcAddress(m, "_chmod");
+#else
+    crt_open_fn       = posix_crt_open;
+    crt_read_fn       = posix_crt_read;
+    crt_write_fn      = posix_crt_write;
+    crt_lseek_fn      = posix_crt_lseek;
+    crt_close_fn      = posix_crt_close;
+    crt_filelength_fn = posix_crt_filelength;
+    crt_tell_fn       = posix_crt_tell;
+    crt_unlink_fn     = posix_crt_unlink;
+    crt_chdir_fn      = posix_crt_chdir;
+    crt_mkdir_fn      = posix_crt_mkdir;
+    crt_chmod_fn      = posix_crt_chmod;
+#endif
 }
 
 static char g_save_dir[1024] = "";
+static char g_explicit_save_dir[1024] = "";
 static int  g_save_dir_redirected = 0;
 static int  g_save_dir_notice_pending = 0;
 static int  g_no_intro = 0;
 static int  g_force_intro = 0;
 static int  g_has_replay = 0;
+
+static int is_valid_schweif_savegame_fd(int fd) {
+    if (fd < 0 || !crt_read_fn || !crt_lseek_fn) return 0;
+    unsigned char hdr[20];
+    unsigned char blk[18];
+    if (crt_lseek_fn(fd, 0, SEEK_SET) != 0) return 0;
+    if (crt_read_fn(fd, hdr, 20) != 20) {
+        crt_lseek_fn(fd, 0, SEEK_SET);
+        return 0;
+    }
+    if (memcmp(hdr, "DSA VERSION\0", 12) != 0 || hdr[13] != 2 || memcmp(hdr + 16, "DESC", 4) != 0) {
+        crt_lseek_fn(fd, 0, SEEK_SET);
+        return 0;
+    }
+    if (crt_lseek_fn(fd, 0x114, SEEK_SET) != 0x114) {
+        crt_lseek_fn(fd, 0, SEEK_SET);
+        return 0;
+    }
+    if (crt_read_fn(fd, blk, 18) != 18) {
+        crt_lseek_fn(fd, 0, SEEK_SET);
+        return 0;
+    }
+    crt_lseek_fn(fd, 0, SEEK_SET);
+    if (memcmp(blk, "CHAR", 4) != 0) return 0;
+    if (memcmp(blk + 6, "DSA VERSION", 11) == 0) return 0;
+    return 1;
+}
+
+static int is_valid_schweif_savegame_file(const char *filepath) {
+    if (!filepath || !filepath[0] || !crt_open_fn || !crt_close_fn) return 0;
+    int fd = crt_open_fn(filepath, _O_RDONLY | _O_BINARY, 0666);
+    if (fd < 0) return 0;
+    int ok = is_valid_schweif_savegame_fd(fd);
+    crt_close_fn(fd);
+    return ok;
+}
 
 static int is_redirected_save_rel(const char *rel) {
     if (!rel || !rel[0]) return 0;
@@ -311,19 +545,35 @@ static int is_redirected_save_rel(const char *rel) {
     if ((_strnicmp(rel, "TEMP", 4) == 0)  && (rel[4] == '\0' || rel[4] == '\\' || rel[4] == '/')) return 1;
     if ((_strnicmp(rel, "CTEMP", 5) == 0) && (rel[5] == '\0' || rel[5] == '\\' || rel[5] == '/')) return 1;
     if (_stricmp(rel, "PROBEN.CSV") == 0) return 1;
+    if (_stricmp(rel, "T.$$$") == 0) return 1;
+    if (_stricmp(rel, "SCHWEIF.CAT") == 0) return 1;
+    if (_stricmp(rel, "ALLOC.CAT") == 0) return 1;
+    if (_stricmp(rel, "SCHWEIF.CFG") == 0) return 1;
+    if (_stricmp(rel, "SONDS.CFG") == 0) return 1;
     return 0;
+}
+
+static const char *path_basename_ptr(const char *p) {
+    if (!p) return "";
+    const char *s1 = strrchr(p, '\\');
+    const char *s2 = strrchr(p, '/');
+    if (s1 && s2) return (s1 > s2 ? s1 : s2) + 1;
+    if (s1) return s1 + 1;
+    if (s2) return s2 + 1;
+    return p;
 }
 
 static void resolve_dos_c_root(const char *path, char *out, size_t out_sz) {
     if (!path) { out[0] = '\0'; return; }
     const char *gdir = dsa_platform_get_gamedir();
     size_t glen = gdir ? strlen(gdir) : 0;
+    while (glen > 3 && (gdir[glen - 1] == '\\' || gdir[glen - 1] == '/')) --glen;
     if (glen > 0 && isalpha((unsigned char)path[0]) && path[1] == ':' &&
         (path[2] == '\\' || path[2] == '/') && _strnicmp(path, gdir, glen) != 0) {
         const char *rel = path + 3;
         while (*rel == '\\' || *rel == '/') rel++;
-        if (*rel) snprintf(out, out_sz, "%s\\%s", gdir, rel);
-        else      snprintf(out, out_sz, "%s", gdir);
+        if (*rel) snprintf(out, out_sz, "%.*s\\%s", (int)glen, gdir, rel);
+        else      snprintf(out, out_sz, "%.*s", (int)glen, gdir);
     } else {
         snprintf(out, out_sz, "%s", path);
     }
@@ -360,11 +610,54 @@ static void resolve_dos_c_root(const char *path, char *out, size_t out_sz) {
 }
 
 static int open_with_gog_dirs(const char *path, const char *resolved, int oflag) {
+    int is_lastgame = (_stricmp(path_basename_ptr(resolved), "LASTGAME") == 0);
     int fd = crt_open_fn(resolved, oflag, 0666);
+    if (fd >= 0 && is_lastgame && ((oflag & (_O_WRONLY | _O_CREAT | _O_TRUNC)) == 0)) {
+        if (!is_valid_schweif_savegame_fd(fd)) {
+            crt_close_fn(fd);
+            fd = -1;
+        }
+    }
     if (fd >= 0 || !path) return fd;
-    if (strchr(path, '\\') != NULL || strchr(path, '/') != NULL) return fd;
+
     const char *gdir = dsa_platform_get_gamedir();
     if (!gdir || !gdir[0]) return fd;
+
+    if (is_lastgame && ((oflag & (_O_WRONLY | _O_CREAT | _O_TRUNC)) == 0)) {
+        char fb[1024];
+        if (g_save_dir_redirected && g_save_dir[0]) {
+            snprintf(fb, sizeof(fb), "%s\\GAMES\\START.GAM", g_save_dir);
+            fd = crt_open_fn(fb, _O_RDONLY | _O_BINARY, 0666);
+            if (fd >= 0 && !is_valid_schweif_savegame_fd(fd)) { crt_close_fn(fd); fd = -1; }
+        }
+        if (fd < 0) {
+            snprintf(fb, sizeof(fb), "%s\\GAMES\\LASTGAME", gdir);
+            fd = crt_open_fn(fb, _O_RDONLY | _O_BINARY, 0666);
+            if (fd >= 0 && !is_valid_schweif_savegame_fd(fd)) { crt_close_fn(fd); fd = -1; }
+        }
+        if (fd < 0) {
+            snprintf(fb, sizeof(fb), "%s\\GAMES\\START.GAM", gdir);
+            fd = crt_open_fn(fb, _O_RDONLY | _O_BINARY, 0666);
+            if (fd >= 0 && !is_valid_schweif_savegame_fd(fd)) { crt_close_fn(fd); fd = -1; }
+        }
+        return fd;
+    }
+
+    if (g_save_dir_redirected && ((oflag & (_O_WRONLY | _O_CREAT | _O_TRUNC)) == 0)) {
+        size_t slen = strlen(g_save_dir);
+        if (slen > 0 && _strnicmp(resolved, g_save_dir, slen) == 0 &&
+            (resolved[slen] == '\\' || resolved[slen] == '/')) {
+            const char *rel = resolved + slen + 1;
+            if (_strnicmp(rel, "GAMES\\", 6) == 0 || _strnicmp(rel, "GAMES/", 6) == 0) {
+                char fb[1024];
+                snprintf(fb, sizeof(fb), "%s\\%s", gdir, rel);
+                fd = crt_open_fn(fb, _O_RDONLY | _O_BINARY, 0666);
+                if (fd >= 0) return fd;
+            }
+        }
+    }
+
+    if (strchr(path, '\\') != NULL || strchr(path, '/') != NULL) return fd;
     char alt[1024];
     snprintf(alt, sizeof(alt), "%s\\DATA\\%s", gdir, path);
     fd = crt_open_fn(alt, oflag, 0666);
@@ -387,17 +680,23 @@ int __wrap__open(const char *path, int oflag, int pmode) {
         return open_with_gog_dirs(path, resolved, _O_RDONLY | _O_BINARY);
     }
     if (oflag == 0x8001 || oflag == 1) {
+        if (g_save_dir_redirected && crt_chmod_fn) crt_chmod_fn(resolved, 0666);
         int fd = crt_open_fn(resolved, _O_RDWR | _O_BINARY, 0666);
-        if (fd < 0) fd = crt_open_fn(resolved, _O_RDONLY | _O_BINARY, 0666);
+        if (fd < 0) fd = open_with_gog_dirs(path, resolved, _O_RDONLY | _O_BINARY);
         return fd;
     }
     if (oflag == 0x8002 || oflag == 0x8004 || oflag == 2 || oflag == 4) {
-        return crt_open_fn(resolved, _O_RDWR | _O_BINARY, 0666);
+        if (g_save_dir_redirected && crt_chmod_fn) crt_chmod_fn(resolved, 0666);
+        int fd = crt_open_fn(resolved, _O_RDWR | _O_BINARY, 0666);
+        if (fd < 0) fd = open_with_gog_dirs(path, resolved, _O_RDONLY | _O_BINARY);
+        return fd;
     }
     if (oflag == 0x8101 || oflag == 0x8102 || oflag == 0x8104) {
+        if (g_save_dir_redirected && crt_chmod_fn) crt_chmod_fn(resolved, 0666);
         return crt_open_fn(resolved, _O_RDWR | _O_CREAT | _O_BINARY, 0666);
     }
     if (oflag == 0x8300 || oflag == 0x8301 || oflag == 0x8302 || oflag == 0x8304) {
+        if (g_save_dir_redirected && crt_chmod_fn) crt_chmod_fn(resolved, 0666);
         return crt_open_fn(resolved, _O_RDWR | _O_CREAT | _O_TRUNC | _O_BINARY, 0666);
     }
     if (oflag & 4) {
@@ -416,6 +715,7 @@ int __wrap__creat(const char *path, int attr) {
     init_crt_io();
     char resolved[1024];
     resolve_dos_c_root(path, resolved, sizeof(resolved));
+    if (crt_chmod_fn) crt_chmod_fn(resolved, 0666);
     return crt_open_fn(resolved, _O_BINARY | _O_CREAT | _O_TRUNC | _O_RDWR, 0666);
 }
 
@@ -516,6 +816,7 @@ int __wrap__unlink(const char *path) {
     init_crt_io();
     char resolved[1024];
     resolve_dos_c_root(path, resolved, sizeof(resolved));
+    if (crt_chmod_fn) crt_chmod_fn(resolved, 0666);
     return crt_unlink_fn(resolved);
 }
 
@@ -523,6 +824,7 @@ int __wrap_unlink(const char *path) {
     return __wrap__unlink(path);
 }
 
+#ifdef _WIN32
 void *port_imp__open   __asm__("__imp___open")   = (void *)&__wrap__open;
 void *port_imp_open    __asm__("__imp__open")    = (void *)&__wrap_open;
 void *port_imp__creat  __asm__("__imp___creat")  = (void *)&__wrap__creat;
@@ -537,6 +839,40 @@ void *port_imp__close  __asm__("__imp___close")  = (void *)&__wrap__close;
 void *port_imp_close   __asm__("__imp__close")   = (void *)&__wrap_close;
 void *port_imp__unlink __asm__("__imp___unlink") = (void *)&__wrap__unlink;
 void *port_imp_unlink  __asm__("__imp__unlink")  = (void *)&__wrap_unlink;
+#else
+long dsa_filelength(int fd) { return __wrap__filelength(fd); }
+
+char *itoa(int value, char *str, int base) {
+    if (!str) return NULL;
+    if (base == 16) sprintf(str, "%x", (unsigned int)value);
+    else sprintf(str, "%d", value);
+    return str;
+}
+char *ltoa(long value, char *str, int base) {
+    if (!str) return NULL;
+    if (base == 16) sprintf(str, "%lx", (unsigned long)value);
+    else sprintf(str, "%ld", value);
+    return str;
+}
+char *ultoa(unsigned long value, char *str, int base) {
+    if (!str) return NULL;
+    if (base == 16) sprintf(str, "%lx", value);
+    else sprintf(str, "%lu", value);
+    return str;
+}
+char *strupr(char *s) {
+    if (!s) return NULL;
+    for (char *p = s; *p; ++p) *p = (char)toupper((unsigned char)*p);
+    return s;
+}
+char *strlwr(char *s) {
+    if (!s) return NULL;
+    for (char *p = s; *p; ++p) *p = (char)tolower((unsigned char)*p);
+    return s;
+}
+int stricmp(const char *a, const char *b) { return strcasecmp(a, b); }
+int strnicmp(const char *a, const char *b, size_t n) { return strncasecmp(a, b, n); }
+#endif
 
 /* =========================================================================
  * 3. DOS/BIOS/Maus/Timer-Helfer
@@ -620,6 +956,7 @@ void dsa_getdfree(unsigned char drive, struct dfree *dtable) {
     }
 }
 
+#ifdef _WIN32
 static void fill_ffblk_from_finddata(struct ffblk *ff, const struct _finddata_t *fd) {
     ff->ff_attrib = (char)fd->attrib;
     ff->ff_fsize  = (long)fd->size;
@@ -676,6 +1013,102 @@ int dsa_findnext(struct ffblk *ff) {
     *(intptr_t *)ff->ff_reserved = -1;
     return -1;
 }
+#else
+struct posix_find_state {
+    char   names[256][16];
+    long   sizes[256];
+    int    count;
+    int    idx;
+};
+static struct posix_find_state g_posix_find;
+
+static int match_dos_wildcard_ci(const char *name, const char *pat) {
+    if (!pat || !pat[0] || strcmp(pat, "*.*") == 0 || strcmp(pat, "*") == 0) return 1;
+    const char *p_dot = strrchr(pat, '.');
+    const char *n_dot = strrchr(name, '.');
+    if (pat[0] == '*' && p_dot && p_dot == pat + 1) {
+        if (strcmp(p_dot, ".*") == 0) return 1;
+        return n_dot && strcasecmp(n_dot, p_dot) == 0;
+    }
+    return strcasecmp(name, pat) == 0;
+}
+
+int dsa_findfirst(const char *pathname, struct ffblk *ff, int attrib) {
+    if (!pathname || !ff) return -1;
+    char resolved[1024];
+    resolve_dos_c_root(pathname, resolved, sizeof(resolved));
+    for (char *q = resolved; *q; ++q) if (*q == '\\') *q = '/';
+
+    char dir_path[1024];
+    char pat[128];
+    const char *slash = strrchr(resolved, '/');
+    if (slash) {
+        size_t dlen = (size_t)(slash - resolved);
+        if (dlen == 0) strcpy(dir_path, "/");
+        else {
+            if (dlen >= sizeof(dir_path)) dlen = sizeof(dir_path) - 1;
+            memcpy(dir_path, resolved, dlen);
+            dir_path[dlen] = '\0';
+        }
+        strncpy(pat, slash + 1, sizeof(pat) - 1);
+        pat[sizeof(pat) - 1] = '\0';
+    } else {
+        strcpy(dir_path, ".");
+        strncpy(pat, resolved, sizeof(pat) - 1);
+        pat[sizeof(pat) - 1] = '\0';
+    }
+    dsa_resolve_existing_ci_posix(dir_path, sizeof(dir_path));
+
+    g_posix_find.count = 0;
+    g_posix_find.idx   = 0;
+    DIR *d = opendir(dir_path);
+    if (!d) return -1;
+    struct dirent64 *de;
+    while ((de = readdir64(d)) != NULL && g_posix_find.count < 256) {
+        if (strcmp(de->d_name, ".") == 0 || strcmp(de->d_name, "..") == 0) continue;
+        if (!match_dos_wildcard_ci(de->d_name, pat)) continue;
+        char fpath[1024];
+        snprintf(fpath, sizeof(fpath), "%s/%s", dir_path, de->d_name);
+        struct stat64 st;
+        if (stat64(fpath, &st) == 0) {
+            if (S_ISDIR(st.st_mode) && !(attrib & FA_DIREC)) continue;
+            int idx = g_posix_find.count++;
+            strncpy(g_posix_find.names[idx], de->d_name, 12);
+            g_posix_find.names[idx][12] = '\0';
+            for (char *u = g_posix_find.names[idx]; *u; ++u) *u = (char)toupper((unsigned char)*u);
+            g_posix_find.sizes[idx] = (long)st.st_size;
+        }
+    }
+    closedir(d);
+
+    for (int a = 0; a < g_posix_find.count - 1; ++a) {
+        for (int b = a + 1; b < g_posix_find.count; ++b) {
+            if (strcasecmp(g_posix_find.names[a], g_posix_find.names[b]) > 0) {
+                char tn[16];
+                memcpy(tn, g_posix_find.names[a], 16);
+                memcpy(g_posix_find.names[a], g_posix_find.names[b], 16);
+                memcpy(g_posix_find.names[b], tn, 16);
+                long ts = g_posix_find.sizes[a];
+                g_posix_find.sizes[a] = g_posix_find.sizes[b];
+                g_posix_find.sizes[b] = ts;
+            }
+        }
+    }
+    return dsa_findnext(ff);
+}
+
+int dsa_findnext(struct ffblk *ff) {
+    if (!ff || g_posix_find.idx >= g_posix_find.count) return -1;
+    int i = g_posix_find.idx++;
+    ff->ff_attrib = FA_ARCH;
+    ff->ff_ftime  = 0;
+    ff->ff_fdate  = 0;
+    ff->ff_fsize  = g_posix_find.sizes[i];
+    strncpy(ff->ff_name, g_posix_find.names[i], sizeof(ff->ff_name) - 1);
+    ff->ff_name[sizeof(ff->ff_name) - 1] = '\0';
+    return 0;
+}
+#endif
 
 static int g_cur_disk = 2; /* 2 = C: */
 
@@ -893,9 +1326,109 @@ static uint32_t voc_declared_span(const unsigned char *v) {
         if (scan > 0x2800u) break;
     }
     if (end < 0x200u) end = 0x200u;
-    /* Eine Sprachzeile (z. B. MOB_0.VOC mit 353 KB), nicht das ganze Archiv hinter dem Block. */
-    if (end > 512u * 1024u) end = 512u * 1024u;
+    /* Eine Sprachzeile (z. B. OUTRO3.VOC mit 575 KB), nicht das ganze Archiv hinter dem Block. */
+    if (end > 1024u * 1024u) end = 1024u * 1024u;
     return end;
+}
+
+extern "C" void dsa_platform_voc_begin_load(int active);
+
+static char g_seq_log_buf[32768];
+static size_t g_seq_log_len = 0;
+static char g_last_logged_text[512];
+
+static void dsa_clear_stale_speech_input(void) {
+    int dl = 0, dr = 0;
+    dsa_platform_consume_clicks(&dl, &dr);
+    g_mouse_lclick = 0;
+    g_mouse_rclick = 0;
+    g_mouse_lpending = 0;
+    g_mouse_ldclick = 0;
+    g_mouse_event = 0;
+    g_action = 0;
+    g_key = 0;
+    g_key_ascii = 0;
+    g_key_buf = 0;
+}
+
+static void dsa_seq_log_append_line(const char *prefix, const char *s) {
+    if (!s) return;
+    while (*s == ' ' || *s == '\t' || *s == '\r' || *s == '\n' || (unsigned char)*s == 0xa0) s++;
+    if (!*s || (s[0] == '@' && s[1] == '\0')) return;
+    char clean[512];
+    size_t j = 0;
+    for (size_t i = 0; s[i] && j + 1 < sizeof(clean); ++i) {
+        unsigned char c = (unsigned char)s[i];
+        if (c == '\r' || c == '\n') {
+            clean[j++] = ' ';
+        } else if (c >= 32) {
+            clean[j++] = (char)c;
+        }
+    }
+    while (j > 0 && clean[j - 1] == ' ') j--;
+    clean[j] = '\0';
+    if (j == 0) return;
+    if (strcmp(prefix, "TEXT") == 0) {
+        if (strcmp(clean, g_last_logged_text) == 0) return;
+        strncpy(g_last_logged_text, clean, sizeof(g_last_logged_text) - 1);
+        g_last_logged_text[sizeof(g_last_logged_text) - 1] = '\0';
+    }
+    if (g_seq_log_len + j + 24 < sizeof(g_seq_log_buf)) {
+        int n = snprintf(g_seq_log_buf + g_seq_log_len, sizeof(g_seq_log_buf) - g_seq_log_len, "%s: %s\n", prefix, clean);
+        if (n > 0) g_seq_log_len += (size_t)n;
+    }
+    const char *seq_path = getenv("DSA_SEQ_LOG");
+    if (seq_path && seq_path[0]) {
+        FILE *fp = fopen(seq_path, "a");
+        if (fp) {
+            fprintf(fp, "%s: %s\n", prefix, clean);
+            fclose(fp);
+        }
+    }
+}
+
+extern "C" short __real_random_schweif(short range);
+extern "C" short __wrap_random_schweif(short range) {
+    static signed short s_last_seed2 = -1;
+    static int s_same_seed2_calls = 0;
+    if (g_random_seed2 == s_last_seed2) {
+        if (++s_same_seed2_calls > 16) {
+            g_random_seed2++;
+            if (g_random_seed2 < 0) g_random_seed2 = 0;
+            s_last_seed2 = g_random_seed2;
+            if (s_same_seed2_calls > 64 && g_in_fight && g_group) {
+                int any_act = 0;
+                for (int hi = 0; hi <= 6; ++hi) {
+                    if (g_group->heroes[hi] && g_group->heroes[hi]->actions != 0) {
+                        any_act = 1;
+                        break;
+                    }
+                }
+                if (!any_act && g_group->heroes[0]) {
+                    g_group->heroes[0]->actions = 1;
+                    g_group->heroes[0]->bp_left = 0;
+                }
+            }
+        }
+    } else {
+        s_last_seed2 = g_random_seed2;
+        s_same_seed2_calls = 1;
+    }
+    return __real_random_schweif(range);
+}
+
+extern "C" short __real_font_print_wrapped(void *font, char *s);
+extern "C" short __wrap_font_print_wrapped(void *font, char *s) {
+    if (font != g_font) {
+        /* Untertitel-Ausgabe in tscr_print_font (Intro, Anim3, Outro1, Outro2):
+         * veraltete Mausklicks aus vorherigen Dialogfenstern (dlg_box_bmp) loeschen,
+         * damit Zeile 1 weder mit noch ohne Sprachausgabe uebersprungen wird. */
+        dsa_clear_stale_speech_input();
+    }
+    if (s) {
+        dsa_seq_log_append_line("TEXT", s);
+    }
+    return __real_font_print_wrapped(font, s);
 }
 
 void AIL_format_sound_buffer(short h, struct snd_buf *b) { (void)h; (void)b; }
@@ -918,6 +1451,11 @@ void AIL_index_VOC_block(short h, void *voc, short idx, struct snd_buf *b) {
     b->sample_rate = 11025;
     b->data = voc ? (unsigned char *)voc : NULL;
     b->len = voc ? voc_declared_span((const unsigned char *)voc) : 0;
+    if (voc && b->len > 0 && memcmp(voc, "Creative Voice File\x1a", 20) == 0) {
+        dsa_platform_voc_begin_load(1);
+    } else {
+        dsa_platform_voc_begin_load(0);
+    }
     if (voc) {
         g_ail_last_voc = (unsigned char *)voc;
         g_ail_last_voc_len = b->len > 0x2800u ? 0x2800u : b->len;
@@ -925,6 +1463,16 @@ void AIL_index_VOC_block(short h, void *voc, short idx, struct snd_buf *b) {
 }
 void AIL_start_digital_playback(short h) {
     (void)h;
+    struct sound *s = (struct sound *)g_snd_fx;
+    if (s && s->playing == 0 && (s->id & 0x8000)) {
+        /* Beginn einer neuen Sprachausgabe (snd_start): veraltete Klicks/Tasten aus vorherigen
+         * Dialogfenstern (z. B. dlg_box_bmp vor Outro1/Outro2) verwerfen und Sprach-ID protokollieren. */
+        dsa_clear_stale_speech_input();
+        char id_buf[32];
+        snprintf(id_buf, sizeof(id_buf), "%d", (int)(s->id & 0x7fff));
+        g_last_logged_text[0] = '\0';
+        dsa_seq_log_append_line("SPEECH", id_buf);
+    }
     /* Die Puffer kommen ueber AIL_register_sound_buffer. Hier nur merken, dass gestartet wurde. */
     dsa_platform_ton_log(g_ail_last_voc ? "ail_start" : "ail_start_leer");
 }
@@ -2351,6 +2899,7 @@ void fli_brun(unsigned char *chunk_data, unsigned char *dst_ptr, short height) {
 
 int dsa_game_main(int argc, char **argv);
 
+#ifdef _WIN32
 #pragma pack(push, 4)
 struct MinExceptionRecord {
     uint32_t ExceptionCode;
@@ -2383,13 +2932,20 @@ extern "C" void * __stdcall CreateThread(void *lpThreadAttributes, size_t dwStac
 extern "C" int __stdcall CloseHandle(void *hObject);
 extern "C" void __stdcall Sleep(uint32_t dwMilliseconds);
 extern "C" void __cdecl _exit(int status);
+#endif
 
 /* =========================================================================
  * W1 (Absturz-Logger), W2 (Stub-Waechter), W3 (Abdeckung)
  * ========================================================================= */
+#ifdef _WIN32
 static char g_build_dir[1024]      = "Port\\build";
 static char g_absturz_path[1024]   = "Port\\build\\absturz.log";
 static char g_abspann_path[1024]   = "Port\\build\\abspann.log";
+#else
+static char g_build_dir[1024]      = "Port/build";
+static char g_absturz_path[1024]   = "Port/build/absturz.log";
+static char g_abspann_path[1024]   = "Port/build/abspann.log";
+#endif
 
 extern "C" void dsa_log_abspann(const char *msg) {
     if (!msg || !msg[0] || !crt_open_fn || !crt_write_fn || !crt_close_fn) return;
@@ -2399,8 +2955,13 @@ extern "C" void dsa_log_abspann(const char *msg) {
     crt_write_fn(fd, "\n", 1);
     crt_close_fn(fd);
 }
+#ifdef _WIN32
 static char g_stubs_path[1024]     = "Port\\build\\stubs.log";
 static char g_abdeckung_path[1024] = "Port\\build\\abdeckung.tsv";
+#else
+static char g_stubs_path[1024]     = "Port/build/stubs.log";
+static char g_abdeckung_path[1024] = "Port/build/abdeckung.tsv";
+#endif
 
 static void *g_last_funcs[16];
 static volatile uint32_t g_last_func_idx = 0;
@@ -2474,9 +3035,15 @@ extern "C" void unused_scene_stub(void);
 extern "C" void fli_timer_tick(void);
 extern "C" void finale_timer_tick(void);
 extern "C" void o045_stub_1(void);
+#ifdef _WIN32
 signed short can_use_spellclass(struct hero *, signed short) __asm__("__Z18can_use_spellclassP4heros");
 signed short has_herb_for_disease(struct hero *, signed short) __asm__("__Z20has_herb_for_diseaseP4heros");
 void cd_drive_reset(signed short) __asm__("__Z14cd_drive_resets");
+#else
+signed short can_use_spellclass(struct hero *, signed short) __asm__("_Z18can_use_spellclassP4heros");
+signed short has_herb_for_disease(struct hero *, signed short) __asm__("_Z20has_herb_for_diseaseP4heros");
+void cd_drive_reset(signed short) __asm__("_Z14cd_drive_resets");
+#endif
 
 static void dsa_cov_group_run(int grp) {
     char buf[4096];
@@ -2688,6 +3255,7 @@ void dsa_log_guru_meditation(const char *msg, const void *ptr) {
     }
 }
 
+#ifdef _WIN32
 static long __stdcall schweif_exception_filter(struct MinExceptionPointers *ep) {
     if (!ep || !ep->ExceptionRecord || (ep->ExceptionRecord->ExceptionCode & 0xF0000000u) != 0xC0000000u) {
         return 0; /* EXCEPTION_CONTINUE_SEARCH */
@@ -2703,8 +3271,15 @@ static long __stdcall schweif_exception_filter(struct MinExceptionPointers *ep) 
             ep->ContextRecord->Esi, ep->ContextRecord->Edi, ep->ContextRecord->Ebp, ep->ContextRecord->Esp,
             ep->ExceptionRecord->ExceptionInformation[1]);
 
-        const char *paths[2] = { g_absturz_path, "..\\CTEMP\\crash.log" };
+        char crash_alt[1024] = "";
+        if (g_save_dir_redirected && g_save_dir[0]) {
+            snprintf(crash_alt, sizeof(crash_alt), "%s\\absturz.log", g_save_dir);
+        } else {
+            snprintf(crash_alt, sizeof(crash_alt), "..\\CTEMP\\crash.log");
+        }
+        const char *paths[2] = { g_absturz_path, crash_alt };
         for (int p_i = 0; p_i < 2; ++p_i) {
+            if (!paths[p_i] || !paths[p_i][0]) continue;
             int fd = crt_open_fn(paths[p_i], _O_BINARY | _O_CREAT | _O_TRUNC | _O_WRONLY, 0666);
             if (fd >= 0) {
                 crt_write_fn(fd, cbuf, (unsigned int)n);
@@ -2728,6 +3303,42 @@ static long __stdcall schweif_exception_filter(struct MinExceptionPointers *ep) 
     _exit(77);
     return 0;
 }
+#else
+static void schweif_posix_signal_handler(int sig, siginfo_t *si, void *ucontext_ptr) {
+    (void)ucontext_ptr;
+    crt_write_fn = posix_crt_write;
+    static char cbuf[1024];
+    const void *fault_addr = si ? si->si_addr : NULL;
+    int n = snprintf(cbuf, sizeof(cbuf),
+        "[CRASH] Signal=%d (%s) FaultAddr=%p FileLastId=%d\n",
+        sig,
+        sig == SIGSEGV ? "SIGSEGV" : (sig == SIGBUS ? "SIGBUS" : (sig == SIGILL ? "SIGILL" : (sig == SIGFPE ? "SIGFPE" : "SIGABRT"))),
+        fault_addr, (int)g_file_last_id);
+    const char *paths[3] = { g_absturz_path, "absturz.log", "../CTEMP/crash.log" };
+    for (int p_i = 0; p_i < 3; ++p_i) {
+        if (!paths[p_i] || !paths[p_i][0]) continue;
+        int fd = __real_open(paths[p_i], O_CREAT | O_TRUNC | O_WRONLY, 0666);
+        if (fd >= 0) {
+            __real_write(fd, cbuf, (size_t)n);
+            write_game_state_summary(fd);
+            __real_close(fd);
+        }
+    }
+    _exit(77);
+}
+
+static void install_posix_crash_handlers(void) {
+    struct sigaction sa;
+    memset(&sa, 0, sizeof(sa));
+    sa.sa_sigaction = schweif_posix_signal_handler;
+    sa.sa_flags = SA_SIGINFO | SA_RESETHAND;
+    sigaction(SIGSEGV, &sa, NULL);
+    sigaction(SIGBUS,  &sa, NULL);
+    sigaction(SIGILL,  &sa, NULL);
+    sigaction(SIGFPE,  &sa, NULL);
+    sigaction(SIGABRT, &sa, NULL);
+}
+#endif
 
 static void close_cov_file(void) {
     if (g_cov_fd >= 0 && crt_close_fn) {
@@ -2736,6 +3347,8 @@ static void close_cov_file(void) {
     }
 }
 
+#ifdef _WIN32
+extern "C" unsigned int __stdcall timeBeginPeriod(unsigned int uPeriod);
 static uint32_t __stdcall dsa_watchdog_thread_proc(void *param) {
     uint32_t timeout_ms = (uint32_t)(uintptr_t)param;
     Sleep(timeout_ms);
@@ -2743,16 +3356,21 @@ static uint32_t __stdcall dsa_watchdog_thread_proc(void *param) {
     TerminateProcess(GetCurrentProcess(), 124);
     return 0;
 }
+#else
+static void *dsa_posix_watchdog_thread_proc(void *param) {
+    uint32_t timeout_ms = (uint32_t)(uintptr_t)param;
+    usleep((useconds_t)timeout_ms * 1000u);
+    close_cov_file();
+    _exit(124);
+    return NULL;
+}
+#endif
 
-static void copy_file_if_missing(const char *src_path, const char *dst_path) {
+static void copy_file_overwrite(const char *src_path, const char *dst_path) {
     if (!crt_open_fn || !crt_read_fn || !crt_write_fn || !crt_close_fn) return;
-    int check_fd = crt_open_fn(dst_path, _O_RDONLY | _O_BINARY, 0666);
-    if (check_fd >= 0) {
-        crt_close_fn(check_fd);
-        return;
-    }
     int sfd = crt_open_fn(src_path, _O_RDONLY | _O_BINARY, 0666);
     if (sfd < 0) return;
+    if (crt_chmod_fn) crt_chmod_fn(dst_path, 0666);
     int dfd = crt_open_fn(dst_path, _O_WRONLY | _O_CREAT | _O_TRUNC | _O_BINARY, 0666);
     if (dfd >= 0) {
         char buf[8192];
@@ -2761,49 +3379,208 @@ static void copy_file_if_missing(const char *src_path, const char *dst_path) {
             crt_write_fn(dfd, buf, (unsigned int)n);
         }
         crt_close_fn(dfd);
+        if (crt_chmod_fn) crt_chmod_fn(dst_path, 0666);
     }
     crt_close_fn(sfd);
 }
 
+static void copy_file_if_missing(const char *src_path, const char *dst_path) {
+    if (!crt_open_fn || !crt_read_fn || !crt_write_fn || !crt_close_fn) return;
+    int is_sg = 0;
+    const char *base = path_basename_ptr(src_path);
+    size_t blen = strlen(base);
+    if (_stricmp(base, "LASTGAME") == 0 || _stricmp(base, "EMPTY") == 0 ||
+        (blen > 4 && _stricmp(base + blen - 4, ".GAM") == 0)) {
+        is_sg = 1;
+        if (!is_valid_schweif_savegame_file(src_path)) return;
+    }
+    int check_fd = crt_open_fn(dst_path, _O_RDONLY | _O_BINARY, 0666);
+    if (check_fd >= 0) {
+        int dst_valid = is_sg ? is_valid_schweif_savegame_fd(check_fd) : 1;
+        crt_close_fn(check_fd);
+        if (dst_valid) {
+            if (crt_chmod_fn) crt_chmod_fn(dst_path, 0666);
+            return;
+        }
+        if (crt_chmod_fn) crt_chmod_fn(dst_path, 0666);
+        if (crt_unlink_fn) crt_unlink_fn(dst_path);
+    }
+    copy_file_overwrite(src_path, dst_path);
+}
+
+static int file_exists_ro(const char *p) {
+    if (!p || !p[0] || !crt_open_fn || !crt_close_fn) return 0;
+    int fd = crt_open_fn(p, _O_RDONLY | _O_BINARY, 0666);
+    if (fd >= 0) {
+        crt_close_fn(fd);
+        return 1;
+    }
+    return 0;
+}
+
+static int is_dir_writable_schweif(const char *dir) {
+    if (!dir || !dir[0] || !crt_open_fn || !crt_close_fn || !crt_unlink_fn) return 0;
+    char test_path[1024];
+#ifdef _WIN32
+    snprintf(test_path, sizeof(test_path), "%s\\.schweif_wtest.tmp", dir);
+#else
+    snprintf(test_path, sizeof(test_path), "%s/.schweif_wtest.tmp", dir);
+#endif
+    int tfd = crt_open_fn(test_path, _O_WRONLY | _O_CREAT | _O_TRUNC | _O_BINARY, 0666);
+    if (tfd >= 0) {
+        crt_close_fn(tfd);
+        crt_unlink_fn(test_path);
+        return 1;
+    }
+    return 0;
+}
+
+static int is_foreign_dsa_save_dir(const char *dir, const char *gamedir) {
+    if (!dir || !dir[0]) return 0;
+    if (gamedir && gamedir[0] && _stricmp(dir, gamedir) == 0) return 0;
+    char low[1024];
+    size_t i = 0;
+    for (; dir[i] && i + 1 < sizeof(low); ++i) {
+        char c = (char)tolower((unsigned char)dir[i]);
+        if (c == '\\') c = '/';
+        low[i] = c;
+    }
+    low[i] = '\0';
+    if (strstr(low, "realms of arkania 3") != NULL) return 1;
+    if (strstr(low, "schicksalsklinge") != NULL) return 1;
+    if (strstr(low, "realms of arkania") != NULL && strstr(low, "realms of arkania 2") == NULL) return 1;
+
+    char p[1024];
+    snprintf(p, sizeof(p), "%s\\SCHICKM.EXE", dir);
+    if (file_exists_ro(p)) return 1;
+    snprintf(p, sizeof(p), "%s\\SCHICK.DAT", dir);
+    if (file_exists_ro(p)) return 1;
+    snprintf(p, sizeof(p), "%s\\GAMES\\LASTGAME", dir);
+    if (file_exists_ro(p) && !is_valid_schweif_savegame_file(p)) {
+        char p_star[1024];
+        snprintf(p_star, sizeof(p_star), "%s\\DATA\\STAR.DAT", dir);
+        if (!file_exists_ro(p_star)) return 1;
+    }
+    return 0;
+}
+
+static void ensure_valid_lastgame_in_dir(const char *base_dir, const char *gamedir) {
+    if (!base_dir || !base_dir[0]) return;
+    char lg[1024], sg[1024];
+#ifdef _WIN32
+    snprintf(lg, sizeof(lg), "%s\\GAMES\\LASTGAME", base_dir);
+    snprintf(sg, sizeof(sg), "%s\\GAMES\\START.GAM", base_dir);
+#else
+    snprintf(lg, sizeof(lg), "%s/GAMES/LASTGAME", base_dir);
+    snprintf(sg, sizeof(sg), "%s/GAMES/START.GAM", base_dir);
+#endif
+    if (is_valid_schweif_savegame_file(lg)) return;
+    if (file_exists_ro(lg)) {
+        if (crt_chmod_fn) crt_chmod_fn(lg, 0666);
+        if (crt_unlink_fn) crt_unlink_fn(lg);
+    }
+    if (is_valid_schweif_savegame_file(sg)) {
+        copy_file_overwrite(sg, lg);
+        return;
+    }
+    if (gamedir && gamedir[0] && _stricmp(base_dir, gamedir) != 0) {
+#ifdef _WIN32
+        snprintf(sg, sizeof(sg), "%s\\GAMES\\LASTGAME", gamedir);
+#else
+        snprintf(sg, sizeof(sg), "%s/GAMES/LASTGAME", gamedir);
+#endif
+        if (is_valid_schweif_savegame_file(sg)) {
+            copy_file_overwrite(sg, lg);
+            return;
+        }
+#ifdef _WIN32
+        snprintf(sg, sizeof(sg), "%s\\GAMES\\START.GAM", gamedir);
+#else
+        snprintf(sg, sizeof(sg), "%s/GAMES/START.GAM", gamedir);
+#endif
+        if (is_valid_schweif_savegame_file(sg)) {
+            copy_file_overwrite(sg, lg);
+            return;
+        }
+    }
+}
+
 static void setup_save_dir(const char *gamedir) {
     init_crt_io();
-    const char *env_save = getenv("DSA_SAVE_DIR");
+    const char *env_save = g_explicit_save_dir[0] ? g_explicit_save_dir : getenv("DSA_SAVE_DIR");
     const char *env_ro   = getenv("DSA_FORCE_READONLY_GAMEDIR");
     int readonly = (env_ro && env_ro[0] == '1') ? 1 : 0;
 
-    if (!readonly && (!env_save || !env_save[0]) && gamedir && gamedir[0]) {
-        char test_path[1024];
-        snprintf(test_path, sizeof(test_path), "%s\\.schweif_wtest.tmp", gamedir);
-        int tfd = crt_open_fn(test_path, _O_WRONLY | _O_CREAT | _O_TRUNC | _O_BINARY, 0666);
-        if (tfd >= 0) {
-            crt_close_fn(tfd);
-            crt_unlink_fn(test_path);
-        } else {
+    char clean_save[1024] = "";
+    if (env_save && env_save[0]) {
+        strncpy(clean_save, env_save, sizeof(clean_save) - 1);
+        clean_save[sizeof(clean_save) - 1] = '\0';
+        size_t sl = strlen(clean_save);
+        while (sl > 3 && (clean_save[sl - 1] == '\\' || clean_save[sl - 1] == '/')) clean_save[--sl] = '\0';
+        if (is_foreign_dsa_save_dir(clean_save, gamedir)) {
+            clean_save[0] = '\0';
+        } else if (gamedir && gamedir[0] && _stricmp(clean_save, gamedir) == 0) {
+            clean_save[0] = '\0';
+        }
+    }
+
+    if (!readonly && gamedir && gamedir[0]) {
+        char sub_g[1024], sub_t[1024];
+#ifdef _WIN32
+        snprintf(sub_g, sizeof(sub_g), "%s\\GAMES", gamedir);
+        snprintf(sub_t, sizeof(sub_t), "%s\\TEMP", gamedir);
+#else
+        snprintf(sub_g, sizeof(sub_g), "%s/GAMES", gamedir);
+        snprintf(sub_t, sizeof(sub_t), "%s/TEMP", gamedir);
+#endif
+        if (!is_dir_writable_schweif(gamedir) || !is_dir_writable_schweif(sub_g) || !is_dir_writable_schweif(sub_t)) {
             readonly = 1;
         }
     }
 
-    if ((env_save && env_save[0]) || readonly) {
-        if (env_save && env_save[0]) {
-            snprintf(g_save_dir, sizeof(g_save_dir), "%s", env_save);
+    if (clean_save[0]) {
+        if (crt_mkdir_fn) crt_mkdir_fn(clean_save);
+        if (!is_dir_writable_schweif(clean_save)) {
+            clean_save[0] = '\0';
+            readonly = 1;
+        }
+    }
+
+    if (clean_save[0] || readonly) {
+        if (clean_save[0]) {
+            snprintf(g_save_dir, sizeof(g_save_dir), "%s", clean_save);
         } else {
+#ifdef _WIN32
             snprintf(g_save_dir, sizeof(g_save_dir), "%s\\Spielstaende", g_build_dir);
+#else
+            snprintf(g_save_dir, sizeof(g_save_dir), "%s/Spielstaende", g_build_dir);
+#endif
         }
         g_save_dir_redirected = 1;
-        if (readonly) g_save_dir_notice_pending = 1;
+        g_save_dir_notice_pending = 0;
 
         if (crt_mkdir_fn) {
             char sub[1024];
             crt_mkdir_fn(g_save_dir);
+#ifdef _WIN32
             snprintf(sub, sizeof(sub), "%s\\GAMES", g_save_dir);
             crt_mkdir_fn(sub);
             snprintf(sub, sizeof(sub), "%s\\TEMP", g_save_dir);
             crt_mkdir_fn(sub);
             snprintf(sub, sizeof(sub), "%s\\CTEMP", g_save_dir);
             crt_mkdir_fn(sub);
+#else
+            snprintf(sub, sizeof(sub), "%s/GAMES", g_save_dir);
+            crt_mkdir_fn(sub);
+            snprintf(sub, sizeof(sub), "%s/TEMP", g_save_dir);
+            crt_mkdir_fn(sub);
+            snprintf(sub, sizeof(sub), "%s/CTEMP", g_save_dir);
+            crt_mkdir_fn(sub);
+#endif
         }
 
         if (gamedir && gamedir[0]) {
+#ifdef _WIN32
             char pattern[1024];
             snprintf(pattern, sizeof(pattern), "%s\\GAMES\\*.*", gamedir);
             struct _finddata_t fdata;
@@ -2819,7 +3596,27 @@ static void setup_save_dir(const char *gamedir) {
                 } while (_findnext(h, &fdata) == 0);
                 _findclose(h);
             }
+#else
+            char g_games_dir[1024];
+            snprintf(g_games_dir, sizeof(g_games_dir), "%s/GAMES", gamedir);
+            dsa_resolve_existing_ci_posix(g_games_dir, sizeof(g_games_dir));
+            DIR *d = opendir(g_games_dir);
+            if (d) {
+                struct dirent64 *de;
+                while ((de = readdir64(d)) != NULL) {
+                    if (de->d_name[0] == '.') continue;
+                    char sfile[1024], dfile[1024];
+                    snprintf(sfile, sizeof(sfile), "%s/%s", g_games_dir, de->d_name);
+                    snprintf(dfile, sizeof(dfile), "%s/GAMES/%s", g_save_dir, de->d_name);
+                    copy_file_if_missing(sfile, dfile);
+                }
+                closedir(d);
+            }
+#endif
         }
+        ensure_valid_lastgame_in_dir(g_save_dir, gamedir);
+    } else if (gamedir && gamedir[0]) {
+        ensure_valid_lastgame_in_dir(gamedir, gamedir);
     }
 }
 
@@ -2835,17 +3632,17 @@ extern "C" int dsa_platform_should_play_intro(int argc, int first_start) {
 }
 
 extern "C" int dsa_platform_consume_readonly_notice(void) {
-    if (!g_save_dir_notice_pending) return 0;
     g_save_dir_notice_pending = 0;
-    const char *env_show = getenv("DSA_SHOW_READONLY_NOTICE");
-    if (g_has_replay && !(env_show && env_show[0] == '1')) return 0;
-    return 1;
+    return 0;
 }
 
 int main(int argc, char **argv) {
+#ifdef _WIN32
     FreeConsole();
+#endif
     init_crt_io();
     char exe_path[1024];
+#ifdef _WIN32
     uint32_t len = GetModuleFileNameA(NULL, exe_path, sizeof(exe_path));
     if (len > 0 && len < sizeof(exe_path)) {
         char *slash = strrchr(exe_path, '\\');
@@ -2861,6 +3658,22 @@ int main(int argc, char **argv) {
     }
 
     AddVectoredExceptionHandler(1, schweif_exception_filter);
+#else
+    ssize_t len = readlink("/proc/self/exe", exe_path, sizeof(exe_path) - 1);
+    if (len > 0) {
+        exe_path[len] = '\0';
+        char *slash = strrchr(exe_path, '/');
+        if (slash) {
+            *slash = '\0';
+            snprintf(g_build_dir, sizeof(g_build_dir), "%s", exe_path);
+            snprintf(g_absturz_path, sizeof(g_absturz_path), "%s/absturz.log", g_build_dir);
+            snprintf(g_abspann_path, sizeof(g_abspann_path), "%s/abspann.log", g_build_dir);
+            snprintf(g_stubs_path, sizeof(g_stubs_path), "%s/stubs.log", g_build_dir);
+            snprintf(g_abdeckung_path, sizeof(g_abdeckung_path), "%s/abdeckung.tsv", g_build_dir);
+        }
+    }
+    install_posix_crash_handlers();
+#endif
 
     const char *cov_env = getenv("DSA_ABDECKUNG");
     if (cov_env && cov_env[0] == '1') {
@@ -2894,8 +3707,11 @@ int main(int argc, char **argv) {
             g_no_intro = 1;
         } else if (strcmp(argv[i], "--intro") == 0) {
             g_force_intro = 1;
+        } else if (strcmp(argv[i], "--test-crash") == 0) {
+            volatile int *p = (volatile int *)(uintptr_t)0x0;
+            *p = 42;
         } else if (strcmp(argv[i], "--savedir") == 0 && i + 1 < argc) {
-            ++i;
+            snprintf(g_explicit_save_dir, sizeof(g_explicit_save_dir), "%s", argv[++i]);
         } else if (strncmp(argv[i], "--", 2) == 0) {
             /* Starter-/Anzeigeoptionen (--fenster=*, --skalierung=*, --vollbild, --fenstermodus) nicht an dsa_game_main durchreichen */
         } else if (game_argc < 31) {
@@ -2905,11 +3721,21 @@ int main(int argc, char **argv) {
     game_argv[game_argc] = NULL;
 
     {
+#ifdef _WIN32
+        timeBeginPeriod(1);
+#endif
         const char *wd_env = getenv("DSA_WATCHDOG_MS");
-        uint32_t wd_ms = (wd_env && wd_env[0]) ? (uint32_t)atoi(wd_env) : (has_replay ? 25000u : 0u);
+        uint32_t wd_ms = (wd_env && wd_env[0]) ? (uint32_t)atoi(wd_env) : (has_replay ? 60000u : 0u);
         if (wd_ms > 0) {
+#ifdef _WIN32
             void *hThread = CreateThread(NULL, 0, dsa_watchdog_thread_proc, (void *)(uintptr_t)wd_ms, 0, NULL);
             if (hThread) CloseHandle(hThread);
+#else
+            pthread_t tid;
+            if (pthread_create(&tid, NULL, dsa_posix_watchdog_thread_proc, (void *)(uintptr_t)wd_ms) == 0) {
+                pthread_detach(tid);
+            }
+#endif
         }
     }
 
@@ -2939,5 +3765,22 @@ int main(int argc, char **argv) {
 
     return dsa_game_main(game_argc, game_argv);
 }
+
+#ifndef _WIN32
+unsigned int _rotl(unsigned int val, int shift) {
+    unsigned int s = (unsigned int)shift & 31u;
+    return s ? ((val << s) | (val >> (32u - s))) : val;
+}
+unsigned int _rotr(unsigned int val, int shift) {
+    unsigned int s = (unsigned int)shift & 31u;
+    return s ? ((val >> s) | (val << (32u - s))) : val;
+}
+unsigned long _lrotl(unsigned long val, int shift) {
+    return (unsigned long)_rotl((unsigned int)val, shift);
+}
+unsigned long _lrotr(unsigned long val, int shift) {
+    return (unsigned long)_rotr((unsigned int)val, shift);
+}
+#endif
 
 } /* extern "C" */

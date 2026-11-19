@@ -1,7 +1,9 @@
 #ifndef DSA_COMPAT_DOS_H
 #define DSA_COMPAT_DOS_H
 
+#ifdef _WIN32
 #include_next <dos.h>
+#endif
 #include <stdint.h>
 
 #ifdef __cplusplus

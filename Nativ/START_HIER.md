@@ -17,7 +17,7 @@ Je nach gewünschter Bugfix-Stufe eine der Startdateien doppelklicken:
 ### Automatische Spielordner-Suche (`SPIELPFAD.txt`)
 1. Beim ersten Start sucht das Skript automatisch nach deiner Installation (u. a. unter `C:\GOG Games\Realms of Arkania 2` und `C:\Program Files (x86)\GOG Galaxy\Games\Realms of Arkania 2`).
 2. Wird der Ordner nicht automatisch gefunden, fragt das Skript einmalig nach dem Pfad und speichert ihn in `SPIELPFAD.txt`.
-3. **Schreibschutz-Absicherung:** Ist der Spielordner schreibgeschützt (z. B. unter `C:\Program Files (x86)\...`), legt der Port automatisch den Ordner `Spielstaende\` neben der Programmdatei an, leitet Spielstände (`GAMES\`, `TEMP\`) sowie `PROBEN.CSV` dorthin um und zeigt beim Start einmalig einen Hinweis im Spiel an.
+3. **Schreibschutz-Absicherung:** Ist der Spielordner schreibgeschützt (z. B. unter `C:\Program Files (x86)\...`), legt der Port automatisch den Ordner `Spielstaende\` neben der Programmdatei an, leitet Spielstände (`GAMES\`, `TEMP\`) sowie `PROBEN.CSV` dorthin um.
 
 ## Vorspann (Intro)
 - Der originale Sternenschweif-Vorspann (FLI-Animationen + 2D/Wellen-Szenen synchron zur CD-Musik `Track09.ogg`) läuft beim Spielstart automatisch.

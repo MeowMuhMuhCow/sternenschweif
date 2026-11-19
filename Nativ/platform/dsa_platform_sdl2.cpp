@@ -3,7 +3,11 @@
  * der Nordlandtrilogie-Ports fuer DSA 2: Sternenschweif.
  */
 #define SDL_MAIN_HANDLED
+#ifdef _WIN32
 #include <SDL.h>
+#else
+#include <SDL2/SDL.h>
+#endif
 
 #include "dsa_platform.h"
 
@@ -26,6 +30,14 @@
 #include <strings.h>
 #define STRICMP  strcasecmp
 #define STRNICMP strncasecmp
+#define _getcwd  getcwd
+static inline int  SDL_PortUsingExternalDLL(void) { return 1; }
+static inline void SDL_SetWindowViewport(SDL_Window *w, int vx, int vy, int vw, int vh) {
+    (void)w; (void)vx; (void)vy; (void)vw; (void)vh;
+}
+static inline void SDL_SetFullscreenOverrideRes(int w, int h) {
+    (void)w; (void)h;
+}
 #endif
 
 static SDL_Window   *g_window      = NULL;
@@ -74,6 +86,7 @@ static void (*g_tick_hook)(void) = NULL;
 static int g_in_tick_hook = 0;
 
 static char g_gamedir[1024] = "C:\\Program Files (x86)\\GOG Galaxy\\Games\\Realms of Arkania 2";
+static int  g_gamedir_explicit = 0;
 static char g_launch_cwd[1024] = "";
 
 /* W4: Aufzeichnung (--record) & Wiedergabe (--replay) */
@@ -148,10 +161,29 @@ static void push_key(uint16_t code) {
 
 static void write_bmp_320x200(const char *path, const uint32_t *argb) {
     char resolved[1024];
+#ifdef _WIN32
     if (g_launch_cwd[0] && path && !(isalpha((unsigned char)path[0]) && path[1] == ':') && path[0] != '\\' && path[0] != '/') {
         snprintf(resolved, sizeof(resolved), "%s\\%s", g_launch_cwd, path);
         path = resolved;
     }
+#else
+    const char *shot_dir = getenv("DSA_SCREENSHOT_DIR");
+    if (shot_dir && shot_dir[0] && path) {
+        const char *b1 = strrchr(path, '/');
+        const char *b2 = strrchr(path, '\\');
+        const char *base = (b1 && b2) ? ((b1 > b2) ? b1 + 1 : b2 + 1) : (b1 ? b1 + 1 : (b2 ? b2 + 1 : path));
+        snprintf(resolved, sizeof(resolved), "%s/%s", shot_dir, base);
+        path = resolved;
+    } else if (path && isalpha((unsigned char)path[0]) && path[1] == ':' && (path[2] == '\\' || path[2] == '/')) {
+        snprintf(resolved, sizeof(resolved), "/mnt/%c/%s", tolower((unsigned char)path[0]), path + 3);
+        for (char *q = resolved; *q; ++q) if (*q == '\\') *q = '/';
+        path = resolved;
+    } else if (g_launch_cwd[0] && path && path[0] != '/') {
+        snprintf(resolved, sizeof(resolved), "%s/%s", g_launch_cwd, path);
+        for (char *q = resolved; *q; ++q) if (*q == '\\') *q = '/';
+        path = resolved;
+    }
+#endif
     FILE *fp = fopen(path, "wb");
     if (!fp) return;
     const int w = DSA_SCREEN_W, h = DSA_SCREEN_H;
@@ -258,11 +290,99 @@ static uint16_t sdl_to_bios_key(SDL_Keysym sym) {
     return (uint16_t)((scan << 8) | ascii);
 }
 
+#ifndef _WIN32
+static void dsa_resolve_existing_ci_internal(char *full_path, size_t max_len) {
+    if (!full_path || !full_path[0] || access(full_path, F_OK) == 0) return;
+    char built[1024];
+    size_t bi = 0;
+    const char *p = full_path;
+    if (*p == '/') {
+        built[bi++] = '/';
+        built[bi] = '\0';
+        while (*p == '/') ++p;
+    } else {
+        built[0] = '\0';
+    }
+    while (*p) {
+        const char *slash = strchr(p, '/');
+        size_t clen = slash ? (size_t)(slash - p) : strlen(p);
+        if (clen == 0) {
+            if (slash) { p = slash + 1; continue; }
+            break;
+        }
+        char comp[256];
+        if (clen >= sizeof(comp)) clen = sizeof(comp) - 1;
+        memcpy(comp, p, clen);
+        comp[clen] = '\0';
+
+        char candidate[1024];
+        if (bi == 0) snprintf(candidate, sizeof(candidate), "%s", comp);
+        else if (bi == 1 && built[0] == '/') snprintf(candidate, sizeof(candidate), "/%s", comp);
+        else snprintf(candidate, sizeof(candidate), "%s/%s", built, comp);
+
+        if (access(candidate, F_OK) != 0) {
+            const char *dir_to_open = (bi == 0) ? "." : built;
+            DIR *d = opendir(dir_to_open);
+            if (d) {
+                struct dirent64 *de;
+                while ((de = readdir64(d)) != NULL) {
+                    if (strcasecmp(de->d_name, comp) == 0) {
+                        if (bi == 0) snprintf(candidate, sizeof(candidate), "%s", de->d_name);
+                        else if (bi == 1 && built[0] == '/') snprintf(candidate, sizeof(candidate), "/%s", de->d_name);
+                        else snprintf(candidate, sizeof(candidate), "%s/%s", built, de->d_name);
+                        break;
+                    }
+                }
+                closedir(d);
+            }
+        }
+        strncpy(built, candidate, sizeof(built) - 1);
+        built[sizeof(built) - 1] = '\0';
+        bi = strlen(built);
+        if (slash) {
+            p = slash + 1;
+            while (*p == '/') ++p;
+        } else {
+            break;
+        }
+    }
+    strncpy(full_path, built, max_len - 1);
+    full_path[max_len - 1] = '\0';
+}
+
+static int has_stardat_in_dir(const char *dir) {
+    if (!dir || !dir[0]) return 0;
+    char p1[1024], p2[1024];
+    snprintf(p1, sizeof(p1), "%s/DATA/STAR.DAT", dir);
+    dsa_resolve_existing_ci_internal(p1, sizeof(p1));
+    if (access(p1, F_OK) == 0) return 1;
+    snprintf(p2, sizeof(p2), "%s/STAR.DAT", dir);
+    dsa_resolve_existing_ci_internal(p2, sizeof(p2));
+    return access(p2, F_OK) == 0;
+}
+#endif
+
+#ifdef _WIN32
+static int has_stardat_in_dir(const char *dir) {
+    if (!dir || !dir[0]) return 0;
+    char p[1024];
+    snprintf(p, sizeof(p), "%s\\DATA\\STAR.DAT", dir);
+    if (_access(p, 0) == 0) return 1;
+    snprintf(p, sizeof(p), "%s\\STAR.DAT", dir);
+    if (_access(p, 0) == 0) return 1;
+    snprintf(p, sizeof(p), "%s\\SCHWEIF.EXE", dir);
+    return _access(p, 0) == 0;
+}
+#endif
+
 static void try_load_spielpfad(void) {
+    if (g_gamedir_explicit && has_stardat_in_dir(g_gamedir)) return;
     const char *env_dir = getenv("DSA_GAMEDIR");
+    if (!env_dir || !env_dir[0]) env_dir = getenv("DSA_GAME_DIR");
+    if (!env_dir || !env_dir[0]) env_dir = getenv("SPIELPFAD");
     if (env_dir && env_dir[0]) {
         dsa_platform_set_gamedir(env_dir);
-        return;
+        if (has_stardat_in_dir(g_gamedir)) return;
     }
     const char *candidates[] = {
         "SPIELPFAD.txt",
@@ -290,9 +410,52 @@ static void try_load_spielpfad(void) {
                 }
             }
             fclose(f);
+#ifdef _WIN32
+            return;
+#else
+            if (has_stardat_in_dir(g_gamedir)) return;
+            break;
+#endif
+        }
+    }
+#ifndef _WIN32
+    dsa_platform_set_gamedir(g_gamedir);
+    if (has_stardat_in_dir(g_gamedir)) return;
+    if (has_stardat_in_dir(".")) { dsa_platform_set_gamedir("."); return; }
+    if (has_stardat_in_dir("..")) { dsa_platform_set_gamedir(".."); return; }
+    const char *home = getenv("HOME");
+    if (home && home[0]) {
+        const char *rel_dirs[] = {
+            "GOG Games/Realms of Arkania 2",
+            "GOG Games/Das Schwarze Auge - Sternenschweif",
+            "GOG Games/Sternenschweif",
+            ".local/share/Steam/steamapps/common/Realms of Arkania 2",
+            ".local/share/Steam/steamapps/common/Realms of Arkania - Star Trail Classic",
+            "Games/gog/realms-of-arkania-2",
+            "Games/Heroic/Realms of Arkania 2",
+            NULL
+        };
+        for (int i = 0; rel_dirs[i]; ++i) {
+            char cand[1024];
+            snprintf(cand, sizeof(cand), "%s/%s", home, rel_dirs[i]);
+            if (has_stardat_in_dir(cand)) {
+                dsa_platform_set_gamedir(cand);
+                return;
+            }
+        }
+    }
+    const char *sys_dirs[] = {
+        "/usr/local/share/sternenschweif",
+        "/usr/share/games/sternenschweif",
+        NULL
+    };
+    for (int i = 0; sys_dirs[i]; ++i) {
+        if (has_stardat_in_dir(sys_dirs[i])) {
+            dsa_platform_set_gamedir(sys_dirs[i]);
             return;
         }
     }
+#endif
 }
 
 static void dsa_parse_fenster_token(const char *val) {
@@ -598,7 +761,7 @@ int dsa_platform_init(const char *title, int scale) {
 
     try_load_spielpfad();
 
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS) != 0) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER | SDL_INIT_EVENTS) != 0) {
         fprintf(stderr, "[DSA-Platform] SDL_Init fehlgeschlagen: %s\n", SDL_GetError());
         return -1;
     }
@@ -613,7 +776,11 @@ int dsa_platform_init(const char *title, int scale) {
         win_flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
     }
     g_window = SDL_CreateWindow(
+#ifdef _WIN32
         title ? title : "DSA 2: Sternenschweif (Windows Port)",
+#else
+        title ? title : "DSA 2: Sternenschweif",
+#endif
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         win_w, win_h,
         win_flags
@@ -809,22 +976,30 @@ void dsa_platform_present(void) {
         }
     }
 
-    int cw = 320 * g_fenster_faktor;
-    int ch = 240 * g_fenster_faktor;
-    if (g_window) {
-        SDL_GetWindowSize(g_window, &cw, &ch);
-    }
-    dsa_render_scaled_display_buffer(cw, ch);
-    if (g_display_tex && g_display_buf) {
-        SDL_UpdateTexture(g_display_tex, NULL, g_display_buf, g_display_w * (int)sizeof(uint32_t));
-        SDL_RenderClear(g_renderer);
-        SDL_RenderCopy(g_renderer, g_display_tex, NULL, NULL);
-        SDL_RenderPresent(g_renderer);
-    } else {
-        SDL_UpdateTexture(g_texture, NULL, g_argb_buf, DSA_SCREEN_W * (int)sizeof(uint32_t));
-        SDL_RenderClear(g_renderer);
-        SDL_RenderCopy(g_renderer, g_texture, NULL, NULL);
-        SDL_RenderPresent(g_renderer);
+#ifndef _WIN32
+    const char *vdrv = getenv("SDL_VIDEODRIVER");
+    int is_dummy_video = (vdrv && strcmp(vdrv, "dummy") == 0);
+#else
+    int is_dummy_video = 0;
+#endif
+    if (!is_dummy_video) {
+        int cw = 320 * g_fenster_faktor;
+        int ch = 240 * g_fenster_faktor;
+        if (g_window) {
+            SDL_GetWindowSize(g_window, &cw, &ch);
+        }
+        dsa_render_scaled_display_buffer(cw, ch);
+        if (g_display_tex && g_display_buf) {
+            SDL_UpdateTexture(g_display_tex, NULL, g_display_buf, g_display_w * (int)sizeof(uint32_t));
+            SDL_RenderClear(g_renderer);
+            SDL_RenderCopy(g_renderer, g_display_tex, NULL, NULL);
+            SDL_RenderPresent(g_renderer);
+        } else {
+            SDL_UpdateTexture(g_texture, NULL, g_argb_buf, DSA_SCREEN_W * (int)sizeof(uint32_t));
+            SDL_RenderClear(g_renderer);
+            SDL_RenderCopy(g_renderer, g_texture, NULL, NULL);
+            SDL_RenderPresent(g_renderer);
+        }
     }
     g_last_present_ms = SDL_GetTicks();
     g_idle_polls = 0;
@@ -833,6 +1008,9 @@ void dsa_platform_present(void) {
 void dsa_platform_wait_vsync(void) {
     const char *fast = getenv("DSA_FAST_VSYNC");
     g_virtual_ms += (fast && fast[0] == '1') ? 2u : 14u;
+#ifndef _WIN32
+    g_last_present_ms = SDL_GetTicks();
+#endif
     dsa_platform_poll_events();
     dsa_platform_present();
     if (!g_replay_active) {
@@ -1078,8 +1256,23 @@ void dsa_platform_delay_ms(uint32_t ms) {
 
 void dsa_platform_set_gamedir(const char *path) {
     if (!path || !path[0]) return;
+    g_gamedir_explicit = 1;
+#ifndef _WIN32
+    if (isalpha((unsigned char)path[0]) && path[1] == ':' && (path[2] == '\\' || path[2] == '/')) {
+        snprintf(g_gamedir, sizeof(g_gamedir), "/mnt/%c/%s", tolower((unsigned char)path[0]), path + 3);
+        for (char *p = g_gamedir; *p; ++p) if (*p == '\\') *p = '/';
+        size_t l = strlen(g_gamedir);
+        while (l > 1 && (g_gamedir[l - 1] == '/' || g_gamedir[l - 1] == '\\')) g_gamedir[--l] = '\0';
+        return;
+    }
+#endif
     strncpy(g_gamedir, path, sizeof(g_gamedir) - 1);
     g_gamedir[sizeof(g_gamedir) - 1] = '\0';
+#ifndef _WIN32
+    for (char *p = g_gamedir; *p; ++p) if (*p == '\\') *p = '/';
+#endif
+    size_t l = strlen(g_gamedir);
+    while (l > 3 && (g_gamedir[l - 1] == '/' || g_gamedir[l - 1] == '\\')) g_gamedir[--l] = '\0';
 }
 
 const char *dsa_platform_get_gamedir(void) {
@@ -1088,6 +1281,16 @@ const char *dsa_platform_get_gamedir(void) {
 
 int dsa_platform_resolve_path(const char *dos_path, char *out_path, size_t out_size) {
     if (!dos_path || !out_path || out_size == 0) return -1;
+
+#ifndef _WIN32
+    if (dos_path[0] == '/' && strncmp(dos_path, g_gamedir, strlen(g_gamedir)) == 0) {
+        strncpy(out_path, dos_path, out_size - 1);
+        out_path[out_size - 1] = '\0';
+        for (char *p = out_path; *p; ++p) if (*p == '\\') *p = '/';
+        dsa_resolve_existing_ci_internal(out_path, out_size);
+        return 0;
+    }
+#endif
 
     const char *rel = dos_path;
     if (isalpha((unsigned char)rel[0]) && rel[1] == ':') {
@@ -1114,6 +1317,7 @@ int dsa_platform_resolve_path(const char *dos_path, char *out_path, size_t out_s
     snprintf(out_path, out_size, "%s\\%s", g_gamedir, clean);
 #else
     snprintf(out_path, out_size, "%s/%s", g_gamedir, clean);
+    dsa_resolve_existing_ci_internal(out_path, out_size);
 #endif
     return 0;
 }

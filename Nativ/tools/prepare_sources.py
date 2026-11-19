@@ -11,9 +11,12 @@ import re
 import glob
 import shutil
 
-ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+PORT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.path.dirname(PORT_DIR)
+if not os.path.exists(os.path.join(ROOT, "Quelle", "SEG001.CPP")):
+    ROOT = os.path.dirname(ROOT)
 QUELLE = os.path.join(ROOT, "Quelle")
-PORT_SRC = os.path.join(ROOT, "Port", "src")
+PORT_SRC = os.path.join(PORT_DIR, "src")
 
 
 def read_latin1(path):
@@ -74,6 +77,21 @@ void dsa_log_stub(const char *func_name);
 void dsa_log_guru_meditation(const char *msg, const void *ptr);
 uint32_t dsa_platform_init_seed(uint32_t default_seed);
 extern unsigned char *g_port_shade_base;
+#ifndef _WIN32
+char *itoa(int value, char *str, int base);
+char *ltoa(long value, char *str, int base);
+char *ultoa(unsigned long value, char *str, int base);
+char *strupr(char *s);
+char *strlwr(char *s);
+int stricmp(const char *a, const char *b);
+int strnicmp(const char *a, const char *b, size_t n);
+#define _stricmp stricmp
+#define _strnicmp strnicmp
+unsigned int _rotl(unsigned int val, int shift);
+unsigned int _rotr(unsigned int val, int shift);
+unsigned long _lrotl(unsigned long val, int shift);
+unsigned long _lrotr(unsigned long val, int shift);
+#endif
 #ifdef __cplusplus
 }
 #endif
@@ -392,20 +410,16 @@ def transform_source(rel_path, txt):
             "\tif (g_mouse_lclick || g_mouse_rclick) {\n\t\tg_mouse_lclick = 0;\n\t\tg_mouse_rclick = 0;\n\t\tdone = 1;\n\t\tkey = KEY_ESC;\n\t} else if (bioskey(1)) {"
         )
 
-    # 14. OVL032.CPP: main -> dsa_game_main, dos_files_total, W4 Replay-Seed, B1 Intro, B4 Schreibschutz-Hinweis
+    # 14. OVL032.CPP: main -> dsa_game_main, dos_files_total, W4 Replay-Seed, B1 Intro
     elif base == "OVL032.CPP":
         txt = txt.replace(
             "void main(register int argc, char **argv)",
-            'extern "C" int dsa_platform_should_play_intro(int argc, int first_start);\nextern "C" int dsa_platform_consume_readonly_notice(void);\nextern "C" int dsa_game_main(int argc, char **argv)'
+            'extern "C" int dsa_platform_should_play_intro(int argc, int first_start);\nextern "C" int dsa_game_main(int argc, char **argv)'
         )
         txt = txt.replace("srand(time(0));", "srand(dsa_platform_init_seed((uint32_t)time(0)));")
         txt = txt.replace(
             "\t\tif ((argc > 1 && (argv[1][0] == '-' || argv[1][0] == '/')) || (g_first_start != 0 && argc <= 1)) {",
             "\t\tif ((argc > 1 && (argv[1][0] == '-' || argv[1][0] == '/')) || dsa_platform_should_play_intro(argc, g_first_start)) {"
-        )
-        txt = txt.replace(
-            "\t\t\tmain_loop();",
-            '\t\t\tif (dsa_platform_consume_readonly_notice()) {\n\t\t\t\tdlg_message(g_dialog, (char *)"Hinweis: Der Spielordner ist schreibgesch\\x81tzt.@Spielst\\x84nde und PROBEN.CSV werden im Ordner@<Spielstaende> neben der Programmdatei gespeichert.");\n\t\t\t}\n\t\t\tmain_loop();'
         )
         txt = replace_func_body(txt, r"^signed short dos_files_total\([^)]*\)\s*\{", "    return 40;")
 

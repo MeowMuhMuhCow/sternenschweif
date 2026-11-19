@@ -20,7 +20,6 @@ static DWORD g_autoquit_ms = 0;
 static int dsa_is_headless_run(void) {
     if ((getenv("DSA_PORT_AUTOTEST") && getenv("DSA_PORT_AUTOTEST")[0] == '1') ||
         (getenv("SCHICK_PORT_AUTOTEST") && getenv("SCHICK_PORT_AUTOTEST")[0] == '1') ||
-        (getenv("RIVA_PORT_AUTOTEST") && getenv("RIVA_PORT_AUTOTEST")[0] == '1') ||
         (getenv("DSA_HIDDEN") && getenv("DSA_HIDDEN")[0] == '1') ||
         (getenv("SCHICK_PORT_HIDDEN") && getenv("SCHICK_PORT_HIDDEN")[0] == '1')) {
         return 1;
@@ -437,7 +436,8 @@ int SDL_Init(Uint32 flags) {
             CreateThread(NULL, 0, dsa_autoquit_thread, (LPVOID)(uintptr_t)g_autoquit_ms, 0, NULL);
         }
     }
-    g_start_ticks = GetTickCount();
+    timeBeginPeriod(1);
+    g_start_ticks = timeGetTime();
     if (!g_sdl_dll) {
         g_sdl_dll = LoadLibraryA("SDL2.dll");
         if (g_sdl_dll) {
@@ -889,7 +889,7 @@ int SDL_ShowCursor(int toggle) {
 }
 
 Uint32 SDL_GetTicks(void) {
-    Uint32 elapsed = (Uint32)(GetTickCount() - g_start_ticks);
+    Uint32 elapsed = (Uint32)(timeGetTime() - g_start_ticks);
     if (g_autoquit_ms > 0 && elapsed >= g_autoquit_ms) {
         ExitProcess(0);
     }

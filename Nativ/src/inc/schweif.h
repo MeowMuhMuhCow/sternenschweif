@@ -58,6 +58,21 @@ void dsa_log_stub(const char *func_name);
 void dsa_log_guru_meditation(const char *msg, const void *ptr);
 uint32_t dsa_platform_init_seed(uint32_t default_seed);
 extern unsigned char *g_port_shade_base;
+#ifndef _WIN32
+char *itoa(int value, char *str, int base);
+char *ltoa(long value, char *str, int base);
+char *ultoa(unsigned long value, char *str, int base);
+char *strupr(char *s);
+char *strlwr(char *s);
+int stricmp(const char *a, const char *b);
+int strnicmp(const char *a, const char *b, size_t n);
+#define _stricmp stricmp
+#define _strnicmp strnicmp
+unsigned int _rotl(unsigned int val, int shift);
+unsigned int _rotr(unsigned int val, int shift);
+unsigned long _lrotl(unsigned long val, int shift);
+unsigned long _lrotr(unsigned long val, int shift);
+#endif
 #ifdef __cplusplus
 }
 #endif

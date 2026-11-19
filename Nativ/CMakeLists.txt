@@ -118,6 +118,8 @@ target_link_options(SCHWEIF_PORT PRIVATE
     -Wl,--wrap=chdir
     -Wl,--wrap=_mkdir
     -Wl,--wrap=mkdir
+    -Wl,--wrap=font_print_wrapped
+    -Wl,--wrap=random_schweif
     "${CMAKE_CURRENT_SOURCE_DIR}/build/data_aliases.ld"
 )
 

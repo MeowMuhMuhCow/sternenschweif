@@ -1,8 +1,13 @@
 #ifndef DSA_COMPAT_DIR_H
 #define DSA_COMPAT_DIR_H
 
+#ifdef _WIN32
 #include <io.h>
 #include <direct.h>
+#else
+#include <io.h>
+#include <direct.h>
+#endif
 #include <stdint.h>
 
 #ifdef __cplusplus
@@ -23,6 +28,7 @@ extern "C" {
 #define FA_ARCH   0x20
 #endif
 
+#pragma pack(push, 1)
 struct ffblk {
     char ff_reserved[21];
     char ff_attrib;
@@ -31,6 +37,7 @@ struct ffblk {
     long ff_fsize;
     char ff_name[13];
 };
+#pragma pack(pop)
 
 int dsa_findfirst(const char *pathname, struct ffblk *ffblk, int attrib);
 int dsa_findnext(struct ffblk *ffblk);

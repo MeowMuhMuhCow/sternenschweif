@@ -1,0 +1,46 @@
+===========================================================================
+Das Schwarze Auge: Sternenschweif — Nativer Linux-Port (x86 / 32-Bit ELF)
+===========================================================================
+
+1. VORAUSSETZUNGEN
+------------------
+- Original-Spieldateien der deutschen Version C1.02de (z. B. aus der
+  GOG-Version "Realms of Arkania 2: Star Trail", Steam, Lutris oder Heroic).
+  Gross-/Kleinschreibung der Spieldateien (DATA/STAR.DAT, gamea.gog, gameb.gog,
+  MUSIC/Track*.ogg) spielt unter Linux keine Rolle.
+- Linux x86_64 (mit 32-Bit-Laufzeitbibliotheken libc6:i386 / libstdc++6:i386;
+  libSDL2-2.0.so.0 liegt unter lib/ bei) sowie Python 3 (optional python3-tk
+  fuer das grafische Probenlog-Fenster).
+
+2. SPIELPFAD
+------------
+Das Startskript sucht die Spieldaten automatisch in:
+- dem als ersten Parameter uebergebenen Ordner,
+- dem Pfad in SPIELPFAD.txt,
+- ~/GOG Games/Realms of Arkania 2,
+- ~/.local/share/Steam/steamapps/common/Realms of Arkania 2,
+- ~/Games/gog/realms-of-arkania-2 und ~/Games/Heroic/Realms of Arkania 2.
+
+Alternativ kann der Pfad direkt uebergeben werden:
+  ./Sternenschweif_starten_ALLE_FIXES.sh "/pfad/zu/Realms of Arkania 2"
+
+3. VIER STUFEN & PROBENLOG
+--------------------------
+Im Paket liegen alle 4 Stufen als native Linux-ELF-Programme samt Startskripten:
+- ./Sternenschweif_starten_STANDARD.sh                 (SCHWEIF_PORT = Alle Fixes)
+- ./Sternenschweif_starten_ALLE_FIXES.sh               (SCHWEIF_PORT_ALLES, FIX_BUGS=2)
+- ./Sternenschweif_starten_ALLE_FIXES_MIT_PROBENLOG.sh (mit Live-Probenlog-Fenster)
+- ./Sternenschweif_starten_WICHTIGE_FIXES.sh           (SCHWEIF_PORT_WICHTIG, FIX_BUGS=1)
+- ./Sternenschweif_starten_WICHTIGE_FIXES_MIT_PROBENLOG.sh (mit Live-Probenlog-Fenster)
+- ./Sternenschweif_starten_ORIGINAL.sh                 (SCHWEIF_PORT_ORIG, FIX_BUGS=0)
+
+Bei den *_MIT_PROBENLOG.sh-Skripten oeffnet sich automatisch das Python-Fenster
+(Probenlog/probenlog_fenster.py), das alle Talent-, Zauber-, Eigenschafts- und
+Kampfproben live aus PROBEN.CSV im Klartext anzeigt.
+
+4. TASTENKUERZEL & OPTIONEN
+---------------------------
+- Alt+Enter : Zwischen Vollbild und Fenstermodus umschalten
+- Tab       : Fenstergroesse (2x..5x) durchschalten
+- F11 / F12 : Musiklautstaerke leiser / lauter (mit Strg: Effektlautstaerke)
+- --fenstermodus / --vollbild / --fenster=3 / --skalierung=ganzzahlig

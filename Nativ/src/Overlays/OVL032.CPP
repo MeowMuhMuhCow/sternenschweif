@@ -23,7 +23,6 @@
  *   (Namensfassung mit schweif.h, Welle N20: 19.10.2026 GLEICH, LINKGLEICH)
  *   Ohne -Og 6 Bytes zu lang, -Oi falsch (strcpy/strcat sind Aufrufe).
  * - C++: Public _main = "extern "C" int dsa_platform_should_play_intro(int argc, int first_start);
-extern "C" int dsa_platform_consume_readonly_notice(void);
 extern "C" int dsa_game_main(int argc, char **argv)" (argc in SI, fd ohne register -> DI).
  * - Eigene Funktionen weiter unten -> far call (main zuerst), game_free_all ruft free_swap_handles -> push cs / call near.
  * - globals_ctor/globals_dtor im Original vom Compiler erzeugt; hier normale Funktionen, Konstruktoren als Funktionen mit
@@ -70,7 +69,6 @@ extern "C" int dsa_game_main(int argc, char **argv)" (argc in SI, fd ohne regist
 void far *_vector_new_(void far *p, unsigned size, unsigned long n, unsigned mode, ...);	/* Laufzeitbibliothek */
 
 extern "C" int dsa_platform_should_play_intro(int argc, int first_start);
-extern "C" int dsa_platform_consume_readonly_notice(void);
 extern "C" int dsa_game_main(int argc, char **argv)
 {
 	signed short fd;
@@ -179,9 +177,6 @@ extern "C" int dsa_game_main(int argc, char **argv)
 			}
 			mouse_show(0);
 			g_status_on = 1;
-			if (dsa_platform_consume_readonly_notice()) {
-				dlg_message(g_dialog, (char *)"Hinweis: Der Spielordner ist schreibgesch\x81tzt.@Spielst\x84nde und PROBEN.CSV werden im Ordner@<Spielstaende> neben der Programmdatei gespeichert.");
-			}
 			main_loop();
 		}
 		cleanup_game(0);

@@ -73,6 +73,8 @@ WRAP_FLAGS = [
     "-Wl,--wrap=_unlink", "-Wl,--wrap=unlink",
     "-Wl,--wrap=_chdir", "-Wl,--wrap=chdir",
     "-Wl,--wrap=_mkdir", "-Wl,--wrap=mkdir",
+    "-Wl,--wrap=font_print_wrapped",
+    "-Wl,--wrap=random_schweif",
 ]
 
 
@@ -83,12 +85,16 @@ def get_mingw_env() -> dict[str, str]:
     return env
 
 
-def strip_data_align(asm_path: Path) -> None:
+def strip_data_align(asm_path: Path, is_linux: bool = False) -> None:
     asm_txt = asm_path.read_text(encoding="latin-1")
     out_lines: list[str] = []
     in_data_or_bss = False
     for line in asm_txt.splitlines(True):
         s = line.strip()
+        if is_linux and (s.startswith(".section\t.rodata") or s.startswith(".section .rodata") or s == ".rodata"):
+            in_data_or_bss = False
+            out_lines.append('\t.section\t.wrodata,"aw",@progbits\n')
+            continue
         if s.startswith(".data") or s.startswith(".bss"):
             in_data_or_bss = True
         elif s.startswith(".text") or s.startswith(".section"):
@@ -124,30 +130,53 @@ def patch_pe_rdata_writable(exe_path: Path) -> None:
         time.sleep(0.3)
 
 
-def build_stufe(fix_bugs: int, exe_name: str, extra_defines: list[str], copy_to_default: bool) -> Path:
-    env = get_mingw_env()
+def build_stufe(
+    fix_bugs: int,
+    exe_name: str,
+    extra_defines: list[str],
+    copy_to_default: bool,
+    is_linux: bool = False,
+    arch_flag: str = "-m32",
+) -> Path:
+    env = os.environ.copy() if is_linux else get_mingw_env()
+    cc = "gcc" if is_linux else "gcc.exe"
+    cxx = "g++" if is_linux else "g++.exe"
+    if is_linux and exe_name.endswith(".EXE"):
+        exe_name = exe_name[:-4]
+    port_rel = PORT_DIR.relative_to(ROOT_DIR).as_posix()
     build_dir = PORT_DIR / "build"
-    obj_dir = build_dir / ("objs" if fix_bugs == 2 and not extra_defines else f"objs_fix{fix_bugs}")
+    if is_linux:
+        arch_tag = "_64" if arch_flag == "-m64" else ""
+        ref_obj_dir = build_dir / f"objs_linux{arch_tag}"
+        obj_dir = build_dir / (f"objs_linux{arch_tag}" if fix_bugs == 2 and not extra_defines else f"objs_linux{arch_tag}_fix{fix_bugs}")
+    else:
+        ref_obj_dir = build_dir / "objs"
+        obj_dir = build_dir / ("objs" if fix_bugs == 2 and not extra_defines else f"objs_fix{fix_bugs}")
     obj_dir.mkdir(parents=True, exist_ok=True)
 
     def_flags = [f"-DFIX_BUGS={fix_bugs}", "-DPORT_SKIP_COPYPROT=1"] + extra_defines
     inc_flags = [
-        "-IPort/platform/compat",
-        "-IPort/platform",
-        "-IPort/src/inc",
-        "-IPort/src",
-        "-IPort/third_party/SDL2/include",
-        "-IPort/third_party/SDL2/include/SDL2",
-        "-IPort/third_party/stb_vorbis",
+        f"-I{port_rel}/platform/compat",
+        f"-I{port_rel}/platform",
+        f"-I{port_rel}/src/inc",
+        f"-I{port_rel}/src",
     ]
+    if not is_linux:
+        inc_flags += [
+            f"-I{port_rel}/third_party/SDL2/include",
+            f"-I{port_rel}/third_party/SDL2/include/SDL2",
+        ]
+    inc_flags.append(f"-I{port_rel}/third_party/stb_vorbis")
     common_flags = [
-        "-m32", "-mabi=sysv", "-O2", "-fno-toplevel-reorder",
+        arch_flag, "-mabi=sysv", "-O2", "-fno-toplevel-reorder",
         "-fno-zero-initialized-in-bss", "-fno-common",
         "-fno-aggressive-loop-optimizations", "-fno-strict-aliasing",
         "-fwrapv", "-fno-delete-null-pointer-checks",
         "-fpack-struct=1", "-funsigned-char", "-w",
         "-Dfar=", "-Dhuge=", "-Dnear=", "-Dinterrupt=", "-Dcdecl=",
     ]
+    if is_linux:
+        common_flags += ["-fno-pie", "-fno-pic", "-fpermissive", "-U_FORTIFY_SOURCE", "-D_FORTIFY_SOURCE=0"]
 
     src_dir = PORT_DIR / "src"
     game_sources = sorted(
@@ -158,7 +187,6 @@ def build_stufe(fix_bugs: int, exe_name: str, extra_defines: list[str], copy_to_
     )
 
     h_mtime = max((p.stat().st_mtime for p in (src_dir / "inc").glob("*.h")), default=0.0)
-    ref_obj_dir = build_dir / "objs"
     fix_a_macros: set[str] = set()
     if fix_bugs == 1 and not extra_defines and (src_dir / "inc" / "s_fix.h").exists():
         import re
@@ -187,10 +215,14 @@ def build_stufe(fix_bugs: int, exe_name: str, extra_defines: list[str], copy_to_
     plat_sources = [
         (PORT_DIR / "platform" / "schweif_asm_and_platform.cpp", obj_dir / "schweif_asm_and_platform.o", True),
         (PORT_DIR / "platform" / "dsa_platform_sdl2.cpp", obj_dir / "dsa_platform_sdl2.o", True),
-        (PORT_DIR / "third_party" / "SDL2" / "sdl2_win32_provider.c", obj_dir / "sdl2_win32_provider.o", False),
         (PORT_DIR / "third_party" / "stb_vorbis" / "stb_vorbis.c", obj_dir / "stb_vorbis.o", False),
         (PORT_DIR / "platform" / "dsa_audio_cd.cpp", obj_dir / "dsa_audio_cd.o", True),
     ]
+    if not is_linux:
+        plat_sources.insert(
+            2,
+            (PORT_DIR / "third_party" / "SDL2" / "sdl2_win32_provider.c", obj_dir / "sdl2_win32_provider.o", False),
+        )
     plat_tasks: list[tuple[str, list[str]]] = []
     for p_src, p_obj, is_cpp in plat_sources:
         if p_obj.exists() and p_obj.stat().st_mtime >= p_src.stat().st_mtime:
@@ -202,12 +234,13 @@ def build_stufe(fix_bugs: int, exe_name: str, extra_defines: list[str], copy_to_
                 continue
         rel_src = p_src.relative_to(ROOT_DIR).as_posix()
         rel_obj = p_obj.relative_to(ROOT_DIR).as_posix()
-        # stb_vorbis und waveOut-Header duerfen nicht mit -fpack-struct=1 uebersetzt werden.
-        unit_flags = [f for f in common_flags if not (p_src.name in ("stb_vorbis.c", "dsa_audio_cd.cpp") and f == "-fpack-struct=1")]
+        # stb_vorbis, SDL/pthread und waveOut-Header duerfen nicht mit -fpack-struct=1 uebersetzt werden.
+        no_pack_files = ("stb_vorbis.c", "dsa_audio_cd.cpp", "dsa_platform_sdl2.cpp", "schweif_asm_and_platform.cpp") if is_linux else ("stb_vorbis.c", "dsa_audio_cd.cpp")
+        unit_flags = [f for f in common_flags if not (p_src.name in no_pack_files and f == "-fpack-struct=1")]
         if is_cpp:
-            cmd = ["g++.exe", "-fpermissive"] + unit_flags + def_flags + inc_flags + ["-c", rel_src, "-o", rel_obj]
+            cmd = [cxx, "-fpermissive"] + unit_flags + def_flags + inc_flags + ["-c", rel_src, "-o", rel_obj]
         else:
-            cmd = ["gcc.exe", "-std=gnu99"] + unit_flags + inc_flags + ["-c", rel_src, "-o", rel_obj]
+            cmd = [cc, "-std=gnu99"] + unit_flags + inc_flags + ["-c", rel_src, "-o", rel_obj]
         plat_tasks.append((p_src.name, cmd))
 
     total_units = len(c_game) + len(cpp_game) + len(plat_tasks)
@@ -228,22 +261,22 @@ def build_stufe(fix_bugs: int, exe_name: str, extra_defines: list[str], copy_to_
                 chunk = file_list[i : i + 50]
                 rel_srcs = [os.path.relpath(p, obj_dir).replace("\\", "/") for p in chunk]
                 if not is_cpp:
-                    cmd_s = ["gcc.exe", "-x", "c", "-std=gnu99"] + inst_flags + common_flags + def_flags + obj_inc_flags + ["-S"] + rel_srcs
+                    cmd_s = [cc, "-x", "c", "-std=gnu99"] + inst_flags + common_flags + def_flags + obj_inc_flags + ["-S"] + rel_srcs
                 else:
-                    cmd_s = ["g++.exe", "-fpermissive"] + inst_flags + common_flags + def_flags + obj_inc_flags + ["-S"] + rel_srcs
+                    cmd_s = [cxx, "-fpermissive"] + inst_flags + common_flags + def_flags + obj_inc_flags + ["-S"] + rel_srcs
                 rc, out = compile_unit(cmd_s, env, cwd=obj_dir)
                 if rc != 0:
                     print(f"FEHLER beim Kompilieren:\n{out}", file=sys.stderr)
                     sys.exit(1)
                 for p in chunk:
                     asm_p = obj_dir / f"{p.stem}.s"
-                    strip_data_align(asm_p)
+                    strip_data_align(asm_p, is_linux=is_linux)
                     asm_files.append(asm_p)
 
         for i in range(0, len(asm_files), 50):
             chunk = asm_files[i : i + 50]
             s_names = [p.name for p in chunk]
-            rc, out = compile_unit(["gcc.exe", "-m32", "-c"] + s_names, env, cwd=obj_dir)
+            rc, out = compile_unit([cc, arch_flag, "-c"] + s_names, env, cwd=obj_dir)
             for p in chunk:
                 try:
                     p.unlink()
@@ -264,67 +297,103 @@ def build_stufe(fix_bugs: int, exe_name: str, extra_defines: list[str], copy_to_
     game_recompiled = bool(c_game or cpp_game)
     bridges_obj = obj_dir / "port_bridges.o"
     gen_script = PORT_DIR / "tools" / "generate_bridges.py"
-    if game_recompiled or not bridges_obj.exists() or gen_script.stat().st_mtime > bridges_obj.stat().st_mtime:
+    bridges_src = PORT_DIR / "src" / ("port_bridges_linux.cpp" if is_linux else "port_bridges.cpp")
+    ld_aliases = build_dir / ("data_aliases_linux.ld" if is_linux else "data_aliases.ld")
+    if game_recompiled or not bridges_obj.exists() or not bridges_src.exists() or gen_script.stat().st_mtime > bridges_obj.stat().st_mtime:
         print("[3/4] Erzeuge C/C++-Bruecken (generate_bridges.py)...")
+        gen_cmd = [sys.executable, str(gen_script)]
+        if is_linux:
+            gen_cmd += [
+                "--elf",
+                f"--obj-dir={obj_dir}",
+                f"--out-ld={ld_aliases}",
+                f"--out-cpp={bridges_src}",
+            ]
         subprocess.run(
-            [sys.executable, str(PORT_DIR / "tools" / "generate_bridges.py")],
+            gen_cmd,
             cwd=str(ROOT_DIR),
             check=True,
             stdin=subprocess.DEVNULL,
             timeout=60,
         )
-    bridges_src = PORT_DIR / "src" / "port_bridges.cpp"
     ref_bridges_obj = ref_obj_dir / "port_bridges.o"
     if not bridges_obj.exists() and obj_dir != ref_obj_dir and ref_bridges_obj.exists() and ref_bridges_obj.stat().st_mtime >= bridges_src.stat().st_mtime:
         shutil.copy2(ref_bridges_obj, bridges_obj)
     if not bridges_obj.exists() or bridges_src.stat().st_mtime > bridges_obj.stat().st_mtime:
         rc, out = compile_unit(
-            ["g++.exe", "-fpermissive"]
+            [cxx, "-fpermissive"]
             + common_flags
-            + ["-c", "Port/src/port_bridges.cpp", "-o", bridges_obj.relative_to(ROOT_DIR).as_posix()],
+            + ["-c", bridges_src.relative_to(ROOT_DIR).as_posix(), "-o", bridges_obj.relative_to(ROOT_DIR).as_posix()],
             env,
         )
         if rc != 0:
-            print(f"FEHLER in port_bridges.cpp:\n{out}", file=sys.stderr)
+            print(f"FEHLER in {bridges_src.name}:\n{out}", file=sys.stderr)
             sys.exit(1)
     else:
         print("[3/4] C/C++-Bruecken (port_bridges.o) aktuell.")
 
     out_exe = build_dir / exe_name
     objs = sorted(p.relative_to(ROOT_DIR).as_posix() for p in obj_dir.glob("*.o"))
-    link_cmd = (
-        ["g++.exe", "-m32", "-mwindows", "-O2", "-Wl,-S", "-Wl,--allow-multiple-definition"]
-        + WRAP_FLAGS
-        + objs
-        + [
-            "Port/build/data_aliases.ld",
-            "-lwinmm",
-            "-lgdi32",
-            "-luser32",
-            "-lshell32",
-            "-o",
-            out_exe.relative_to(ROOT_DIR).as_posix(),
-        ]
-    )
+    if is_linux:
+        link_cmd = (
+            [cxx, arch_flag, "-no-pie", "-O2", "-Wl,--allow-multiple-definition"]
+            + WRAP_FLAGS
+            + objs
+            + [
+                ld_aliases.relative_to(ROOT_DIR).as_posix(),
+                "-lSDL2",
+                "-lpthread",
+                "-ldl",
+                "-lm",
+                "-o",
+                out_exe.relative_to(ROOT_DIR).as_posix(),
+            ]
+        )
+    else:
+        link_cmd = (
+            [cxx, "-m32", "-mwindows", "-O2", "-Wl,-S", "-Wl,--allow-multiple-definition"]
+            + WRAP_FLAGS
+            + objs
+            + [
+                f"{port_rel}/build/data_aliases.ld",
+                "-lwinmm",
+                "-lgdi32",
+                "-luser32",
+                "-lshell32",
+                "-o",
+                out_exe.relative_to(ROOT_DIR).as_posix(),
+            ]
+        )
     print(f"[4/4] Linke {out_exe.relative_to(ROOT_DIR)}...")
     rc, out = compile_unit(link_cmd, env)
     if rc != 0:
         print(f"LINKER-FEHLER:\n{out}", file=sys.stderr)
         sys.exit(1)
 
-    patch_pe_rdata_writable(out_exe)
-    release_dirs = [PORT_DIR / "release"] + list(ROOT_DIR.parent.glob("*Schicksalsklinge*/Starter/release"))
-    for rdir in release_dirs:
+    if not is_linux:
+        patch_pe_rdata_writable(out_exe)
+        release_dirs = [PORT_DIR / "release"] + list(ROOT_DIR.parent.glob("*Schicksalsklinge*/Starter/release"))
+        for rdir in release_dirs:
+            if rdir.exists():
+                shutil.copy2(out_exe, rdir / exe_name)
+    else:
+        rdir = PORT_DIR / "release"
         if rdir.exists():
             shutil.copy2(out_exe, rdir / exe_name)
     if copy_to_default:
-        default_exe = build_dir / "SCHWEIF_PORT.EXE"
+        default_name = "SCHWEIF_PORT" if is_linux else "SCHWEIF_PORT.EXE"
+        default_exe = build_dir / default_name
         if out_exe != default_exe:
             shutil.copy2(out_exe, default_exe)
             print(f"      Kopiert nach {default_exe.relative_to(ROOT_DIR)} ({default_exe.stat().st_size:,} Bytes)")
-        for rdir in release_dirs:
+        if not is_linux:
+            for rdir in release_dirs:
+                if rdir.exists():
+                    shutil.copy2(default_exe, rdir / default_name)
+        else:
+            rdir = PORT_DIR / "release"
             if rdir.exists():
-                shutil.copy2(default_exe, rdir / "SCHWEIF_PORT.EXE")
+                shutil.copy2(default_exe, rdir / default_name)
     return out_exe
 
 
@@ -332,8 +401,14 @@ def main() -> int:
     args = sys.argv[1:]
     stufe_arg = "alles"
     extra_defines: list[str] = []
+    is_linux = False
+    arch_flag = "-m32"
     for a in args:
-        if a.startswith("-D"):
+        if a == "--linux":
+            is_linux = True
+        elif a.startswith("--arch="):
+            arch_flag = a.split("=", 1)[1]
+        elif a.startswith("-D"):
             extra_defines.append(a)
         elif a != "--prepare":
             stufe_arg = a.lower()
@@ -355,13 +430,13 @@ def main() -> int:
     if stufe_arg == "alle_stufen":
         for key in ("alles", "wichtig", "original"):
             fb, exe_name = STUFEN[key]
-            build_stufe(fb, exe_name, extra_defines, copy_to_default=(key == "alles"))
+            build_stufe(fb, exe_name, extra_defines, copy_to_default=(key == "alles"), is_linux=is_linux, arch_flag=arch_flag)
     else:
         if stufe_arg not in STUFEN:
             print(f"Unbekannte Stufe '{stufe_arg}'. Erlaubt: original (0), wichtig (1), alles (2), alle_stufen", file=sys.stderr)
             return 1
         fb, exe_name = STUFEN[stufe_arg]
-        build_stufe(fb, exe_name, extra_defines, copy_to_default=True)
+        build_stufe(fb, exe_name, extra_defines, copy_to_default=True, is_linux=is_linux, arch_flag=arch_flag)
 
     print("Bau erfolgreich abgeschlossen.")
     return 0
