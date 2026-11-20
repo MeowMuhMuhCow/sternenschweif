@@ -221,9 +221,13 @@ void rose_open(Travel far *p, struct dir_set place)
 	p->place = place;
 	if (g_action >= 1 && g_action <= 8) {
 		p->dir_sel = g_action;
-		if (rose_dir_allowed(p))
+		if (rose_dir_allowed(p)) {
 			rose_draw(p);
+			return;
+		}
+#ifndef __EMSCRIPTEN__
 		return;
+#endif
 	}
 	if (!rose_dir_allowed(p))
 		rose_next_dir(p);

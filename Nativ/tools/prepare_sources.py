@@ -64,6 +64,9 @@ def transform_schweif_h(txt):
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#ifndef _WIN32
+#include <io.h>
+#endif
 #ifndef __STRING_H
 #define __STRING_H 1
 #endif
@@ -86,6 +89,8 @@ void *dsa_mk_fp(unsigned short seg, unsigned long off);
 void dsa_log_stub(const char *func_name);
 void dsa_log_guru_meditation(const char *msg, const void *ptr);
 uint32_t dsa_platform_init_seed(uint32_t default_seed);
+void vga_set_color(void *rgb, short idx);
+void vga_set_palette(void *pal, short first, unsigned short count);
 extern unsigned char *g_port_shade_base;
 #ifndef _WIN32
 char *itoa(int value, char *str, int base);
@@ -176,7 +181,8 @@ def transform_source(rel_path, txt):
     # 2. SEG002.C: EMS_map + set_palette, set_color
     elif base == "SEG002.C":
         txt = replace_func_body(txt, r"^signed short EMS_map\([^)]*\)\s*\{", "    (void)phys; (void)log; (void)handle;\n    return 0;")
-        set_pal_c = """    signed short i;
+        set_pal_c = """    void vga_set_palette(void *pal, short first, unsigned short count); /* Prototyp: ohne ihn fehlerhafte Signatur in WebAssembly (Absturz) */
+    signed short i;
     for (i = 0; i < count; i++) {
         PAL[i * 3] &= 0x3f;
         (PAL + i * 3)[1] &= 0x3f;
@@ -186,7 +192,8 @@ def transform_source(rel_path, txt):
     if (g_palette && g_palette != pal) {
         memcpy(g_palette + first * 3, pal, count * 3);
     }"""
-        set_col_c = """    RGB[0] &= 0x3f;
+        set_col_c = """    void vga_set_color(void *rgb, short idx); /* Prototyp, siehe set_palette */
+    RGB[0] &= 0x3f;
     RGB[1] &= 0x3f;
     RGB[2] &= 0x3f;
     vga_set_color(rgb, nr);
@@ -604,6 +611,13 @@ def transform_source(rel_path, txt):
 """
         txt = txt.replace("extern struct party far *g_c4c5;\n", ovl30_hdr + 'extern "C" {\nextern struct party far *g_c4c5;\n', 1)
         txt = txt.replace("signed char f_1135(signed short n);\n", "signed char f_1135(signed short n);\n}\n", 1)
+        txt = txt.replace("void O003_0bca(", "signed short O003_0bca(", 1)
+        txt = txt.replace("void O010_12ee(void);", "signed short O010_12ee(void);", 1)
+        txt = txt.replace("void O042_0c9a(void far *p);", "signed short O042_0c9a(void far *p);", 1)
+        txt = txt.replace("void R06_0398(void far *f, signed short id);", "signed short R06_0398(void far *f, signed short id);", 1)
+        txt = txt.replace("void R06_080f(void far *f, void far *buf, signed long n);", "signed long R06_080f(void far *f, void far *buf, signed long n);", 1)
+        txt = txt.replace("void R06_0c16(void far *f);", "signed short R06_0c16(void far *f);", 1)
+        txt = txt.replace("void R06_0d24(void far *f, signed long off, signed short whence);", "signed long R06_0d24(void far *f, signed long off, signed short whence);", 1)
         txt = txt.replace("\tcase 4:\n\t\tC166 o;", "\tcase 4:\n\t\t{\n\t\tC166 o;", 1)
         txt = txt.replace("\t\t\to.f1313();\n\t\t\tbreak;\n\t\t}\n\t\tbreak;", "\t\t\to.f1313();\n\t\t\tbreak;\n\t\t}\n\t\t}\n\t\tbreak;", 1)
 
@@ -1052,6 +1066,19 @@ def transform_source(rel_path, txt):
         txt = txt.replace('dlg_message(g_dialog, "Wow!");', 'dlg_message(g_dialog, (void *)"Wow!");')
     elif base == "SEG003.CPP":
         txt = txt.replace("set_f8((signed short)txt[0]);", "set_f8((signed short)(uintptr_t)txt[0]);")
+    elif base == "OVL037.CPP":
+        txt = txt.replace("\thave_arc = 0;\n}", "\thave_arc = 0;\n#ifdef __EMSCRIPTEN__\n\tname_list = 0;\n#endif\n}", 1)
+        txt = txt.replace(
+            "\tif (id == 0 || have_arc == 0)\n\t\treturn names[id];",
+            "#ifdef __EMSCRIPTEN__\n\tif (id == 0 || (have_arc == 0 && name_list == 0))\n#else\n\tif (id == 0 || have_arc == 0)\n#endif\n\t\treturn names[id];",
+            1,
+        )
+    elif base == "OVL220.CPP":
+        txt = txt.replace(
+            "\t\tif (rose_dir_allowed(p))\n\t\t\trose_draw(p);\n\t\treturn;",
+            "\t\tif (rose_dir_allowed(p)) {\n\t\t\trose_draw(p);\n\t\t\treturn;\n\t\t}\n#ifndef __EMSCRIPTEN__\n\t\treturn;\n#endif",
+            1,
+        )
 
     txt = strip_dgroup_tables_for_port(base, txt)
     return txt

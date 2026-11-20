@@ -38,6 +38,9 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#ifndef _WIN32
+#include <io.h>
+#endif
 #ifndef __STRING_H
 #define __STRING_H 1
 #endif
@@ -60,6 +63,8 @@ void *dsa_mk_fp(unsigned short seg, unsigned long off);
 void dsa_log_stub(const char *func_name);
 void dsa_log_guru_meditation(const char *msg, const void *ptr);
 uint32_t dsa_platform_init_seed(uint32_t default_seed);
+void vga_set_color(void *rgb, short idx);
+void vga_set_palette(void *pal, short first, unsigned short count);
 extern unsigned char *g_port_shade_base;
 #ifndef _WIN32
 char *itoa(int value, char *str, int base);

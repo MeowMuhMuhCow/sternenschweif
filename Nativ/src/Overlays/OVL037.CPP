@@ -54,6 +54,9 @@ File::File(char far * far *nametab, signed short n)
 	loose = 0;
 	fd = 0;
 	have_arc = 0;
+#ifdef __EMSCRIPTEN__
+	name_list = 0;
+#endif
 }
 
 File::File(char far *arc, unsigned char far *bits, char far * far *nametab, char far *list, signed short n)
@@ -278,7 +281,11 @@ char far *File::getname(register signed short id)
 	signed long pos;
 	signed short h;
 
+#ifdef __EMSCRIPTEN__
+	if (id == 0 || (have_arc == 0 && name_list == 0))
+#else
 	if (id == 0 || have_arc == 0)
+#endif
 		return names[id];
 	else {
 		h = ::open(name_list, O_RDONLY | O_BINARY);

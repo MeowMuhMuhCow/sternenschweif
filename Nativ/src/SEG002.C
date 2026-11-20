@@ -90,6 +90,7 @@ char far *str_pad(char far *s, signed short n, char c)
 
 void set_palette(void far *pal, signed short first, signed short count)
 {
+    void vga_set_palette(void *pal, short first, unsigned short count); /* Prototyp: ohne ihn fehlerhafte Signatur in WebAssembly (Absturz) */
     signed short i;
     for (i = 0; i < count; i++) {
         PAL[i * 3] &= 0x3f;
@@ -104,6 +105,7 @@ void set_palette(void far *pal, signed short first, signed short count)
 
 void set_color(void far *rgb, signed short nr)
 {
+    void vga_set_color(void *rgb, short idx); /* Prototyp, siehe set_palette */
     RGB[0] &= 0x3f;
     RGB[1] &= 0x3f;
     RGB[2] &= 0x3f;
