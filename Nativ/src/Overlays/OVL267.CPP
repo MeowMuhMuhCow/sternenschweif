@@ -436,7 +436,7 @@ signed short dng08_handler(struct area_events far *ev, struct map_event far *mev
 			}
 		}
 	} else if (type == 0x79) {
-		dlg_message(g_dialog, "Wow!");
+		dlg_message(g_dialog, (void *)"Wow!");
 		event_set_cell(ev, 0x0b, 0x19, 0, 0, -1);
 		AUTOMAP_CELL_WRITE_W(g_map, 0x37f, 0x19, 0x0b, 9);
 	} else if (type == 0x82) {

@@ -31,7 +31,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:75b4..75c6, dsana) - initialisierte Daten in Adressreihenfolge */
-struct txt_idx9 g_nekropathia_txt = { { 44, 45, 46, 47, 48, 49, 50, 230, 231 } };
+struct txt_idx9 g_nekropathia_txt = { 0 };
 
 /* Aufrufe mit Wort-Parametern (das Original uebergibt diese Werte als short) */
 #define add_effect_w ((void (*)(struct hero far *, signed short, signed long, signed char, signed char, signed short))add_effect)

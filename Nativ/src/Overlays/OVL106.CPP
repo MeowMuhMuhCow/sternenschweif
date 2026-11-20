@@ -111,46 +111,46 @@ signed short savegame_write(SaveMenu far *b, char far *name)
 #if FIX_0129
 		/* Fix #129: alle Datenbloecke auf Schreibfehler pruefen */
 		len = g_save_glob_end - g_save_glob;
-		if (_write(g_save_fd, "GLOB", 4) != 4) good = 0;
+		if (_write(g_save_fd, DS_STR(0x6151), 4) != 4) good = 0;
 		if (_write(g_save_fd, &len, 2) != 2) good = 0;
 		if (_write(g_save_fd, g_save_glob, len) != len) good = 0;
 		len = g_save_runv_end - g_save_runv;
-		if (_write(g_save_fd, "RUNV", 4) != 4) good = 0;
+		if (_write(g_save_fd, DS_STR(0x6156), 4) != 4) good = 0;
 		if (_write(g_save_fd, &len, 2) != 2) good = 0;
 		if (_write(g_save_fd, g_save_runv, len) != len) good = 0;
 		len = g_save_mons_end - g_save_mons;
-		if (_write(g_save_fd, "MONS", 4) != 4) good = 0;
+		if (_write(g_save_fd, DS_STR(0x615b), 4) != 4) good = 0;
 		if (_write(g_save_fd, &len, 2) != 2) good = 0;
 		if (_write(g_save_fd, g_save_mons, len) != len) good = 0;
 		len = g_save_play_end - g_save_play;
-		if (_write(g_save_fd, "PLAY", 4) != 4) good = 0;
+		if (_write(g_save_fd, DS_STR(0x6160), 4) != 4) good = 0;
 		if (_write(g_save_fd, &len, 2) != 2) good = 0;
 		if (_write(g_save_fd, g_save_play, len) != len) good = 0;
 		len = g_save_locs_end - g_save_locs;
-		if (_write(g_save_fd, "LOCS", 4) != 4) good = 0;
+		if (_write(g_save_fd, DS_STR(0x6165), 4) != 4) good = 0;
 		if (_write(g_save_fd, &len, 2) != 2) good = 0;
 		wr = _write(g_save_fd, g_save_locs, len);
 		if (wr != len)
 			good = 0;
 #else
 		len = g_save_glob_end - g_save_glob;
-		_write(g_save_fd, "GLOB", 4);
+		_write(g_save_fd, DS_STR(0x6151), 4);
 		_write(g_save_fd, &len, 2);
 		_write(g_save_fd, g_save_glob, len);
 		len = g_save_runv_end - g_save_runv;
-		_write(g_save_fd, "RUNV", 4);
+		_write(g_save_fd, DS_STR(0x6156), 4);
 		_write(g_save_fd, &len, 2);
 		_write(g_save_fd, g_save_runv, len);
 		len = g_save_mons_end - g_save_mons;
-		_write(g_save_fd, "MONS", 4);
+		_write(g_save_fd, DS_STR(0x615b), 4);
 		_write(g_save_fd, &len, 2);
 		_write(g_save_fd, g_save_mons, len);
 		len = g_save_play_end - g_save_play;
-		_write(g_save_fd, "PLAY", 4);
+		_write(g_save_fd, DS_STR(0x6160), 4);
 		_write(g_save_fd, &len, 2);
 		_write(g_save_fd, g_save_play, len);
 		len = g_save_locs_end - g_save_locs;
-		_write(g_save_fd, "LOCS", 4);
+		_write(g_save_fd, DS_STR(0x6165), 4);
 		_write(g_save_fd, &len, 2);
 		wr = _write(g_save_fd, g_save_locs, len);
 		if (wr != len)

@@ -40,7 +40,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:6c36..6c54, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-struct dirs4 g_fig_dirs_ki = { { { 1, 0 }, { 0, -1 }, { -1, 0 }, { 0, 1 } } };	/* Kampffeld-Richtung 0: x+1, 1: y-1, 2: x-1, 3: y+1 */
+struct dirs4 g_fig_dirs_ki = { 0 };	/* Kampffeld-Richtung 0: x+1, 1: y-1, 2: x-1, 3: y+1 */
 
 #define ITEM_SPECIAL_61	0x61		/* Sondergegenstand (g_fight_end == 3: gegen Gegner 10 einsetzen) */
 #define NR_MENU_ITEMS	16		/* Rucksackplaetze 15..30 in g_menu_texts */

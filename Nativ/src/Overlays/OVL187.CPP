@@ -39,9 +39,9 @@
 
 /* Phase B: eigene Daten des Moduls (ds:6e44..6e4c, dsana) - initialisierte Daten in Adressreihenfolge */
 INN_PTR g_inn = 0;
-unsigned char g_tmap_mark1_tick = 0x00;
-unsigned char g_tmap_mark2_tick = 0x00;
-signed short g_tmap_last_row = -1;
+unsigned char g_tmap_mark1_tick = 0;
+unsigned char g_tmap_mark2_tick = 0;
+signed short g_tmap_last_row = 0;
 
 #define FILE_MMASK	0x94		/* MMASK.NVF: Rahmen der Reisekarte (Palette 0xa0..0xff) */
 #define FILE_CIRCLE	0x1a3		/* CIRCLE.NVF: Kartenpunkte */

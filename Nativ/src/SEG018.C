@@ -24,7 +24,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:6288..62e2, dsana) - initialisierte Daten in Adressreihenfolge */
-char g_edit_chars[90] = " ABCDEFGHIJKLMNOPQRSTUVWXYZ\x8e\x99\x9a""1234567890abcdefghijklmnopqrstuvwxyz\x84\x94\x81\xe1()!?:<>/_,.'-[];&\xff";
+char g_edit_chars[90] = { 0 };
 
 #define AREA	((struct mouse_area far *)areas)
 #define BG	((struct mouse_bg far *)bg)

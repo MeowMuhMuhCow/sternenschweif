@@ -36,17 +36,15 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:011a..0172, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-signed short g_cl_blackmage[3] = { 8361, 8594, -1 };
-signed short g_cl_blackmage_speech[10] = { 24794, 24795, 24796, 24797, 24798, 24800, 24801, 24802, 24803, -1 };
-unsigned char g_cl_blackmage_st[4] = "";
-signed short g_cl_phex_finale[3] = { 9037, 9061, -1 };
-signed short g_cl_phex_finale_speech[16] = {
-	-15356, -15355, -15354, -15353, -15352, -15351, -15350, -15349, -15348, -15347, -15346, -15345, -15344, -15343, -15342, -1
-};
-unsigned char g_cl_phex_finale_st[4] = "";
-struct str2 g_scene_mark_on = { "\xf1" };
-struct str2 g_scene_mark_off = { "\xf0" };
-struct str7 g_scene_fmt = { "%s%s%s" };
+signed short g_cl_blackmage[3] = { 0 };
+signed short g_cl_blackmage_speech[10] = { 0 };
+unsigned char g_cl_blackmage_st[4] = { 0 };
+signed short g_cl_phex_finale[3] = { 0 };
+signed short g_cl_phex_finale_speech[16] = { 0 };
+unsigned char g_cl_phex_finale_st[4] = { 0 };
+struct str2 g_scene_mark_on = { 0 };
+struct str2 g_scene_mark_off = { 0 };
+struct str7 g_scene_fmt = { 0 };
 
 #define SEQUENCE_TXT	0xa9		/* SEQUENCE.LTX (0x32 Texte) */
 #define PHEXTEMP_TXT	0x34d		/* PHEXTEMP.LTX (0x50 Texte) */

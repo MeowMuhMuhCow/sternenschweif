@@ -54,38 +54,7 @@
 
 /* Phase B: eigene Daten des Moduls (ds:5882..5974, dsana) - initialisierte Daten in Adressreihenfolge */
 signed short g_camp_ambush_watch = 0;
-struct camp_encounter g_camp_encounters[30] = {
-	{ 0, 0, 0, 0 },
-	{ 2, 7, 0, 0 },
-	{ 27, 5, 0, 0 },
-	{ 72, 3, 0, 0 },
-	{ 91, 2, 0, 0 },
-	{ 33, 6, 0, 0 },
-	{ 116, 4, 0, 0 },
-	{ 45, 3, 0, 0 },
-	{ 16, 4, 0, 0 },
-	{ 115, 4, 0, 0 },
-	{ 79, 4, 0, 0 },
-	{ 9, 5, 0, 0 },
-	{ 10, 4, 0, 0 },
-	{ 39, 6, 0, 0 },
-	{ 11, 4, 0, 0 },
-	{ 81, 8, 0, 0 },
-	{ 114, 1, 0, 0 },
-	{ 66, 5, 0, 0 },
-	{ 68, 3, 0, 0 },
-	{ 69, 2, 0, 0 },
-	{ 31, 4, 0, 0 },
-	{ 23, 3, 0, 0 },
-	{ 54, 6, 0, 0 },
-	{ 108, 3, 0, 0 },
-	{ 58, 7, 0, 0 },
-	{ 39, 4, 0, 5 },
-	{ 27, 4, 0, 8 },
-	{ 91, 4, 0, 3 },
-	{ 94, 4, 0, 3 },
-	{ 116, 4, 0, 4 }
-};
+struct camp_encounter g_camp_encounters[30] = { 0 };
 
 /* Text in die Textleiste: Farbe 0xff als int wie im Original */
 #define TEXTBAR(t) ((void (*)(void far *, char far *, signed short))screen_textbar)(g_screen, t, 0xff)

@@ -26,54 +26,11 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:6c8c..6d18, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-struct xy14 g_chargen_attrib_pos = {
-	{ { 205, 73 },
-	{ 205, 85 },
-	{ 205, 97 },
-	{ 205, 109 },
-	{ 205, 121 },
-	{ 205, 133 },
-	{ 205, 145 },
-	{ 273, 73 },
-	{ 273, 85 },
-	{ 273, 97 },
-	{ 273, 109 },
-	{ 273, 121 },
-	{ 273, 133 },
-	{ 273, 145 } }
-};
-struct range8x9 g_chargen_school_ranges = {
-	{ { 1, 5 },
-	{ 6, 17 },
-	{ 18, 26 },
-	{ 27, 32 },
-	{ 33, 37 },
-	{ 38, 44 },
-	{ 49, 57 },
-	{ 60, 75 },
-	{ 76, 85 } }
-};
-struct type_list13 g_chargen_type_list_init = { "" };
+struct xy14 g_chargen_attrib_pos = { 0 };
+struct range8x9 g_chargen_school_ranges = { 0 };
+struct type_list13 g_chargen_type_list_init = { 0 };
 char g_unused_6ce3[1] = { 0 };   /* ds:6ce3, unbenutzt */
-struct house_hint g_house_hints[17] = {
-	{ 1, 15, 14 },
-	{ 1, 9, 10 },
-	{ 1, 6, 3 },
-	{ 1, 5, 5 },
-	{ 1, 19, 5 },
-	{ 1, 10, 4 },
-	{ 1, 18, 13 },
-	{ 1, 4, 5 },
-	{ 2, 16, 3 },
-	{ 2, 6, 7 },
-	{ 2, 6, 17 },
-	{ 2, 12, 25 },
-	{ 2, 15, 8 },
-	{ 2, 9, 3 },
-	{ 2, 17, 24 },
-	{ 2, 8, 24 },
-	{ -1, -1, -1 }
-};
+struct house_hint g_house_hints[17] = { 0 };
 
 #define FILE_GETOFF	0x19d		/* GETOFF.LTX */
 #define ANIM_DOOR	0x18b		/* Tueranimation 0x18b..0x18e je Hauslage (x & 3) ^ (y & 3) */
@@ -189,7 +146,7 @@ void House::run()
 		if (!g_finster_anger)
 			g_finster_anger = 1;
 	}
-	screen_textbar(g_screen, "", 0xff);
+	screen_textbar(g_screen, (void *)"", 0xff);
 	ani_stop(g_screen_pic);
 }
 

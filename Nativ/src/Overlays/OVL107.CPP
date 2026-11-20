@@ -52,20 +52,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:618a..6230, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-struct mouse_area g_savemenu_areas[12] = {
-	{ 30, 46, 59, 55, 129 },
-	{ 30, 146, 59, 155, 130 },
-	{ 61, 46, 89, 55, 139 },
-	{ 61, 146, 89, 155, 140 },
-	{ 32, 59, 88, 142, 131 },
-	{ 263, 115, 301, 154, 133 },
-	{ 119, 59, 288, 109, 134 },
-	{ 99, 115, 128, 154, 135 },
-	{ 133, 115, 192, 154, 136 },
-	{ 199, 115, 257, 154, 137 },
-	{ 10, 40, 310, 160, 132 },
-	{ -1, -1, -1, -1, -1 }
-};
+struct mouse_area g_savemenu_areas[12] = { 0 };
 
 /* font_set_colors mit Wort-Parametern (gesicherte Farben als short: push word) */
 #define font_set_colors_w ((void (*)(void far *, signed short, signed short))font_set_colors)

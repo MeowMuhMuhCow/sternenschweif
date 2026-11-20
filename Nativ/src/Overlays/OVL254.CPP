@@ -35,11 +35,11 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:7718..7784, dsana) - initialisierte Daten in Adressreihenfolge */
-char g_str_empty_7718[1] = "";
-char g_str_empty_7719[1] = "";
-char g_str_empty_771a[1] = "";
-char g_str_empty_771b[1] = "";
-char g_str_empty_771c[1] = "";
+char g_str_empty_7718[1] = { 0 };
+char g_str_empty_7719[1] = { 0 };
+char g_str_empty_771a[1] = { 0 };
+char g_str_empty_771b[1] = { 0 };
+char g_str_empty_771c[1] = { 0 };
 char g_unused_771d[1] = { 0 };	/* ds:771d, unbenutzt (vermutet Fuellbyte vor der Tabelle) */
 /* ds:771e: Textdatei je Gespraechsthema 7..0x39 (Conv::unlock_topic/build_list in O257 lesen g_conv_topic_tab[t - 7];
  * BCC faltet "- 7" in die Adresse ds:7710 = MAP-Name g_7710). Themen 7..0x29 TALKS_00..TALKS_34.LTX (0x1a4..0x1c6:
@@ -47,15 +47,7 @@ char g_unused_771d[1] = { 0 };	/* ds:771d, unbenutzt (vermutet Fuellbyte vor der
  * Svelltsuempfe, Thasch, Blutzinnen, Rorwhed, Handel, Kraeuter, Waffen, Krankheiten, Gifte, Schmiedekunst, Jagd und
  * die Goetter Praios .. Ifirn), 0x2a..0x38 ohne eigene Datei (Fragen aus STDTALKS.LTX), 0x39 TALKS_35.LTX
  * "Wisst Ihr vielleicht, was es mit der abgebrannten Muehle auf sich hat?" */
-signed short g_conv_topic_tab[51] = {
-	0x1a4, 0x1a5, 0x1a6, 0x1a7, 0x1a8, 0x1a9, 0x1aa, 0x1ab,
-	0x1ac, 0x1ad, 0x1ae, 0x1af, 0x1b0, 0x1b1, 0x1b2, 0x1b3,
-	0x1b4, 0x1b5, 0x1b6, 0x1b7, 0x1b8, 0x1b9, 0x1ba, 0x1bb,
-	0x1bc, 0x1bd, 0x1be, 0x1bf, 0x1c0, 0x1c1, 0x1c2, 0x1c3,
-	0x1c4, 0x1c5, 0x1c6, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0x412
-};
+signed short g_conv_topic_tab[51] = { 0 };
 
 #define add_effect_cw ((void (*)(struct hero far *, signed short, signed long, signed char, signed short, signed short))add_effect)
 

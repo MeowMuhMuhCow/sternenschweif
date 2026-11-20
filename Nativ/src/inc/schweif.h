@@ -50,6 +50,9 @@
 #ifndef _OvrInitExt
 #define _OvrInitExt(a, b) 0
 #endif
+#ifndef O_BINARY
+#define O_BINARY 0
+#endif
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -92,5 +95,16 @@ unsigned long _lrotr(unsigned long val, int shift);
 #include "s_class.h"
 #include "s_data.h"
 #include "s_proto.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+extern unsigned char g_schweif_dgroup[0x8b06];
+#ifdef __cplusplus
+}
+#endif
+#ifndef DS_STR
+#define DS_STR(off) ((char far *)&g_schweif_dgroup[(off)])
+#endif
 
 #endif

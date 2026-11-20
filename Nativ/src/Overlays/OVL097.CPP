@@ -272,10 +272,10 @@ struct texture far *tex_get(char far *name)
 				return &g_textures[i];
 	}
 	if (g_nr_textures == 60)
-		guru_meditation("TOO MANY BITMAPS", 0);
+		guru_meditation(DS_STR(0x5eb2), 0);
 	h = File_find(g_file_raw, name);
 	if (tex_load(&g_textures[g_nr_textures], h))
-		guru_meditation("CAN'T LOAD BITMAP", 0);
+		guru_meditation(DS_STR(0x5ec3), 0);
 	strncpy(g_tex_names[g_nr_textures], name, 12);
 	g_nr_textures++;
 	return &g_textures[g_nr_textures - 1];
@@ -296,7 +296,7 @@ unsigned char far *obj_read_string(unsigned char far *src, char far *dst)
 void obj_load(register signed short idx, signed short id)
 {
 	if ((g_cell_objs[idx] = (struct obj3d far *)mem_alloc(0x2cL)) == 0)
-		guru_meditation("OUT OF MEMORY", 0);
+		guru_meditation(DS_STR(0x5ed5), 0);
 	if (obj_read(id, g_cell_objs[idx]) == 1)
 		obj3d_prepare(g_cell_objs[idx]);
 }

@@ -47,168 +47,32 @@
 /* Phase B: eigene Daten des Moduls (ds:631c..6600, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
 /* BSS ds:cab8..caba: nur O131 benutzt es (die Kampf-Globalen davor ds:c948..cab8 liefert O128, vorher Reststueck DRO131) */
 signed short g_dng03_last_pos;		/* ds:cab8 Feld des letzten Zufallsereignisses */
-struct dxy g_fig_obj_dxy[124] = {
-	{ -1, 6 },
-	{ 4, 7 },
-	{ 3, 7 },
-	{ 4, 7 },
-	{ -4, 7 },
-	{ -4, 7 },
-	{ -4, 7 },
-	{ 2, 7 },
-	{ 0, 6 },
-	{ 1, 12 },
-	{ -1, 17 },
-	{ 4, 22 },
-	{ 4, 27 },
-	{ 3, 32 },
-	{ -4, 28 },
-	{ -4, 22 },
-	{ -4, 17 },
-	{ 0, 13 },
-	{ 1, 14 },
-	{ 1, 23 },
-	{ 0, 6 },
-	{ 0, 6 },
-	{ 0, 5 },
-	{ -1, 6 },
-	{ 0, 5 },
-	{ -1, 5 },
-	{ 0, 5 },
-	{ 0, 5 },
-	{ 0, 6 },
-	{ 0, 6 },
-	{ -1, 5 },
-	{ 0, 5 },
-	{ -1, 4 },
-	{ 0, 4 },
-	{ -1, 4 },
-	{ -1, 3 },
-	{ 0, 4 },
-	{ 0, 3 },
-	{ 0, 6 },
-	{ 0, 6 },
-	{ -1, 5 },
-	{ 1, 5 },
-	{ 0, 5 },
-	{ -2, 5 },
-	{ -2, 5 },
-	{ -1, 6 },
-	{ 4, 7 },
-	{ 4, 7 },
-	{ 4, 7 },
-	{ -4, 6 },
-	{ -4, 6 },
-	{ -4, 6 },
-	{ 0, 6 },
-	{ 0, 6 },
-	{ 1, 12 },
-	{ -1, 7 },
-	{ 4, 7 },
-	{ 4, 7 },
-	{ 4, 7 },
-	{ -4, 7 },
-	{ -4, 7 },
-	{ -4, 7 },
-	{ 0, 7 },
-	{ 0, 7 },
-	{ 0, 13 },
-	{ 3, 8 },
-	{ -3, 6 },
-	{ 1, 2 },
-	{ -3, 6 },
-	{ 1, 3 },
-	{ -1, 5 },
-	{ 1, 4 },
-	{ -4, 6 },
-	{ 3, 5 },
-	{ 0, 5 },
-	{ -2, 5 },
-	{ 0, 4 },
-	{ -8, 5 },
-	{ 1, 4 },
-	{ 7, 5 },
-	{ -4, 7 },
-	{ 3, 4 },
-	{ -7, 8 },
-	{ 3, 4 },
-	{ -7, 8 },
-	{ 4, 4 },
-	{ 0, 3 },
-	{ -1, 13 },
-	{ 0, 5 },
-	{ 34, 5 },
-	{ 35, 42 },
-	{ 0, 2 },
-	{ 0, 2 },
-	{ 0, 0 },
-	{ -5, 16 },
-	{ -5, 11 },
-	{ 0, 6 },
-	{ 14, 6 },
-	{ -4, 6 },
-	{ -5, 11 },
-	{ 0, 6 },
-	{ 0, 6 },
-	{ 0, 6 },
-	{ 0, 6 },
-	{ 0, 6 },
-	{ 0, 6 },
-	{ 0, 6 },
-	{ 0, 6 },
-	{ -1, 4 },
-	{ 0, 4 },
-	{ 0, 4 },
-	{ 1, 4 },
-	{ -2, 4 },
-	{ 0, 4 },
-	{ 0, 4 },
-	{ 1, 4 },
-	{ -1, 4 },
-	{ 0, 4 },
-	{ 0, 4 },
-	{ 1, 4 },
-	{ -1, 4 },
-	{ 0, 4 },
-	{ 0, 4 },
-	{ 1, 4 }
-};
-struct dxy g_fig_tail_dxy[4] = { { -1, 0 }, { 0, 1 }, { 1, 0 }, { 0, -1 } };	/* Schwanzfeld hinter einem Zweifeldgegner mit Blickrichtung 0..3 */
-signed short g_fig_transparent_objs[20] = { 40, 41, 42, 43, 44, 74, 75, 76, 77, 78, 79, 93, 101, 98, 99, 100, 106, 107, 155, -1 };
-signed short g_fig_origin_x = 10;
-signed short g_fig_origin_y = 116;
-signed char g_fig_stand_frames[1][4] = { { 1, 3, 5, 7 } };
-signed char g_fig_hero_stand_wc4[4] = { -77, -75, -73, -71 };
-signed char g_fig_hero_stand_wc6[4] = { -69, -67, -65, -63 };
-signed char g_fig_hero_sleep_frames[4] = { 10, 11, 12, 13 };
-signed char g_fig_stone_frames[4] = { -61, -60, -59, -58 };
-signed char g_fig_step_frames[4] = { 14, 16, 18, 20 };
-signed char g_fig_step2_frames[4] = { 22, 24, 26, 28 };
-signed char g_fig_attack_frames[4] = { 71, 73, 75, 77 };
-signed char g_fig_parry_frames[4] = { 111, 113, 115, 117 };
-signed char g_fig_hero_attack_frames[4][4] = { { 55, 57, 59, 61 }, { 63, 65, 67, 69 }, { 39, 41, 43, 45 }, { 39, 41, 43, 45 } };
-signed char g_fig_action_frames[7][4] = {
-	{ 95, 97, 99, 101 },
-	{ 103, 105, 107, 109 },
-	{ 79, 81, 83, 85 },
-	{ 79, 81, 83, 85 },
-	{ -113, -111, -109, -107 },
-	{ -121, -119, -117, -115 },
-	{ -105, -103, -101, -99 }
-};
-signed char g_fig_spell_frames[2][4] = { { 119, 121, 123, 125 }, { 127, -127, -125, -123 } };
+struct dxy g_fig_obj_dxy[124] = { 0 };
+struct dxy g_fig_tail_dxy[4] = { 0 };	/* Schwanzfeld hinter einem Zweifeldgegner mit Blickrichtung 0..3 */
+signed short g_fig_transparent_objs[20] = { 0 };
+signed short g_fig_origin_x = 0;
+signed short g_fig_origin_y = 0;
+signed char g_fig_stand_frames[1][4] = { 0 };
+signed char g_fig_hero_stand_wc4[4] = { 0 };
+signed char g_fig_hero_stand_wc6[4] = { 0 };
+signed char g_fig_hero_sleep_frames[4] = { 0 };
+signed char g_fig_stone_frames[4] = { 0 };
+signed char g_fig_step_frames[4] = { 0 };
+signed char g_fig_step2_frames[4] = { 0 };
+signed char g_fig_attack_frames[4] = { 0 };
+signed char g_fig_parry_frames[4] = { 0 };
+signed char g_fig_hero_attack_frames[4][4] = { 0 };
+signed char g_fig_action_frames[7][4] = { 0 };
+signed char g_fig_spell_frames[2][4] = { 0 };
 char g_unused_65a0[4] = { 0 };   /* ds:65a0, unbenutzt */
-signed char g_fig_spell_hit_frames[4] = { 30, 32, 34, 36 };
-signed char g_fig_hero_use_frames[4] = { -97, -95, -93, -91 };
-signed char g_fig_hero_throw_frames[4] = { -89, -87, -85, -83 };
-signed char g_fig_hero_pose_frames[4] = { -81, -80, -79, -78 };
-unsigned char g_twofield_mons[13] = { 0x05, 0x23, 0x24, 0x47, 0x4b, 0x5e, 0x69, 0x6c, 0x6e, 0x6f, 0x51, 0x72, 0xff };
-unsigned char g_mons_corpse_blocks[4] = { 0x72, 0x60, 0x61, 0xff };
-unsigned char g_gfx_humanoid[24] = {
-	0x19, 0x1b, 0x1f, 0x20, 0x21, 0x22, 0x2d, 0x2e, 0x2f, 0x30, 0x31, 0x33, 0x34, 0x37, 0x38, 0x39,
-	0x3a, 0x3c, 0x3d, 0x3e, 0x3f, 0x40, 0x41, 0xff
-};
-unsigned char g_gfx_undead[8] = { 0x19, 0x1b, 0x1f, 0x3f, 0x40, 0x26, 0x28, 0xff };
+signed char g_fig_spell_hit_frames[4] = { 0 };
+signed char g_fig_hero_use_frames[4] = { 0 };
+signed char g_fig_hero_throw_frames[4] = { 0 };
+signed char g_fig_hero_pose_frames[4] = { 0 };
+unsigned char g_twofield_mons[13] = { 0 };
+unsigned char g_mons_corpse_blocks[4] = { 0 };
+unsigned char g_gfx_humanoid[24] = { 0 };
+unsigned char g_gfx_undead[8] = { 0 };
 signed short g_fight_flee_all = 0;
 char g_unused_65e7[1] = { 0 };   /* ds:65e7, unbenutzt */
 

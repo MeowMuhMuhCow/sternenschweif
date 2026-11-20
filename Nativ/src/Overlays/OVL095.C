@@ -36,15 +36,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:5d0c..5d46, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-struct col_pos7 g_skill_cols = {
-	{ { 5, 104, 50 },
-	{ 5, 104, 125 },
-	{ 112, 209, 125 },
-	{ 217, 315, 125 },
-	{ 217, 315, 50 },
-	{ 112, 209, 50 },
-	{ 217, 315, 180 } }
-};
+struct col_pos7 g_skill_cols = { 0 };
 
 /* Dieses Modul uebergibt/speichert die Mausbereichstabellen als char far * (ein ?: aus char-Feldern, das in einen
  * void far * umgewandelt wird, ergibt anderen Code: push ds vor dem Test) */

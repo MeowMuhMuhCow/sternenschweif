@@ -48,10 +48,10 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:050e..059c, dsana) - initialisierte Daten in Adressreihenfolge */
-struct str9 g_str_emm = { "EMMXXXX0" };
-char g_err_swap_write[41] = "Error moving memory into XMS (MoveToXMS)";
-char g_err_swap_read[43] = "Error moving memory from XMS (MoveFromXMS)";
-char g_fmt_tex_debug[49] = "Texture %d, XRes %d, YRes %d, Colors %d";
+struct str9 g_str_emm = { 0 };
+char g_err_swap_write[41] = { 0 };
+char g_err_swap_read[43] = { 0 };
+char g_fmt_tex_debug[49] = { 0 };
 /* Phase B: eigenes BSS (ds:8b52..8b56) in Adressreihenfolge */
 signed char g_saved_area_type;
 signed short g_view_timer;

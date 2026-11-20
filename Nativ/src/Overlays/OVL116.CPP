@@ -43,8 +43,8 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:62e4..6318, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-signed char g_anim_slots[30] = "";
-signed char g_anim_slots_extra[10] = "";
+signed char g_anim_slots[30] = { 0 };
+signed char g_anim_slots_extra[10] = { 0 };
 
 void tevent_049(Travel far *o)
 {

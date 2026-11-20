@@ -21,7 +21,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:5ee4..5ee8, dsana) - initialisierte Daten in Adressreihenfolge */
-signed short g_cam_speed_set = 32767;
+signed short g_cam_speed_set = 0;
 signed short g_cam_bounced = 0;
 
 #define ROT(src, ang, dst) { \

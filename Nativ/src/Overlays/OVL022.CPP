@@ -35,16 +35,10 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:11aa..1222, dsana) - initialisierte Daten in Adressreihenfolge */
-signed short g_sfight_pics[29] = {
-	8227, 8254, 8255, 8351, 9074, 16520, 16490, 16527, 16479, 16518, 16519, 24586, 24587, 24585, 24581, 24582,
-	24583, 24584, 24601, 24602, 24603, 24604, 24578, 24579, 24580, 24605, 24606, 24816, -1
-};
-char g_sfight_pic_states[8] = "";
-signed short g_sfight2_pics[24] = {
-	8256, 8257, 8258, 8259, 16490, 16513, -15373, -15372, -15371, -15370, -15369, -15368, -15367, -15366, -15365, -15364,
-	-15363, -15362, -15361, -15360, -15359, -15358, -15357, -1
-};
-char g_sfight2_pic_states[6] = "";
+signed short g_sfight_pics[29] = { 0 };
+char g_sfight_pic_states[8] = { 0 };
+signed short g_sfight2_pics[24] = { 0 };
+char g_sfight2_pic_states[6] = { 0 };
 
 /* Vorlage als long beschreiben (Original: Felder +0x23/+0x27 als long -> mov dword / mov eax) */
 #define TMPL_ANIM_L	(*(signed long far *)&p->tmpl.anim)

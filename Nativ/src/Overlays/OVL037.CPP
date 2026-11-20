@@ -40,8 +40,8 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:3e70..3e86, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-unsigned long g_save_count = 1;	/* ds:3e70 je Speichern + 100 (SEG001 savemenu_save), sonst nicht gelesen */
-signed short g_file_last_id = -21555;
+unsigned long g_save_count = 0;	/* ds:3e70 je Speichern + 100 (SEG001 savemenu_save), sonst nicht gelesen */
+signed short g_file_last_id = 0;
 
 #define FMT_CD_PATH	g_file_names[4]		/* "X:\DATA\%s" (CD-Laufwerk) */
 #define FMT_CTEMP_PATH	g_file_names[5]		/* "..\CTEMP\%s" */

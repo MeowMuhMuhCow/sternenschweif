@@ -36,7 +36,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:0500..050e, dsana) - initialisierte Daten in Adressreihenfolge */
-signed short g_inv_warn_enabled = 1;
+signed short g_inv_warn_enabled = 0;
 signed long g_warn_blink_time = 0;
 signed char g_warn_blink_init = 0;
 signed long g_warn_snd_time = 0;

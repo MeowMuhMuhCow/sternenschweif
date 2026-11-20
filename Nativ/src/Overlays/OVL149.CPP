@@ -31,8 +31,8 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:6c16..6c36, dsana) - initialisierte Daten in Adressreihenfolge */
-struct dirs4 g_fig_dirs_enemy = { { { 1, 0 }, { 0, -1 }, { -1, 0 }, { 0, 1 } } };	/* Kampffeld-Richtung 0: x+1, 1: y-1, 2: x-1, 3: y+1 */
-struct dirs4 g_fig_dirs_hero = { { { 1, 0 }, { 0, -1 }, { -1, 0 }, { 0, 1 } } };	/* Kampffeld-Richtung 0: x+1, 1: y-1, 2: x-1, 3: y+1 */
+struct dirs4 g_fig_dirs_enemy = { 0 };	/* Kampffeld-Richtung 0: x+1, 1: y-1, 2: x-1, 3: y+1 */
+struct dirs4 g_fig_dirs_hero = { 0 };	/* Kampffeld-Richtung 0: x+1, 1: y-1, 2: x-1, 3: y+1 */
 
 void fig_enemy_move(FIGHT_PTR f, struct enemy far *e)
 {

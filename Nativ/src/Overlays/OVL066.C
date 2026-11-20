@@ -35,7 +35,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:57b4..57dc, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-struct hero_ptrs7 g_dng14_hero_ptrs_null = { { 0, 0, 0, 0, 0, 0, 0 } };
+struct hero_ptrs7 g_dng14_hero_ptrs_null = { 0 };
 
 signed short dng14_handler(struct area_events far *ev, struct map_event far *mev)
 {

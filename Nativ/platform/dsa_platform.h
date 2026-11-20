@@ -50,6 +50,8 @@ void dsa_platform_set_tick_hook(void (*hook)(void));
 /* Dateizugriff relativ zur GOG-/Originalinstallation */
 void        dsa_platform_set_gamedir(const char *path);
 const char *dsa_platform_get_gamedir(void);
+int         dsa_platform_is_gamedir_explicit(void);
+void        dsa_platform_resolve_gamedir(void);
 int         dsa_platform_resolve_path(const char *dos_path, char *out_path, size_t out_size);
 
 /* CD-Audio: MUSIC/TrackNN.ogg der GOG-Fassung (stb_vorbis, waveOut) */

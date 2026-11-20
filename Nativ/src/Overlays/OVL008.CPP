@@ -41,123 +41,15 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:0172..0500, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-signed short g_inv_status_slots[5] = { 14, 6, 30, 29, -1 };
-struct point g_inv_slot_xy[33] = {
-	{ 98, 56 },
-	{ 86, 75 },
-	{ 89, 105 },
-	{ 96, 124 },
-	{ 96, 143 },
-	{ 91, 162 },
-	{ 91, 181 },
-	{ 121, 103 },
-	{ 142, 54 },
-	{ 161, 70 },
-	{ 161, 89 },
-	{ 154, 108 },
-	{ 148, 127 },
-	{ 148, 146 },
-	{ 150, 178 },
-	{ 10, 50 },
-	{ 29, 50 },
-	{ 10, 68 },
-	{ 29, 68 },
-	{ 10, 86 },
-	{ 29, 86 },
-	{ 10, 104 },
-	{ 29, 104 },
-	{ 10, 122 },
-	{ 29, 122 },
-	{ 10, 140 },
-	{ 29, 140 },
-	{ 10, 158 },
-	{ 29, 158 },
-	{ 10, 176 },
-	{ 29, 176 },
-	{ 108, 39 },
-	{ 129, 39 }
-};
-char g_inv_mouse_knapsack[80] = {
-	0x59, 0x00, 0x06, 0x00, 0xb4, 0x00, 0x0d, 0x00, 0xa1, 0x00, 0x00, 0x00, 0x00, 0x00, 0x19, 0x00,
-	0x30, 0x00, 0x00, 0x4b, 0x1e, 0x00, 0x00, 0x00, 0x3c, 0x00, 0x30, 0x00, 0x00, 0x4d, 0x52, 0x00,
-	0x1d, 0x00, 0xb8, 0x00, 0x25, 0x00, 0x7a, 0x00, 0x78, 0x00, 0x32, 0x00, 0x8c, 0x00, 0x3c, 0x00,
-	0x7b, 0x00, 0x59, 0x00, 0x56, 0x00, 0xb8, 0x00, 0x5c, 0x00, 0xa2, 0x00, 0x59, 0x00, 0xb8, 0x00,
-	0xb8, 0x00, 0xbe, 0x00, 0x7c, 0x00, 0x59, 0x00, 0xbf, 0x00, 0xb8, 0x00, 0xc7, 0x00, 0x7d, 0x00
-};
-struct mouse_area g_inv_areas_knapsack[18] = {	/* Rucksackplaetze 15..30 (Lage aus g_inv_slot_xy, zur Laufzeit), Rest, Ende */
-	{ g_inv_slot_xy[15].x, g_inv_slot_xy[15].y, g_inv_slot_xy[15].x + 17, g_inv_slot_xy[15].y + 17, 143 },
-	{ g_inv_slot_xy[16].x, g_inv_slot_xy[16].y, g_inv_slot_xy[16].x + 17, g_inv_slot_xy[16].y + 17, 144 },
-	{ g_inv_slot_xy[17].x, g_inv_slot_xy[17].y, g_inv_slot_xy[17].x + 17, g_inv_slot_xy[17].y + 17, 145 },
-	{ g_inv_slot_xy[18].x, g_inv_slot_xy[18].y, g_inv_slot_xy[18].x + 17, g_inv_slot_xy[18].y + 17, 146 },
-	{ g_inv_slot_xy[19].x, g_inv_slot_xy[19].y, g_inv_slot_xy[19].x + 17, g_inv_slot_xy[19].y + 17, 147 },
-	{ g_inv_slot_xy[20].x, g_inv_slot_xy[20].y, g_inv_slot_xy[20].x + 17, g_inv_slot_xy[20].y + 17, 148 },
-	{ g_inv_slot_xy[21].x, g_inv_slot_xy[21].y, g_inv_slot_xy[21].x + 17, g_inv_slot_xy[21].y + 17, 149 },
-	{ g_inv_slot_xy[22].x, g_inv_slot_xy[22].y, g_inv_slot_xy[22].x + 17, g_inv_slot_xy[22].y + 17, 150 },
-	{ g_inv_slot_xy[23].x, g_inv_slot_xy[23].y, g_inv_slot_xy[23].x + 17, g_inv_slot_xy[23].y + 17, 151 },
-	{ g_inv_slot_xy[24].x, g_inv_slot_xy[24].y, g_inv_slot_xy[24].x + 17, g_inv_slot_xy[24].y + 17, 152 },
-	{ g_inv_slot_xy[25].x, g_inv_slot_xy[25].y, g_inv_slot_xy[25].x + 17, g_inv_slot_xy[25].y + 17, 153 },
-	{ g_inv_slot_xy[26].x, g_inv_slot_xy[26].y, g_inv_slot_xy[26].x + 17, g_inv_slot_xy[26].y + 17, 154 },
-	{ g_inv_slot_xy[27].x, g_inv_slot_xy[27].y, g_inv_slot_xy[27].x + 17, g_inv_slot_xy[27].y + 17, 155 },
-	{ g_inv_slot_xy[28].x, g_inv_slot_xy[28].y, g_inv_slot_xy[28].x + 17, g_inv_slot_xy[28].y + 17, 156 },
-	{ g_inv_slot_xy[29].x, g_inv_slot_xy[29].y, g_inv_slot_xy[29].x + 17, g_inv_slot_xy[29].y + 17, 157 },
-	{ g_inv_slot_xy[30].x, g_inv_slot_xy[30].y, g_inv_slot_xy[30].x + 17, g_inv_slot_xy[30].y + 17, 158 },
-	{ 0, 0, 319, 199, 0x7e },
-	{ -1, -1, -1, -1, -1 }
-};
-char g_inv_mouse_all[30] = {
-	0x00, 0x00, 0x00, 0x00, 0x19, 0x00, 0x30, 0x00, 0x00, 0x4b, 0x1e, 0x00, 0x00, 0x00, 0x3c, 0x00,
-	0x30, 0x00, 0x00, 0x4d, 0x52, 0x00, 0x1d, 0x00, 0xb8, 0x00, 0x25, 0x00, 0x7a, 0x00
-};
-struct mouse_area g_inv_areas_all[35] = {	/* alle 33 Plaetze (Lage aus g_inv_slot_xy, zur Laufzeit), Rest, Ende */
-	{ g_inv_slot_xy[0].x, g_inv_slot_xy[0].y, g_inv_slot_xy[0].x + 17, g_inv_slot_xy[0].y + 17, 128 },
-	{ g_inv_slot_xy[1].x, g_inv_slot_xy[1].y, g_inv_slot_xy[1].x + 17, g_inv_slot_xy[1].y + 17, 129 },
-	{ g_inv_slot_xy[2].x, g_inv_slot_xy[2].y, g_inv_slot_xy[2].x + 17, g_inv_slot_xy[2].y + 17, 130 },
-	{ g_inv_slot_xy[3].x, g_inv_slot_xy[3].y, g_inv_slot_xy[3].x + 17, g_inv_slot_xy[3].y + 17, 131 },
-	{ g_inv_slot_xy[4].x, g_inv_slot_xy[4].y, g_inv_slot_xy[4].x + 17, g_inv_slot_xy[4].y + 17, 132 },
-	{ g_inv_slot_xy[5].x, g_inv_slot_xy[5].y, g_inv_slot_xy[5].x + 17, g_inv_slot_xy[5].y + 17, 133 },
-	{ g_inv_slot_xy[6].x, g_inv_slot_xy[6].y, g_inv_slot_xy[6].x + 17, g_inv_slot_xy[6].y + 17, 134 },
-	{ g_inv_slot_xy[7].x, g_inv_slot_xy[7].y, g_inv_slot_xy[7].x + 17, g_inv_slot_xy[7].y + 17, 135 },
-	{ g_inv_slot_xy[8].x, g_inv_slot_xy[8].y, g_inv_slot_xy[8].x + 17, g_inv_slot_xy[8].y + 17, 136 },
-	{ g_inv_slot_xy[9].x, g_inv_slot_xy[9].y, g_inv_slot_xy[9].x + 17, g_inv_slot_xy[9].y + 17, 137 },
-	{ g_inv_slot_xy[10].x, g_inv_slot_xy[10].y, g_inv_slot_xy[10].x + 17, g_inv_slot_xy[10].y + 17, 138 },
-	{ g_inv_slot_xy[11].x, g_inv_slot_xy[11].y, g_inv_slot_xy[11].x + 17, g_inv_slot_xy[11].y + 17, 139 },
-	{ g_inv_slot_xy[12].x, g_inv_slot_xy[12].y, g_inv_slot_xy[12].x + 17, g_inv_slot_xy[12].y + 17, 140 },
-	{ g_inv_slot_xy[13].x, g_inv_slot_xy[13].y, g_inv_slot_xy[13].x + 17, g_inv_slot_xy[13].y + 17, 141 },
-	{ g_inv_slot_xy[14].x, g_inv_slot_xy[14].y, g_inv_slot_xy[14].x + 17, g_inv_slot_xy[14].y + 17, 142 },
-	{ g_inv_slot_xy[15].x, g_inv_slot_xy[15].y, g_inv_slot_xy[15].x + 17, g_inv_slot_xy[15].y + 17, 143 },
-	{ g_inv_slot_xy[16].x, g_inv_slot_xy[16].y, g_inv_slot_xy[16].x + 17, g_inv_slot_xy[16].y + 17, 144 },
-	{ g_inv_slot_xy[17].x, g_inv_slot_xy[17].y, g_inv_slot_xy[17].x + 17, g_inv_slot_xy[17].y + 17, 145 },
-	{ g_inv_slot_xy[18].x, g_inv_slot_xy[18].y, g_inv_slot_xy[18].x + 17, g_inv_slot_xy[18].y + 17, 146 },
-	{ g_inv_slot_xy[19].x, g_inv_slot_xy[19].y, g_inv_slot_xy[19].x + 17, g_inv_slot_xy[19].y + 17, 147 },
-	{ g_inv_slot_xy[20].x, g_inv_slot_xy[20].y, g_inv_slot_xy[20].x + 17, g_inv_slot_xy[20].y + 17, 148 },
-	{ g_inv_slot_xy[21].x, g_inv_slot_xy[21].y, g_inv_slot_xy[21].x + 17, g_inv_slot_xy[21].y + 17, 149 },
-	{ g_inv_slot_xy[22].x, g_inv_slot_xy[22].y, g_inv_slot_xy[22].x + 17, g_inv_slot_xy[22].y + 17, 150 },
-	{ g_inv_slot_xy[23].x, g_inv_slot_xy[23].y, g_inv_slot_xy[23].x + 17, g_inv_slot_xy[23].y + 17, 151 },
-	{ g_inv_slot_xy[24].x, g_inv_slot_xy[24].y, g_inv_slot_xy[24].x + 17, g_inv_slot_xy[24].y + 17, 152 },
-	{ g_inv_slot_xy[25].x, g_inv_slot_xy[25].y, g_inv_slot_xy[25].x + 17, g_inv_slot_xy[25].y + 17, 153 },
-	{ g_inv_slot_xy[26].x, g_inv_slot_xy[26].y, g_inv_slot_xy[26].x + 17, g_inv_slot_xy[26].y + 17, 154 },
-	{ g_inv_slot_xy[27].x, g_inv_slot_xy[27].y, g_inv_slot_xy[27].x + 17, g_inv_slot_xy[27].y + 17, 155 },
-	{ g_inv_slot_xy[28].x, g_inv_slot_xy[28].y, g_inv_slot_xy[28].x + 17, g_inv_slot_xy[28].y + 17, 156 },
-	{ g_inv_slot_xy[29].x, g_inv_slot_xy[29].y, g_inv_slot_xy[29].x + 17, g_inv_slot_xy[29].y + 17, 157 },
-	{ g_inv_slot_xy[30].x, g_inv_slot_xy[30].y, g_inv_slot_xy[30].x + 17, g_inv_slot_xy[30].y + 17, 158 },
-	{ g_inv_slot_xy[31].x, g_inv_slot_xy[31].y, g_inv_slot_xy[31].x + 20, g_inv_slot_xy[31].y + 16, 159 },
-	{ g_inv_slot_xy[32].x, g_inv_slot_xy[32].y, g_inv_slot_xy[32].x + 20, g_inv_slot_xy[32].y + 16, 160 },
-	{ 0, 0, 319, 199, 0x7e },
-	{ -1, -1, -1, -1, -1 }
-};
-char g_areas_sheet[40] = {
-	0x00, 0x00, 0x00, 0x00, 0x19, 0x00, 0x30, 0x00, 0x00, 0x4b, 0x1e, 0x00, 0x00, 0x00, 0x3c, 0x00,
-	0x30, 0x00, 0x00, 0x4d, 0x00, 0x00, 0x00, 0x00, 0x3f, 0x01, 0xc7, 0x00, 0x7e, 0x00, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
-};
-char g_cl_inventory[70] = {
-	0x30, 0x20, 0x31, 0x20, 0x32, 0x20, 0x33, 0x20, 0x34, 0x20, 0x35, 0x20, 0x36, 0x20, 0xa1, 0x21,
-	0x37, 0x20, 0x38, 0x20, 0x39, 0x20, 0x3a, 0x20, 0x3b, 0x20, 0x3c, 0x20, 0x3d, 0x20, 0xa2, 0x21,
-	0xa0, 0x21, 0x67, 0x23, 0xe2, 0x22, 0xd9, 0x24, 0x9c, 0x20, 0xf8, 0x21, 0x73, 0x40, 0x72, 0x40,
-	0x83, 0x40, 0x82, 0x40, 0x74, 0x40, 0xaf, 0x40, 0xb0, 0x40, 0xb1, 0x40, 0xb2, 0x40, 0xb3, 0x40,
-	0xb4, 0x40, 0x21, 0xc4, 0xff, 0xff
-};
-char g_cl_inventory_st[10] = "";
+signed short g_inv_status_slots[5] = { 0 };
+struct point g_inv_slot_xy[33] = { 0 };
+char g_inv_mouse_knapsack[80] = { 0 };
+struct mouse_area g_inv_areas_knapsack[18] = { 0 };
+char g_inv_mouse_all[30] = { 0 };
+struct mouse_area g_inv_areas_all[35] = { 0 };
+char g_areas_sheet[40] = { 0 };
+char g_cl_inventory[70] = { 0 };
+char g_cl_inventory_st[10] = { 0 };
 
 /* Heldenbogen-/Inventarobjekt mit echten Elementobjekten Nvf/Pic: struct inv_sheet (s_class.h) fuehrt nvf/pic als
  * Bytefelder (O094 castet), der Konstruktor braucht aber die Ktor-/Dtor-Aufrufe der Elemente - daher diese Sicht

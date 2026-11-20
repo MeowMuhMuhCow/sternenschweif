@@ -40,7 +40,7 @@
 
 /* Phase B: eigene Daten des Moduls (ds:5a0e..5a80, dsana) - initialisierte Daten in Adressreihenfolge */
 signed short g_quiet = 0;
-signed short g_items_keep[3] = { 255, 256, -1 };
+signed short g_items_keep[3] = { 0 };
 /* ds:5a16..5a80: BCC-Vorlagen der lokalen Tabellen gear und by_type in startup_equipment */
 
 #define NEWLINE() strcat(g_text_output_buf, g_ttx[0x160])
@@ -318,22 +318,12 @@ void startup_equipment(struct hero far *h, signed short unused)
 {
 	signed char type;
 	signed short i;
-	signed short gear[5] = { ITEM_WATERSKIN, ITEM_FOOD_PACKAGE, ITEM_FOOD_PACKAGE, ITEM_BLANKET, ITEM_TROUSERS };	/* Grundausstattung jedes Helden */
+	signed short gear[5];	/* Grundausstattung jedes Helden (ds:5a16) */
 	signed short pos = 0x12;
-	signed short by_type[12][4] = {	/* je Heldentyp 1..12 (Index type - 1), -1 = Ende */
-		{ ITEM_DAGGER, ITEM_THROWING_KNIFE, ITEM_THROWING_KNIFE, -1 },	/* HERO_TYPE_JUGGLER */
-		{ ITEM_LONGBOW, ITEM_DAGGER, -1, -1 },	/* HERO_TYPE_HUNTER */
-		{ ITEM_SWORD, ITEM_DAGGER, ITEM_LEATHER_ARMOR, -1 },	/* HERO_TYPE_WARRIOR */
-		{ ITEM_RAPIER, ITEM_DAGGER, ITEM_PICKLOCKS, -1 },	/* HERO_TYPE_ESTRAY */
-		{ ITEM_SKRAJA, ITEM_SABRE, ITEM_BRANDY, -1 },	/* HERO_TYPE_THORWALIAN */
-		{ ITEM_MACE, ITEM_CROWBAR, ITEM_HAMMER, -1 },	/* HERO_TYPE_DWARF */
-		{ ITEM_WITCHES_BROOM, ITEM_EINBEERE, ITEM_EINBEERE, -1 },	/* HERO_TYPE_WITCH */
-		{ ITEM_OBSIDIAN_DAGGER, ITEM_WHIRLWEED, ITEM_JORUGA_ROOT, -1 },	/* HERO_TYPE_DRUID */
-		{ ITEM_MAGE_STAFF, ITEM_DAGGER, ITEM_WRITING_SET, ITEM_ROBE },	/* HERO_TYPE_MAGE */
-		{ ITEM_LONGBOW, ITEM_RAPIER, ITEM_HARP, -1 },	/* HERO_TYPE_GREEN_ELF */
-		{ ITEM_SEAL_KILLER, ITEM_SPEAR, ITEM_FLUTE, -1 },	/* HERO_TYPE_ICE_ELF */
-		{ ITEM_LONGBOW, ITEM_KNIFE, ITEM_FLUTE, -1 } 	/* HERO_TYPE_SYLVAN_ELF */
-	};
+	signed short by_type[12][4];	/* je Heldentyp 1..12 (Index type - 1), -1 = Ende (ds:5a20) */
+
+	memcpy(gear, &g_schweif_dgroup[0x5a16], sizeof(gear));
+	memcpy(by_type, &g_schweif_dgroup[0x5a20], sizeof(by_type));
 
 	if (h->start_gear == 0) {
 		diary_unlock(g_diary);

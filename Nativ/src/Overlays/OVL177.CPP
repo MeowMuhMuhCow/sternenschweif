@@ -35,22 +35,18 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:6d18..6e44, dsana) - initialisierte Daten in Adressreihenfolge */
-signed char g_fig_msg_colors[24] = { 0, -5, -5, -8, -8, -12, -21, -6, -3, -7, -42, -4, -7, -3, -3, -4, -4, -3, -3, -4, -4, -7, -7, 0 };
-struct portrait_idx12 g_dsa1_pics_m = { { 0, 0, 6, 12, 18, 24, 30, 36, 42, 48, 54, 62 } };
-struct portrait_idx11 g_dsa1_pics_f = { { 0, 3, 9, 15, 21, 27, 34, 37, 46, 51, 58 } };
-char g_str_roa_game[9] = "ROA GAME";
-signed short g_dsa1_words_v1[8] = { 20, 78, 80, 82, 84, 141, 712, -1 };
-signed short g_dsa1_longs_v1[5] = { 24, 28, 123, 127, -1 };
-signed short g_dsa1_words[8] = { 36, 94, 96, 98, 100, 157, 728, -1 };
-signed short g_dsa1_longs[5] = { 40, 44, 139, 143, -1 };
-struct item_list23 g_dsa1_slot_map = { { 0, 1, 10, 3, 12, 5, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 } };
-struct item_list25 g_dsa1_drop_items = {
-	{ 29, 120, 164, 170, 176, 179, 181, 187, 192, 194, 195, 201, 208, 209, 210, 211, 212, 219, 221, 222, 224, 225, 235, 247, -1 }
-};
-struct item_list23 g_dsa1_slot_map_v1 = { { 0, 1, 10, 3, 12, 5, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 } };
-struct item_list25 g_dsa1_drop_items_v1 = {
-	{ 29, 120, 164, 170, 176, 179, 181, 187, 192, 194, 195, 201, 208, 209, 210, 211, 212, 219, 221, 222, 224, 225, 235, 247, -1 }
-};
+signed char g_fig_msg_colors[24] = { 0 };
+struct portrait_idx12 g_dsa1_pics_m = { 0 };
+struct portrait_idx11 g_dsa1_pics_f = { 0 };
+char g_str_roa_game[9] = { 0 };
+signed short g_dsa1_words_v1[8] = { 0 };
+signed short g_dsa1_longs_v1[5] = { 0 };
+signed short g_dsa1_words[8] = { 0 };
+signed short g_dsa1_longs[5] = { 0 };
+struct item_list23 g_dsa1_slot_map = { 0 };
+struct item_list25 g_dsa1_drop_items = { 0 };
+struct item_list23 g_dsa1_slot_map_v1 = { 0 };
+struct item_list25 g_dsa1_drop_items_v1 = { 0 };
 /* Phase B: eigenes BSS (ds:cb00..cb1a) in Adressreihenfolge */
 signed short g_sfight_ofs_x;
 signed short g_sfight_ofs_y;

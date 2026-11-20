@@ -38,39 +38,10 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:6668..6882, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-struct fight_def g_fight_defs_ab[7] = {	/* Kaempfe 0xab..0xb1 (Index Kampfnummer - 0xab); 0xab: Zufallsbegegnung,
-					   Gruppen von O072/O129, nach dem Kampf geloescht (O143) */
-	{ 0, { 0, 0 }, { 0 },
-	  { 0 }, 0, 0, 0 },	/* 0xab */
-	{ 0, { 0, 0 }, { { 92, 1, 2, 0 } },
-	  { 0 }, 0, 0, 0 },	/* 0xac */
-	{ 0, { 0, 0 }, { { 102, 1, 1, 0 }, { 92, 1, 1, 0 }, { 63, 1, 2, 0 }, { 85, 1, 2, 0 }, { 88, 1, 0, 0 } },
-	  { 0 }, 0, 0, 0 },	/* 0xad */
-	{ 0, { 0, 0 }, { { 65, 5, 1, 0 }, { 45, 5, 2, 0 }, { 2, 5, 0, 0 }, { 3, 5, 1, 0 } },
-	  { 0 }, 0, 0, 0 },	/* 0xae */
-	{ 0, { 1, 0 }, { { 65, 5, 1, 0 }, { 45, 1, 2, 0 } },
-	  { ITEM_OBSIDIAN_DAGGER, ITEM_TORCH_ON }, 6, 0, 0 },	/* 0xaf */
-	{ 0, { 2, 0 }, { { 7, 1, 1, 0 }, { 11, 6, 2, 0 } },
-	  { 0 }, 0, 0, 0 },	/* 0xb0 */
-	{ 0, { 3, 0 }, { { 12, 3, 2, 0 }, { 13, 1, 0, 0 }, { 14, 1, 2, 0 } },
-	  { ITEM_ARAX_POISON }, 45, 0, 0 } 	/* 0xb1 */
-};
-struct range8 g_fig_ranges[3] = { { 3, 6 }, { 6, 12 }, { 13, 99 } };
-struct cxy g_fig_entry_pos[5] = { { 10, 17 }, { 18, 9 }, { 10, 2 }, { 3, 9 }, { 10, 10 } };
-struct cxy g_env_cell_offs[12] = {
-	{ 0, 3 },
-	{ 1, 3 },
-	{ 2, 3 },
-	{ 3, 3 },
-	{ 3, 2 },
-	{ 3, 1 },
-	{ 3, 0 },
-	{ 2, 0 },
-	{ 1, 0 },
-	{ 0, 0 },
-	{ 0, 1 },
-	{ 0, 2 }
-};
+struct fight_def g_fight_defs_ab[7] = { 0 };
+struct range8 g_fig_ranges[3] = { 0 };
+struct cxy g_fig_entry_pos[5] = { 0 };
+struct cxy g_env_cell_offs[12] = { 0 };
 signed short g_fight_env_build = 0;
 /* Phase B: eigenes BSS (ds:caba..cb00) in Adressreihenfolge */
 signed char g_env_side;

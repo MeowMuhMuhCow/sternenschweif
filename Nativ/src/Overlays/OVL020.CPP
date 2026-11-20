@@ -28,118 +28,15 @@
 
 /* Phase B: eigene Daten des Moduls (ds:0fa6..118c, dsana) - initialisierte Daten in Adressreihenfolge */
 signed short g_finster_anger_stage = 0;
-struct sfight_frames g_sfight_frames = { { 78, 102, 104, 106, 107, 103, 105 } };
-struct frame_events8 g_sfight_intro_events = { { { 0x00, 1 }, { 0x07, 2 }, { 0x09, 3 }, { 0x0b, 4 }, { 0x0c, 5 }, { 0x10, 6 }, { 0x11, 7 }, { 0x00, 8 } } };
-struct frame_events6 g_sfight_end_events = { { { 0x00, 1 }, { 0x01, 2 }, { 0x02, 3 }, { 0x03, 4 }, { 0x04, 5 }, { 0x00, 6 } } };
-char g_unused_0fd2[2] = { 0xff, 0xff };   /* ds:0fd2, unbenutzt */
-struct point g_sfight_targets_b[3] = { { 2, 10 }, { 2, 9 }, { -1, -1 } };
-struct point g_sfight_targets_c[3] = { { 6, 17 }, { 7, 17 }, { -1, -1 } };
-struct point g_sfight_targets_d[3] = { { 6, 17 }, { 7, 17 }, { -1, -1 } };
-struct point g_sfight_targets_a[22] = {
-	{ 1, 9 },
-	{ 2, 9 },
-	{ 3, 9 },
-	{ 3, 8 },
-	{ 4, 8 },
-	{ 5, 8 },
-	{ 6, 8 },
-	{ 7, 8 },
-	{ 7, 9 },
-	{ 8, 8 },
-	{ 9, 8 },
-	{ 9, 9 },
-	{ 9, 10 },
-	{ 9, 11 },
-	{ 9, 12 },
-	{ 8, 12 },
-	{ 9, 13 },
-	{ 9, 14 },
-	{ 9, 15 },
-	{ 8, 16 },
-	{ 9, 16 },
-	{ -1, -1 }
-};
-struct point g_sfight_targets_far[79] = {
-	{ 7, 0 },
-	{ 7, 1 },
-	{ 7, 2 },
-	{ 7, 3 },
-	{ 7, 4 },
-	{ 7, 5 },
-	{ 7, 6 },
-	{ 7, 7 },
-	{ 8, 0 },
-	{ 8, 1 },
-	{ 8, 2 },
-	{ 8, 3 },
-	{ 8, 4 },
-	{ 8, 5 },
-	{ 8, 6 },
-	{ 8, 7 },
-	{ 9, 0 },
-	{ 9, 1 },
-	{ 9, 2 },
-	{ 9, 3 },
-	{ 9, 4 },
-	{ 9, 5 },
-	{ 9, 6 },
-	{ 9, 7 },
-	{ 11, 11 },
-	{ 10, 12 },
-	{ 10, 5 },
-	{ 11, 4 },
-	{ 12, 3 },
-	{ 13, 2 },
-	{ 14, 1 },
-	{ 15, 0 },
-	{ 10, 6 },
-	{ 11, 5 },
-	{ 12, 4 },
-	{ 13, 3 },
-	{ 14, 2 },
-	{ 15, 1 },
-	{ 16, 0 },
-	{ 10, 7 },
-	{ 11, 6 },
-	{ 12, 5 },
-	{ 13, 4 },
-	{ 14, 3 },
-	{ 15, 2 },
-	{ 16, 1 },
-	{ 10, 8 },
-	{ 11, 7 },
-	{ 12, 6 },
-	{ 13, 5 },
-	{ 14, 4 },
-	{ 15, 3 },
-	{ 16, 2 },
-	{ 10, 9 },
-	{ 11, 8 },
-	{ 12, 7 },
-	{ 13, 6 },
-	{ 14, 5 },
-	{ 15, 4 },
-	{ 16, 3 },
-	{ 11, 9 },
-	{ 12, 8 },
-	{ 13, 7 },
-	{ 14, 6 },
-	{ 15, 5 },
-	{ 16, 4 },
-	{ 17, 3 },
-	{ 10, 10 },
-	{ 11, 10 },
-	{ 12, 10 },
-	{ 13, 10 },
-	{ 14, 10 },
-	{ 15, 10 },
-	{ 16, 10 },
-	{ 17, 10 },
-	{ 18, 10 },
-	{ 19, 10 },
-	{ 20, 10 },
-	{ -1, -1 }
-};
+struct sfight_frames g_sfight_frames = { 0 };
+struct frame_events8 g_sfight_intro_events = { 0 };
+struct frame_events6 g_sfight_end_events = { 0 };
+char g_unused_0fd2[2] = { 0 };   /* ds:0fd2, unbenutzt */
+struct point g_sfight_targets_b[3] = { 0 };
+struct point g_sfight_targets_c[3] = { 0 };
+struct point g_sfight_targets_d[3] = { 0 };
+struct point g_sfight_targets_a[22] = { 0 };
+struct point g_sfight_targets_far[79] = { 0 };
 /* Phase B: eigenes BSS (ds:8b76..8b7a) in Adressreihenfolge */
 signed short g_sfight_show_text;
 signed short g_sfight_hide_text;

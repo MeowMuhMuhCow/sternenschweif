@@ -35,13 +35,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:729a..72cc, dsana) - initialisierte Daten in Adressreihenfolge */
-struct mouse_area g_sel_list_areas[5] = {
-	{ 92, 68, 210, 147, 1 },
-	{ 215, 65, 228, 73, 2 },
-	{ 215, 142, 228, 150, 3 },
-	{ 217, 76, 226, 139, 4 },
-	{ -1, -1, -1, -1, -1 }
-};
+struct mouse_area g_sel_list_areas[5] = { 0 };
 
 int sel_compar(const void far *a, const void far *b)
 {

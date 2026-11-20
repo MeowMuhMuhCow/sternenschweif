@@ -43,26 +43,9 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:605c..60fe, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-signed char g_diary_ctrl[4] = {		/* Steuerzeichen im Tagebuchtext */
-	(signed char)0xa0,			/* Seitenkopf */
-	(signed char)0xa1,			/* Eintrag */
-	(signed char)0xa2,			/* eigener Eintrag */
-	(signed char)0xa3			/* Ende eines Eintrags */
-};
-signed char g_diary_tag[6] = {		/* Namensmarken (Kennung des Begriffs folgt), je Suchkapitel */
-	(signed char)0xa4, (signed char)0xa5, (signed char)0xa6, (signed char)0xa7, (signed char)0xa8, (signed char)0xa9
-};
-struct mouse_area g_diary_areas[9] = {	/* Mausbereiche des Tagebuchs (x0, y0, x1, y1, Aktion) */
-	{ 80, 16, 180, 23, 1 },
-	{ 288, 13, 313, 38, 2 },
-	{ 288, 44, 313, 69, 3 },
-	{ 288, 75, 313, 100, 4 },
-	{ 288, 106, 313, 131, 5 },
-	{ 288, 137, 313, 162, 6 },
-	{ 288, 168, 313, 193, 7 },
-	{ 0, 0, 319, 199, 255 },
-	{ -1, -1, -1, -1, -1 }
-};
+signed char g_diary_ctrl[4] = { 0 };
+signed char g_diary_tag[6] = { 0 };
+struct mouse_area g_diary_areas[9] = { 0 };
 /* Phase B: eigenes BSS (ds:c918..c948) in Adressreihenfolge */
 struct talk_desc g_talk;
 void far *g_diary_saved_areas;

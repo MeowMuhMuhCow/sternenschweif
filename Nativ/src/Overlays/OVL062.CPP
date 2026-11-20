@@ -49,9 +49,9 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:575e..579a, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-struct dng_target g_dng11_kobold_dest_single[1] = { { 10, 1, 11, 0 } };
-struct dng_target g_dng11_kobold_dest_split[2] = { { 18, 13, 11, 0 }, { 11, 6, 11, 0 } };
-struct dng_target g_dng11_kobold_dest_far[3] = { { 9, 4, 10, 0 }, { 18, 5, 12, 0 }, { 2, 1, 12, 0 } };
+struct dng_target g_dng11_kobold_dest_single[1] = { 0 };
+struct dng_target g_dng11_kobold_dest_split[2] = { 0 };
+struct dng_target g_dng11_kobold_dest_far[3] = { 0 };
 
 void dng11_lever_floor(struct area_events far *ev)
 {

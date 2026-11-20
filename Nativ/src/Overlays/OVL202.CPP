@@ -38,7 +38,7 @@
  *   (count_free_knapsack, any_in_jail) ganz ohne register: erste Variable SI, zweite DI bzw. CX, Block-Local CX.
  * - give_item: "max_tries = n * 3" -> mov ax,si / shl ax,1 / add ax,si. "(n > 1 ? 4 : 0) + 2" als erstes Argument.
  * - save: Zeiger -> Index "h - g_heroes + 4" (far-Zeigerdifferenz als long: xor dx / sub / sbb / idiv ebx,
- *   Ergebnis long -> far-Zeiger per shld); load: "g_heroes + (signed short)h - 4" (add bx,0e844h). Zaehler in load
+ *   Ergebnis long -> far-Zeiger per shld); load: "g_heroes + (signed short)(uintptr_t)h - 4" (add bx,0e844h). Zaehler in load
  *   unsigned (jc), dieselbe Variable wie die gelesene Laenge. memcpy(saved, heroes) mit -Oi -> rep movsw.
  * - hero_dismiss: Original uebergibt v als short (push word), s_proto.h hat signed char (mov al / push ax) ->
  *   Aufruf ueber gecasteten Funktionszeiger. Gleichnamige freie Funktion drop_item mit "::" aufrufen.
@@ -595,7 +595,7 @@ signed short group::load()
 		_read(g_save_fd, this, n);
 		for (n = 0, h = heroes[0]; n < 7; h = heroes[++n]) {
 			if (h != 0)
-				heroes[n] = g_heroes + (signed short)h - 4;
+				heroes[n] = g_heroes + (signed short)(uintptr_t)h - 4;
 		}
 		return 1;
 	}

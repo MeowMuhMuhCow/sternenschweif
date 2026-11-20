@@ -20,20 +20,20 @@ extern void far *g_dbg_dest;
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:5ee8..605a, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-signed short g_func_trace[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+signed short g_func_trace[10] = { 0 };
 signed short g_dev_screen_on = 0;
 char g_unused_5efe[2] = { 0 };   /* ds:5efe, unbenutzt */
 signed short g_xms_free_kb = 0;
-signed short g_min_stack = 32000;
+signed short g_min_stack = 0;
 signed short g_dbg_raster_mouse = 0;	/* ds:5f04 Fehlersuche: Maus-ISR faerbt Farbe 0 (SEG023) */
-signed short g_mem_debug = 1;
-signed short g_mem_debug2 = 1;
+signed short g_mem_debug = 0;
+signed short g_mem_debug2 = 0;
 signed short g_func_trace_on = 0;
 signed short g_dbg_raster_timer = 0;	/* ds:5f0c Fehlersuche: Zeitgeber faerben Farbe 0 (SEG023) */
 char g_unused_5f0e[10] = { 0 };   /* ds:5f0e, unbenutzt */
 void far *g_debug_txt_buf = 0;
 char far * far *g_debug_txt = 0;
-struct str3 g_str_crlf = { "\r\n" };
+struct str3 g_str_crlf = { 0 };
 /* Phase B: eigenes BSS (ds:c910..c918) in Adressreihenfolge (Reihenfolge festgelegt durch die extern-Zeilen vor den #include) */
 void far *g_dbg_dest;
 void far *g_dbg_src;
@@ -59,7 +59,7 @@ void guru_meditation(char far *msg, unsigned char huge *ptr)
 	restore_video_mode(&g_video_state);
 	g_pp20_index = -1;
 	textcolor(BLINK | LIGHTRED);
-	cputs("                         STARTRAIL  --  GURU Meditation\r\n");
+	cputs(DS_STR(0x5f24));
 	textcolor(LIGHTRED);
 	cputs(msg);
 
@@ -69,27 +69,27 @@ void guru_meditation(char far *msg, unsigned char huge *ptr)
 		ems_handles = 1;
 	}
 
-	sprintf(g_portrait_buf, "\r\nFCs: %d %d %d %d %d %d %d %d %d %d\r\nXMS handles: %d\r\n", g_func_trace[0], g_func_trace[1], g_func_trace[2],
+	sprintf(g_portrait_buf, DS_STR(0x5f5d), g_func_trace[0], g_func_trace[1], g_func_trace[2],
 		g_func_trace[3], g_func_trace[4], g_func_trace[5], g_func_trace[6], g_func_trace[7],
 		g_func_trace[8], g_func_trace[9], ems_handles);
 	cputs(g_portrait_buf);
-	sprintf(g_portrait_buf, "%s\r\nFCs: %d %d %d %d %d %d %d %d %d %d\r\nXMS handles: %d\r\n", msg, g_func_trace[0], g_func_trace[1], g_func_trace[2],
+	sprintf(g_portrait_buf, DS_STR(0x5f95), msg, g_func_trace[0], g_func_trace[1], g_func_trace[2],
 		g_func_trace[3], g_func_trace[4], g_func_trace[5], g_func_trace[6], g_func_trace[7],
 		g_func_trace[8], g_func_trace[9], ems_handles);
 	debug_log(g_portrait_buf);
 
 	if (g_dbg_dest)
-		cprintf("\r\nDest: 0x%lx\r\n", g_dbg_dest);
+		cprintf(DS_STR(0x5fcf), g_dbg_dest);
 	if (g_dbg_src)
-		cprintf("\r\nSource: 0x%lx\r\n", g_dbg_src);
+		cprintf(DS_STR(0x5fdf), g_dbg_src);
 
 	if ((signed long)ptr == 1) {
 		/* Liste der Speicherbloecke */
 		crlf = g_str_crlf;
 		buf = mem_alloc(100);
-		fd = _creat("ALLOC.CAT", 0);
+		fd = _creat(DS_STR(0x5ff1), 0);
 		for (i = 0; i < NR_MEM_BLOCKS; i++) {
-			sprintf(buf, "Allocentry %4d: Start: %p End: %p Len: %ld%s", i, g_mem_blocks[i].start, g_mem_blocks[i].end,
+			sprintf(buf, DS_STR(0x5ffb), i, g_mem_blocks[i].start, g_mem_blocks[i].end,
 				(signed long)((unsigned char huge *)g_mem_blocks[i].end -
 					(unsigned char huge *)g_mem_blocks[i].start), &crlf);
 			write(fd, buf, strlen(buf));
@@ -100,10 +100,10 @@ void guru_meditation(char far *msg, unsigned char huge *ptr)
 		/* Speicherauszug um ptr */
 		register signed short dump_fd;
 
-		cprintf("\r\nAddress: 0x%lx\r\n", ptr);
-		sprintf(g_portrait_buf, "\r\nAddress: 0x%lx\r\n", ptr);
+		cprintf(DS_STR(0x6028), ptr);
+		sprintf(g_portrait_buf, DS_STR(0x603b), ptr);
 		debug_log(g_portrait_buf);
-		dump_fd = _creat("SCHWEIF.CAT", 0);
+		dump_fd = _creat(DS_STR(0x604e), 0);
 		ptr = ptr - 500;
 		write(dump_fd, ptr, 0x7d00);
 		ptr = ptr + 0x7d00;

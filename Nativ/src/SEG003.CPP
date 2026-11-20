@@ -90,7 +90,7 @@ void CopyProt::query(signed short chance)
 #endif
 	if (rnd(chance) == 1) {
 		init();
-		set_f8((signed short)txt[0]);
+		set_f8((signed short)(uintptr_t)txt[0]);
 		open_file();
 		for (tries = 0; tries < 3; tries++) {
 			seek_record();

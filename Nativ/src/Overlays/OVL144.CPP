@@ -46,9 +46,9 @@
 
 /* Phase B: eigene Daten des Moduls (ds:6be6..6c16, dsana) - initialisierte Daten in Adressreihenfolge */
 signed short g_fig_anim_busy = 0;
-struct fig_keys g_fig_keys = { { 561, 818, 1075, 1332, 1589, 1846, -1 } };
-struct dirs4 g_fig_dirs_back = { { { -1, 0 }, { 0, 1 }, { 1, 0 }, { 0, -1 } } };	/* Gegenrichtung zu Richtung 0..3 */
-struct dirs4 g_fig_dirs_search = { { { 1, 0 }, { 0, -1 }, { -1, 0 }, { 0, 1 } } };	/* Kampffeld-Richtung 0: x+1, 1: y-1, 2: x-1, 3: y+1 */
+struct fig_keys g_fig_keys = { 0 };
+struct dirs4 g_fig_dirs_back = { 0 };	/* Gegenrichtung zu Richtung 0..3 */
+struct dirs4 g_fig_dirs_search = { 0 };	/* Kampffeld-Richtung 0: x+1, 1: y-1, 2: x-1, 3: y+1 */
 
 /* font_set_colors mit Wort-Parametern aufrufen (Original: push word; Prototyp hat unsigned char) */
 #define font_set_colors_w ((void (*)(void far *, signed short, signed short))font_set_colors)

@@ -31,9 +31,9 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:3c5e..3c8c, dsana) - initialisierte Daten in Adressreihenfolge */
-signed char g_temple_miracle_bonus[15] = { 0, 2, 15, 10, 20, 5, 10, 1, 15, 3, 15, 5, 10, 0, 1 };
-signed char g_temple_miracle_dice[15] = { 0, 9, 9, 10, 17, 6, 10, 10, 18, 10, 19, 8, 15, 0, 10 };
-signed char g_temple_god_anim[16] = { 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0 };
+signed char g_temple_miracle_bonus[15] = { 0 };
+signed char g_temple_miracle_dice[15] = { 0 };
+signed char g_temple_god_anim[16] = { 0 };
 
 void temple_miracle(Temple far *t)
 {

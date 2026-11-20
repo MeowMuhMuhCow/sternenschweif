@@ -88,7 +88,7 @@ void dev_info_screen(void)
 		printf("\n");
 		printf(g_debug_txt[3], (signed long)g_xms_free_kb << 10);
 		if (g_ems_avail)
-			printf("\nBasic EMS amount available to program:             %ld", ((signed long)g_ems_free_pages << 4) << 10);
+			printf(DS_STR(0x05a2), ((signed long)g_ems_free_pages << 4) << 10);
 		printf("\n");
 		printf(g_debug_txt[4], ((signed long)g_xms_free_kb << 10) - ((signed long)xms_free_kb() << 10));
 		printf("\n");
@@ -99,7 +99,7 @@ void dev_info_screen(void)
 			printf(g_debug_txt[0x145], v);
 			printf("\n");
 		}
-		printf("Used File handles by this process:                %2d\n", dos_open_files());
+		printf(DS_STR(0x05e2), dos_open_files());
 		spv = 0;
 		printf(g_debug_txt[6], spv);
 		printf("\n");

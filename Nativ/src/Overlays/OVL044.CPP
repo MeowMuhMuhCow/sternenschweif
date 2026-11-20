@@ -31,20 +31,20 @@
 
 /* Phase B: eigene Daten des Moduls (ds:49c0..4a3c, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool.
  * Tempel je Gott 1..14 (Namen g_ttx[4 + Gott]): Liste der Tempel-Orte (g_loc_id), Ende 0xff; Efferd und Swafnir ohne Tempel. */
-char g_temple_locs_praios[4] = { 2, 24, 25, 0xff };	/* Praios */
-char g_temple_locs_rondra[2] = { 17, 0xff };	/* Rondra */
-char g_temple_locs_efferd[1] = { 0xff };	/* Efferd */
-char g_temple_locs_travia[3] = { 6, 18, 0xff };	/* Travia */
-char g_temple_locs_boron[4] = { 3, 10, 16, 0xff };	/* Boron */
-char g_temple_locs_hesinde[3] = { 7, 14, 0xff };	/* Hesinde */
-char g_temple_locs_firun[3] = { 15, 20, 0xff };	/* Firun */
-char g_temple_locs_tsa[4] = { 11, 26, 27, 0xff };	/* Tsa */
-char g_temple_locs_phex[3] = { 4, 9, 0xff };	/* Phex */
-char g_temple_locs_peraine[3] = { 1, 8, 0xff };	/* Peraine */
-char g_temple_locs_ingerimm[5] = { 5, 13, 21, 28, 0xff };	/* Ingerimm */
-char g_temple_locs_rahja[4] = { 12, 19, 23, 0xff };	/* Rahja */
-char g_temple_locs_swafnir[1] = { 0xff };	/* Swafnir */
-char g_temple_locs_ifirn[2] = { 22, 0xff };	/* Ifirn */
+char g_temple_locs_praios[4] = { 0 };	/* Praios */
+char g_temple_locs_rondra[2] = { 0 };	/* Rondra */
+char g_temple_locs_efferd[1] = { 0 };	/* Efferd */
+char g_temple_locs_travia[3] = { 0 };	/* Travia */
+char g_temple_locs_boron[4] = { 0 };	/* Boron */
+char g_temple_locs_hesinde[3] = { 0 };	/* Hesinde */
+char g_temple_locs_firun[3] = { 0 };	/* Firun */
+char g_temple_locs_tsa[4] = { 0 };	/* Tsa */
+char g_temple_locs_phex[3] = { 0 };	/* Phex */
+char g_temple_locs_peraine[3] = { 0 };	/* Peraine */
+char g_temple_locs_ingerimm[5] = { 0 };	/* Ingerimm */
+char g_temple_locs_rahja[4] = { 0 };	/* Rahja */
+char g_temple_locs_swafnir[1] = { 0 };	/* Swafnir */
+char g_temple_locs_ifirn[2] = { 0 };	/* Ifirn */
 signed char far *g_temple_god_locs[15] = {
 	0, (signed char far *)&g_temple_locs_praios, (signed char far *)&g_temple_locs_rondra, (signed char far *)&g_temple_locs_efferd, (signed char far *)&g_temple_locs_travia, (signed char far *)&g_temple_locs_boron, (signed char far *)&g_temple_locs_hesinde, (signed char far *)&g_temple_locs_firun, (signed char far *)&g_temple_locs_tsa, (signed char far *)&g_temple_locs_phex, (signed char far *)&g_temple_locs_peraine, (signed char far *)&g_temple_locs_ingerimm, (signed char far *)&g_temple_locs_rahja, (signed char far *)&g_temple_locs_swafnir, (signed char far *)&g_temple_locs_ifirn
 };

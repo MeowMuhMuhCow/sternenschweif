@@ -32,7 +32,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:7082..70b6, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-struct str20 g_print_path_init = { "..\\" };
+struct str20 g_print_path_init = { 0 };
 
 void print_spells(struct hero far *h)
 {

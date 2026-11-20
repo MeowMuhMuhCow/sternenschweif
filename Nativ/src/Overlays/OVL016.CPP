@@ -42,7 +42,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:0f22..0f2a, dsana) - initialisierte Daten in Adressreihenfolge */
-struct anim_delays g_anim_delays = { { 0, 3, 7, 15 } };
+struct anim_delays g_anim_delays = { 0 };
 
 
 /* Kopf der Bilddatei einer Figur (8 Bytes) */

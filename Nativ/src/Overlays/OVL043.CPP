@@ -46,19 +46,9 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:4272..43dc, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-char g_sndsetup_areas_sel[40] = {
-	0x64, 0x00, 0x59, 0x00, 0xbc, 0x00, 0x84, 0x00, 0x0d, 0x1c, 0xc6, 0x00, 0x6d, 0x00, 0xdf, 0x00,
-	0x79, 0x00, 0x00, 0x50, 0xc6, 0x00, 0x7b, 0x00, 0xdf, 0x00, 0x87, 0x00, 0x00, 0x48, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
-};
-char g_sndsetup_areas_input[30] = {
-	0x61, 0x00, 0x69, 0x00, 0x7a, 0x00, 0x75, 0x00, 0x20, 0x39, 0xc6, 0x00, 0x7b, 0x00, 0xdf, 0x00,
-	0x87, 0x00, 0x20, 0x39, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
-};
-char g_sndsetup_areas_key[20] = {
-	0x00, 0x00, 0x00, 0x00, 0x3f, 0x01, 0xc7, 0x00, 0x0d, 0x1c, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff
-};
+char g_sndsetup_areas_sel[40] = { 0 };
+char g_sndsetup_areas_input[30] = { 0 };
+char g_sndsetup_areas_key[20] = { 0 };
 
 #define SND_CFG_FILE	0x13		/* Konfigurationsdatei der Klangeinstellungen */
 #define SND_PAL_FILE	0x12		/* Palette der Einstellungsbilder */
@@ -156,7 +146,7 @@ void SndSetup::run()
 					CDP->change();
 					if (CDP->err != 0) {
 						set_palette(pal + 0x1e0, 0xa0, 0x60);
-						dlg_choose(g_dialog, "Bitte Sternenschweif-CD einlegen und Taste dr\x81""cken!", 1, "Weiter");
+						dlg_choose(g_dialog, DS_STR(0x42ce), 1, "Weiter");
 						wait_ticks_key(100);
 					}
 				} while (CDP->err != 0);
@@ -164,13 +154,13 @@ void SndSetup::run()
 				set_palette(pal + 0x1e0, 0xa0, 0x60);
 				switch (CDP->err) {
 				case CD_ERR_NO_DRIVE:
-					dlg_choose(g_dialog, "Kein CD-Laufwerk gefunden!", 1, "Weiter");
+					dlg_choose(g_dialog, DS_STR(0x4309), 1, "Weiter");
 					break;
 				case CD_ERR_MSCDEX_OLD:
-					dlg_choose(g_dialog, "MSCDEX-Version ist \x84lter als 2.10!", 1, "Weiter");
+					dlg_choose(g_dialog, DS_STR(0x432b), 1, "Weiter");
 					break;
 				case CD_ERR_NOT_CD:
-					dlg_choose(g_dialog, "Angegebenes Laufwerk ist kein CD-Laufwerk!", 1, "Weiter");
+					dlg_choose(g_dialog, DS_STR(0x4355), 1, "Weiter");
 					break;
 				}
 				g_cd_music = 0;
@@ -180,11 +170,11 @@ void SndSetup::run()
 				exit(0);
 			}
 		} else {
-			SND_MUSIC->init("SOUND.ADV", AIL_XMIDI_DRVR, music_port, music_irq);
+			SND_MUSIC->init(DS_STR(0x4387), AIL_XMIDI_DRVR, music_port, music_irq);
 		}
 	}
 	if (digi_port != 0)
-		SND_FX->init("DIGI.ADV", AIL_DSP_DRVR, digi_port, digi_irq);
+		SND_FX->init(DS_STR(0x4391), AIL_DSP_DRVR, digi_port, digi_irq);
 }
 
 void SndSetup::save()

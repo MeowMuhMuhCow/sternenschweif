@@ -32,10 +32,10 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:6644..6668, dsana) - initialisierte Daten in Adressreihenfolge */
-signed short g_fight_timer = -1;
-char g_env_left_idx[9] = { 0x00, 0x03, 0x07, 0x0c, 0x12, 0x19, 0x20, 0x26, 0xff };
-char g_env_right_idx[9] = { 0x02, 0x06, 0x0b, 0x11, 0x18, 0x1f, 0x25, 0x2a, 0xff };
-struct dirs4 g_fig_dirs4 = { { { 1, 0 }, { 0, -1 }, { -1, 0 }, { 0, 1 } } };	/* Kampffeld-Richtung 0: x+1, 1: y-1, 2: x-1, 3: y+1 */
+signed short g_fight_timer = 0;
+char g_env_left_idx[9] = { 0 };
+char g_env_right_idx[9] = { 0 };
+struct dirs4 g_fig_dirs4 = { 0 };	/* Kampffeld-Richtung 0: x+1, 1: y-1, 2: x-1, 3: y+1 */
 
 #define WALK	((unsigned char (far *)[FIG_MAP_PITCH])g_fight_walkmap)	/* Begehbarkeitskarte als [24][25] */
 #define G	f->field->cells

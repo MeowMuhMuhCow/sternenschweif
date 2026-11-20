@@ -34,58 +34,8 @@
 /* Phase B: eigene Daten des Moduls (ds:7486..75b4, dsana) - initialisierte Daten in Adressreihenfolge */
 signed short g_amap_teleport = 0;
 signed short g_amap_teleported = 0;
-struct analues_item g_analues_items[49] = {
-	{ 162, 2, 54 },
-	{ 165, 3, 56 },
-	{ 171, 4, 57 },
-	{ 245, 4, 57 },
-	{ 172, 3, 58 },
-	{ 173, 6, 59 },
-	{ 174, 0, 60 },
-	{ 175, 6, 61 },
-	{ 178, 0, 62 },
-	{ 215, 3, 63 },
-	{ 216, 3, 64 },
-	{ 217, 4, 65 },
-	{ 158, 4, 66 },
-	{ 159, 4, 67 },
-	{ 160, 4, 68 },
-	{ 161, 6, 69 },
-	{ 163, 2, 70 },
-	{ 188, 0, 71 },
-	{ 198, 15, 72 },
-	{ 183, 7, 73 },
-	{ 199, 5, 74 },
-	{ 197, 5, 75 },
-	{ 223, 15, 76 },
-	{ 220, 5, 77 },
-	{ 218, 6, 78 },
-	{ 70, 2, 79 },
-	{ 264, 2, 31 },
-	{ 265, 4, 32 },
-	{ 280, 0, 33 },
-	{ 286, 7, 146 },
-	{ 321, 8, 147 },
-	{ 323, 3, 148 },
-	{ 324, 3, 149 },
-	{ 182, 5, 152 },
-	{ 185, 0, 153 },
-	{ 184, 0, 154 },
-	{ 322, 0, 155 },
-	{ 256, 2, 156 },
-	{ 255, 2, 157 },
-	{ 196, 10, 158 },
-	{ 311, 10, 159 },
-	{ 313, 10, 159 },
-	{ 312, 10, 159 },
-	{ 251, 5, 175 },
-	{ 298, 5, 176 },
-	{ 327, 5, 227 },
-	{ 336, 5, 228 },
-	{ 340, 5, 266 },
-	{ -1, 0, 0 }
-};
-signed long g_odem_items = 12058809;
+struct analues_item g_analues_items[49] = { 0 };
+signed long g_odem_items = 0;
 
 /* add_effect mit Wort-Parametern (das Original uebergibt Index, Wert und Art als short) */
 #define add_effect_w ((void (*)(struct hero far *, signed short, signed long, signed short, signed short, signed short))add_effect)

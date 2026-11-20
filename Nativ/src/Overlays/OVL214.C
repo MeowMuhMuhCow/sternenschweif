@@ -45,21 +45,9 @@ extern signed short g_nr_items;
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:7140..7202, dsana) - initialisierte Daten in Adressreihenfolge */
-struct mouse_area g_rose_dir_areas[9] = {
-	{ 4, 4, 24, 24, 8 },
-	{ 26, 4, 46, 24, 2 },
-	{ 4, 26, 24, 46, 6 },
-	{ 26, 26, 46, 46, 4 },
-	{ 20, 0, 30, 20, 1 },
-	{ 20, 30, 30, 50, 5 },
-	{ 0, 20, 20, 30, 7 },
-	{ 30, 20, 50, 30, 3 },
-	{ -1, -1, -1, -1, -1 }
-};
-struct mouse_area g_rose_areas[2] = { { 0, 0, 50, 50, 9 }, { -1, -1, -1, -1, -1 } };
-struct route_list42 g_water_routes = {
-	{ 14, 15, 16, 17, 19, 20, 21, 22, 24, 56, 57, 58, 59, 60, 61, 62, 63, 65, 66, 94, 95, 96, 153, 154, 174, 175, 176, 177, 178, 179, 186, 218, 219, 220, 221, 222, 243, 244, 245, 246, 248, 254 }
-};
+struct mouse_area g_rose_dir_areas[9] = { 0 };
+struct mouse_area g_rose_areas[2] = { 0 };
+struct route_list42 g_water_routes = { 0 };
 /* Phase B: eigenes BSS (ds:cb1a..cb2e) in Adressreihenfolge (Reihenfolge festgelegt durch die extern-Zeilen vor den #include) */
 signed short g_nr_items;
 signed char g_tmap_loaded;

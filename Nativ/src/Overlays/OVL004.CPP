@@ -37,7 +37,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:00ce..00f0, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-struct cd_volctl g_cd_volctl = { { 0x03, 0x00, 0x00, 0x01, 0x00, 0x02, 0x00, 0x03, 0x00 } };
+struct cd_volctl g_cd_volctl = { 0 };
 
 #define MUSIC_TAB_FILE	0x1cf		/* Musiktabelle (71 Eintraege) im Hauptarchiv */
 

@@ -51,7 +51,7 @@ void far *mem_alloc(unsigned long size)
 		return block + 4;
 	} else {
 		if (g_mem_debug) {
-			sprintf(g_text_output_buf, "Memory Allocation Failure (%ld Bytes / %ld left)!\r\n", size, farcoreleft());
+			sprintf(g_text_output_buf, DS_STR(0x5158), size, farcoreleft());
 			guru_meditation(g_text_output_buf, 0);
 		}
 	}
@@ -90,7 +90,7 @@ void far *mem_free(void far *p)
 				start = mb->start;
 				end = mb->end;
 				if (*(unsigned long far*)start != MEM_MAGIC_START || *(unsigned long far*)end != MEM_MAGIC_END) {
-					guru_meditation("Someone has destroyed the magic values for this block!\r\nSystem's Integrity endangered!", p);
+					guru_meditation(DS_STR(0x518c), p);
 				} else {
 					mb->start = 0;
 					len = (unsigned char huge*)end - (unsigned char huge*)start;
@@ -123,7 +123,7 @@ void far *mem_free(void far *p)
 					p = 0;
 				}
 			} else {
-				guru_meditation("Error freeing up allocated Memory!\r\n", p);
+				guru_meditation(DS_STR(0x51e3), p);
 			}
 		}
 	} else {
@@ -161,7 +161,7 @@ signed short mem_free_slot(void)
 		if (!mb->start)
 			return i;
 	}
-	guru_meditation("Running out of Allocation Entries!\r\n", 0);
+	guru_meditation(DS_STR(0x5208), 0);
 	return -1;
 }
 
@@ -180,7 +180,7 @@ void mem_check(void)
 					start = mb->start;
 					end = mb->end;
 					if (*(unsigned long far*)start != MEM_MAGIC_START || *(unsigned long far*)end != MEM_MAGIC_END)
-						guru_meditation("Someone has destroyed the magic values for this block!\r\nSystem's Integrity endangered!", start);
+						guru_meditation(DS_STR(0x522d), start);
 				}
 			}
 		}

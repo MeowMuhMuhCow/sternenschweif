@@ -56,11 +56,11 @@ extern void far *g_dng16_pal_save;
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:0094..00bc, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-signed short g_dng16_seq_pics[7] = { -15331, -15330, -15329, -15328, -15326, -15325, -1 };
-unsigned short g_dng16_seq_pics_state[1] = { 0x0000 };
+signed short g_dng16_seq_pics[7] = { 0 };
+unsigned short g_dng16_seq_pics_state[1] = { 0 };
 signed short g_dng16_seq_golem_state = 0;
 signed short g_dng16_seq_forge_state = 0;
-struct score7 g_dng16_heat_marks_init = { { 0, 0, 0, 0, 0, 0, 0 } };
+struct score7 g_dng16_heat_marks_init = { 0 };
 /* Phase B: eigenes BSS (ds:8b4e..8b52) in Adressreihenfolge (Reihenfolge festgelegt durch die extern-Zeilen vor den #include) */
 void far *g_dng16_pal_save;
 

@@ -46,10 +46,10 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:43dc..49c0, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-signed long g_xms_handles[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+signed long g_xms_handles[10] = { 0 };
 signed short g_xms_reserved = 0;
-struct str80 g_path_init = { "" };
-struct str5 g_ltx_count_init = { "" };
+struct str80 g_path_init = { 0 };
+struct str5 g_ltx_count_init = { 0 };
 
 #define NAMES_DUMMY_SIZE	20	/* Namensliste ohne .LTX (Einzeldatei): leere Daten */
 #define NAMES_DUMMY_IDX_SIZE	8	/* und leere Zeigertabelle */
@@ -75,11 +75,11 @@ signed short cd_check(void)
 	signed short fd;
 	register signed short quit = 0;
 	register signed short found = 0;
-	char far *msg_insert = "Bitte Sternenschweif-CD in Laufwerk %c: einlegen und Taste dr\x81""cken.";
-	char far *msg_esc = "\n<ESC>";
+	char far *msg_insert = DS_STR(0x445b);
+	char far *msg_esc = DS_STR(0x449f);
 	char cfg[40];			/* [0] Laufwerksbuchstabe aus PATH.CFG, ab [1] Datentraegername */
 
-	fd = _open("path.cfg", O_RDONLY | O_BINARY);
+	fd = _open(DS_STR(0x44a6), O_RDONLY | O_BINARY);
 	if (fd >= 0) {
 #if FIX_0230
 		/* Fix #230: leere PATH.CFG: kein Laufwerk statt Zufallswert (Vorbelegung statt Pruefung, spart Platz) */
@@ -100,8 +100,8 @@ signed short cd_check(void)
 						puts(msg_esc);
 						quit = 1;
 					} else
-						puts("");
-				} else if (!strcmp(&cfg[1], "DSA2_CD1   ") || !strcmp(&cfg[1], "DSA2_CD2   ")) {
+						puts(DS_STR(0x44af));
+				} else if (!strcmp(&cfg[1], DS_STR(0x44b0)) || !strcmp(&cfg[1], DS_STR(0x44bc))) {
 					found = 1;
 				} else {
 					/* falsche CD */
@@ -110,15 +110,15 @@ signed short cd_check(void)
 						puts(msg_esc);
 						quit = 1;
 					} else
-						puts("");
+						puts(DS_STR(0x44c8));
 				}
 			}
 		} else {
-			puts("\nDas in PATH.CFG angegeben Laufwerk ist kein CD-ROM-Laufwerk.\n");
+			puts(DS_STR(0x44c9));
 			quit = 1;
 		}
 	} else {
-		puts("\nPATH.CFG nicht gefunden.\n");
+		puts(DS_STR(0x4508));
 		quit = 1;
 	}
 	if (quit) {
@@ -209,34 +209,34 @@ Init::Init()
 		g_mem_too_low = 1;
 	}
 	if (g_mem_too_low == 1) {
-		puts("\nSternenschweif ben\x94tigt einen installierten XMS/EMS Treiber,");
-		puts("und mindestens   688128 Byte freien XMS/EMS Speicher.");
+		puts(DS_STR(0x4523));
+		puts(DS_STR(0x4561));
 		if (g_ems_avail == 1) {
-			puts("Wovon mindestens 622592 Bytes als EMS Speicher und");
-			puts("                  65536 Bytes als XMS Speicher ansprechbar sein m\x81ssen!");
-			sprintf(buf, "\nIhr System hat nur %8ld Byte freien EMS Speicher und", ((signed long)g_ems_free_pages << 4) << 10);
+			puts(DS_STR(0x4597));
+			puts(DS_STR(0x45ca));
+			sprintf(buf, DS_STR(0x4612), ((signed long)g_ems_free_pages << 4) << 10);
 			puts(buf);
-			sprintf(buf, "                   %8ld Byte freien XMS Speicher.", (signed long)xms_kb << 10);
+			sprintf(buf, DS_STR(0x4648), (signed long)xms_kb << 10);
 			puts(buf);
-			puts("\nSollten beide Werte in Ihrer DOS-Anzeige den Anforderungen entsprechen,");
-			puts("so nutzt Ihr Speichermanager den Speicher doppelt!");
-			puts("\nDa Ihre momentane Systemkonfiguration einen stabilen Spielverlauf");
-			puts("von Sternenschweif verhindert, bitten wir Sie vor einem erneuten Start");
-			puts("die Hinweise im beiliegenden Faltblatt und die Beispielkonfigurationen");
-			puts("in der Datei CONFIG.BSP zu ber\x81""cksichtigen.");
+			puts(DS_STR(0x467a));
+			puts(DS_STR(0x46c3));
+			puts(DS_STR(0x46f6));
+			puts(DS_STR(0x4739));
+			puts(DS_STR(0x4780));
+			puts(DS_STR(0x47c7));
 		} else {
-			sprintf(buf, "\nIhr System hat nur %8ld Byte freien XMS/EMS Speicher!", (signed long)g_xms_free_kb << 10);
+			sprintf(buf, DS_STR(0x47f3), (signed long)g_xms_free_kb << 10);
 			puts(buf);
 		}
 		g_mem_too_low = 1;
 	}
 	if (ovr_ok) {
 		if (_OvrInitExt(0L, ovr_kb << 10) == 0) {
-			sprintf(buf, "\nXMS (%ld KByte) for C++ Overlay handling utilized.", ovr_kb);
+			sprintf(buf, DS_STR(0x482a), ovr_kb);
 			puts(buf);
 		}
 	} else if (g_mem_too_low == 0) {
-		puts("\nNo memory available to C++ Overlay handler.");
+		puts(DS_STR(0x485e));
 	}
 	load_archives();
 }
@@ -246,7 +246,7 @@ void Init::setdir()
 {
 	char path[80];
 
-	strcpy(g_start_dir, "X:\\");
+	strcpy(g_start_dir, DS_STR(0x488b));
 	g_start_dir[0] = getdisk() + 'A';
 	getcurdir(0, g_start_dir_path);
 	strcpy(path, g_start_dir);
@@ -262,7 +262,7 @@ Init::~Init()
 	signed short i;
 
 	/* Temp-Dateien loeschen */
-	sprintf(g_text_output_buf, g_path_fmts[0], "*.*");
+	sprintf(g_text_output_buf, g_path_fmts[0], DS_STR(0x488f));
 	res = findfirst(g_text_output_buf, &ff, 0);
 	if (res == 0) do {
 		sprintf(g_text_output_buf, g_path_fmts[0], ff.ff_name);
@@ -286,24 +286,24 @@ void load_archives(void)
 	signed short disk;
 	struct str80 path = g_path_init;
 
-	fd = open("star.dat", O_RDONLY | O_BINARY);
+	fd = open(DS_STR(0x4893), O_RDONLY | O_BINARY);
 	if (fd != -1) {
 		close(fd);
-		puts("\nONEFILE Version");
+		puts(DS_STR(0x489c));
 		g_names_star = mem_alloc(NAMES_DUMMY_SIZE);
 		g_names_star_idx = mem_alloc(NAMES_DUMMY_IDX_SIZE);
 		size = 0x9c;
 		g_patch_star = mem_alloc(size);
 		memset(g_patch_star, 0, size);
-		fd = open("dpatch.dat", O_RDONLY | O_BINARY);
+		fd = open(DS_STR(0x48ad), O_RDONLY | O_BINARY);
 		if (fd != -1) {
 			read(fd, g_patch_star, size);
 			close(fd);
 		}
 	} else {
-		load_ltx("filename.ltx", &g_names_star, &g_names_star_idx);
+		load_ltx(DS_STR(0x48b8), &g_names_star, &g_names_star_idx);
 	}
-	fd = open("fx.dat", O_RDONLY | O_BINARY);
+	fd = open(DS_STR(0x48c5), O_RDONLY | O_BINARY);
 	if (fd != -1) {
 		close(fd);
 		g_names_fx = mem_alloc(NAMES_DUMMY_SIZE);
@@ -311,15 +311,15 @@ void load_archives(void)
 		size = 0x17;
 		g_patch_fx = mem_alloc(size);
 		memset(g_patch_fx, 0, size);
-		fd = open("fpatch.dat", O_RDONLY | O_BINARY);
+		fd = open(DS_STR(0x48cc), O_RDONLY | O_BINARY);
 		if (fd != -1) {
 			read(fd, g_patch_fx, size);
 			close(fd);
 		}
 	} else {
-		load_ltx("fxname.ltx", &g_names_fx, &g_names_fx_idx);
+		load_ltx(DS_STR(0x48d7), &g_names_fx, &g_names_fx_idx);
 	}
-	fd = open("speech.dat", O_RDONLY | O_BINARY);
+	fd = open(DS_STR(0x48e2), O_RDONLY | O_BINARY);
 	if (fd != -1) {
 		close(fd);
 		g_names_speech = mem_alloc(NAMES_DUMMY_SIZE);
@@ -327,19 +327,19 @@ void load_archives(void)
 		size = 0x1f;
 		g_patch_speech = mem_alloc(size);
 		memset(g_patch_speech, 0, size);
-		fd = open("spatch.dat", O_RDONLY | O_BINARY);
+		fd = open(DS_STR(0x48ed), O_RDONLY | O_BINARY);
 		if (fd != -1) {
 			read(fd, g_patch_speech, size);
 			close(fd);
 		}
 	} else {
-		fd = open("pakname.ltx", O_RDONLY | O_BINARY);
+		fd = open(DS_STR(0x48f8), O_RDONLY | O_BINARY);
 		if (fd != -1) {
 			close(fd);
-			load_ltx("pakname.ltx", &g_names_speech, &g_names_speech_idx);
+			load_ltx(DS_STR(0x4904), &g_names_speech, &g_names_speech_idx);
 		}
 	}
-	fd = open("raw.dat", O_RDONLY | O_BINARY);
+	fd = open(DS_STR(0x4910), O_RDONLY | O_BINARY);
 	if (fd != -1) {
 		close(fd);
 		g_names_raw = mem_alloc(NAMES_DUMMY_SIZE);
@@ -347,13 +347,13 @@ void load_archives(void)
 		size = g_nr_raw_files / 8 + 1;
 		g_patch_raw = mem_alloc(size);
 		memset(g_patch_raw, 0, size);
-		fd = open("rpatch.dat", O_RDONLY | O_BINARY);
+		fd = open(DS_STR(0x4918), O_RDONLY | O_BINARY);
 		if (fd != -1) {
 			read(fd, g_patch_raw, size);
 			close(fd);
 		}
 	} else {
-		load_ltx("rawname.ltx", &g_names_raw, &g_names_raw_idx);
+		load_ltx(DS_STR(0x4923), &g_names_raw, &g_names_raw_idx);
 	}
 	fd = open(g_file_names[0], O_RDONLY | O_BINARY);
 	if (fd != -1) {
@@ -364,7 +364,7 @@ void load_archives(void)
 		g_names_starcd_idx = mem_alloc(NAMES_DUMMY_IDX_SIZE);
 		size = 7;
 	} else {
-		fd = open("..\\path.cfg", O_RDONLY | O_BINARY);
+		fd = open(DS_STR(0x492f), O_RDONLY | O_BINARY);
 		if (fd != -1) {
 			/* CD-Laufwerk aus ..\path.cfg in "X:\DATA\%s" eintragen */
 			disk = getdisk();
@@ -384,35 +384,35 @@ void load_archives(void)
 					g_speech_ext_avail = 1;
 					g_data_on_cd = 1;
 				} else {
-					sprintf(path.s, g_file_names[4], "attic.fli");
+					sprintf(path.s, g_file_names[4], DS_STR(0x493b));
 					fd = open(path.s, O_RDONLY | O_BINARY);
 					if (fd != -1) {
 						close(fd);
 						g_speech_ext_avail = 1;
 						g_data_on_cd = 1;
-						load_ltx("cdfname.ltx", &g_names_starcd, &g_names_starcd_idx);
+						load_ltx(DS_STR(0x4945), &g_names_starcd, &g_names_starcd_idx);
 					}
 				}
 			}
 		} else {
-			fd = open("cdfname.ltx", O_RDONLY | O_BINARY);
+			fd = open(DS_STR(0x4951), O_RDONLY | O_BINARY);
 			if (fd != -1) {
 				close(fd);
-				load_ltx("cdfname.ltx", &g_names_starcd, &g_names_starcd_idx);
+				load_ltx(DS_STR(0x495d), &g_names_starcd, &g_names_starcd_idx);
 			} else {
 				g_names_starcd = mem_alloc(NAMES_DUMMY_SIZE);
 				g_names_starcd_idx = mem_alloc(NAMES_DUMMY_IDX_SIZE);
 			}
-			fd = open("attic.fli", O_RDONLY | O_BINARY);
+			fd = open(DS_STR(0x4969), O_RDONLY | O_BINARY);
 			if (fd != -1) {
 				close(fd);
 				g_speech_ext_avail = 1;
 			}
 		}
 	}
-	fd = open("speechcd.dat", O_RDONLY | O_BINARY);
+	fd = open(DS_STR(0x4973), O_RDONLY | O_BINARY);
 	if (fd == -1) {
-		sprintf(path.s, g_file_names[4], "speechcd.dat");
+		sprintf(path.s, g_file_names[4], DS_STR(0x4980));
 		fd = open(path.s, O_RDONLY | O_BINARY);
 	}
 	if (fd != -1) {
@@ -429,10 +429,10 @@ void load_archives(void)
 		size = 8;
 #endif
 	} else {
-		fd = open("cdpname.ltx", O_RDONLY | O_BINARY);
+		fd = open(DS_STR(0x498d), O_RDONLY | O_BINARY);
 		if (fd != -1) {
 			close(fd);
-			load_ltx("cdpname.ltx", &g_names_speechcd, &g_names_speechcd_idx);
+			load_ltx(DS_STR(0x4999), &g_names_speechcd, &g_names_speechcd_idx);
 		} else {
 			g_names_speechcd = mem_alloc(NAMES_DUMMY_SIZE);
 			g_names_speechcd_idx = mem_alloc(NAMES_DUMMY_IDX_SIZE);
@@ -441,7 +441,7 @@ void load_archives(void)
 	size = 7;
 	g_patch_starcd = mem_alloc(size);
 	memset(g_patch_starcd, 0, size);
-	fd = open("dcdpatch.dat", O_RDONLY | O_BINARY);
+	fd = open(DS_STR(0x49a5), O_RDONLY | O_BINARY);
 	if (fd != -1) {
 		read(fd, g_patch_starcd, size);
 		close(fd);
@@ -449,7 +449,7 @@ void load_archives(void)
 	size = 8;
 	g_patch_speechcd = mem_alloc(size);
 	memset(g_patch_speechcd, 0, size);
-	fd = open("scdpatch.dat", O_RDONLY | O_BINARY);
+	fd = open(DS_STR(0x49b2), O_RDONLY | O_BINARY);
 	if (fd != -1) {
 		read(fd, g_patch_speechcd, size);
 		close(fd);

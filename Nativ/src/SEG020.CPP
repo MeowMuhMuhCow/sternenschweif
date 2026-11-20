@@ -33,7 +33,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:75d8..7638, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-char g_str_empty_75d8[6] = "";
+char g_str_empty_75d8[6] = { 0 };
 
 #define F	((struct font far *)font)
 #define G_FONT	((struct font far *)g_font)
@@ -51,7 +51,7 @@ void font_init(void far *font)
 	for (; i < NR_FONT_CHARS; i++) {
 		w = F->file->e[i].w;
 		h = F->file->e[i].h;
-		code = " ABCDEFGHIJKLMNOPQRSTUVWXYZ\x8e\x99\x9a""1234567890abcdefghijklmnopqrstuvwxyz\x84\x94\x81\xe1()!?:<>/_,.'-[];&"[i];
+		code = ((unsigned char far *)DS_STR(0x75de))[i];
 		g = &F->glyphs[code];
 		*g = (struct glyph far *)mem_alloc(sizeof(struct glyph));
 		(*g)->set(x, i, w);

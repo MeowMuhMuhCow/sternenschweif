@@ -23,72 +23,46 @@ extern signed char far *g_mon_genders;
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:555c..56fc, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-char g_str_der[4] = "der";
-char g_str_die[4] = "die";
-char g_str_das[4] = "das";
-char g_str_des[4] = "des";
-char g_str_den[4] = "den";
-char g_str_dem[4] = "dem";
-char g_str_ein[4] = "ein";
-char g_str_eine[5] = "eine";
-char g_str_eines[6] = "eines";
-char g_str_einer[6] = "einer";
-char g_str_einen[6] = "einen";
-char g_str_eine2[5] = "eine";
-char g_str_einem[6] = "einem";
-char g_str_no_article[1] = "";	/* Leereintrag 13 der Artikeltabelle (ohne Artikel) */
-char g_str_von[4] = "von";
+char g_str_der[4] = { 0 };
+char g_str_die[4] = { 0 };
+char g_str_das[4] = { 0 };
+char g_str_des[4] = { 0 };
+char g_str_den[4] = { 0 };
+char g_str_dem[4] = { 0 };
+char g_str_ein[4] = { 0 };
+char g_str_eine[5] = { 0 };
+char g_str_eines[6] = { 0 };
+char g_str_einer[6] = { 0 };
+char g_str_einen[6] = { 0 };
+char g_str_eine2[5] = { 0 };
+char g_str_einem[6] = { 0 };
+char g_str_no_article[1] = { 0 };	/* Leereintrag 13 der Artikeltabelle (ohne Artikel) */
+char g_str_von[4] = { 0 };
 char far *g_grammar_articles[15] = {
 	(char far *)&g_str_der, (char far *)&g_str_die, (char far *)&g_str_das, (char far *)&g_str_des, (char far *)&g_str_den, (char far *)&g_str_dem, (char far *)&g_str_ein, (char far *)&g_str_eine, (char far *)&g_str_eines, (char far *)&g_str_einer, (char far *)&g_str_einen, (char far *)&g_str_eine2, (char far *)&g_str_einem, (char far *)&g_str_no_article, (char far *)&g_str_von
 };
-struct grammar_row g_grammar_def_table[8] = {
-	{ { 0, 1, 2 } },
-	{ { 3, 0, 3 } },
-	{ { 4, 1, 2 } },
-	{ { 5, 0, 5 } },
-	{ { 1, 1, 1 } },
-	{ { 0, 0, 0 } },
-	{ { 1, 1, 1 } },
-	{ { 4, 4, 4 } }
-};
-struct grammar_row g_grammar_indef_table[16] = {
-	{ { 6, 7, 6 } },
-	{ { 8, 9, 8 } },
-	{ { 10, 11, 6 } },
-	{ { 12, 9, 12 } },
-	{ { 13, 13, 13 } },
-	{ { 13, 13, 13 } },
-	{ { 13, 13, 13 } },
-	{ { 13, 13, 13 } },
-	{ { 13, 13, 13 } },
-	{ { 13, 13, 13 } },
-	{ { 13, 13, 13 } },
-	{ { 13, 13, 13 } },
-	{ { 13, 13, 13 } },
-	{ { 13, 13, 13 } },
-	{ { 13, 13, 13 } },
-	{ { 13, 13, 13 } }
-};
+struct grammar_row g_grammar_def_table[8] = { 0 };
+struct grammar_row g_grammar_indef_table[16] = { 0 };
 char far *g_fmt_s_s = "%s %s";
 char far *g_fmt_von_s_s = "von%s %s";
-signed short g_mon_no_article[2] = { 51, -1 };
+signed short g_mon_no_article[2] = { 0 };
 signed short g_grammar_buf_no = 0;
-struct grammar_row g_grammar_gender_bits = { { 4096, 8192, 12288 } };
-char g_str_er[3] = "er";
-char g_str_sie[4] = "sie";
-char g_str_es[3] = "es";
-char g_str_sein[5] = "sein";
-char g_str_ihr[4] = "ihr";
-char g_str_ihn[4] = "ihn";
-char g_str_ihm[10] = "ihm\0ihnen";	/* "ihm", dahinter "ihnen" (ohne eigenen Verweis) */
-char g_str_seine[6] = "seine";
-char g_str_ihre[5] = "ihre";
-char g_str_seinen[7] = "seinen";
-char g_str_ihren[6] = "ihren";
+struct grammar_row g_grammar_gender_bits = { 0 };
+char g_str_er[3] = { 0 };
+char g_str_sie[4] = { 0 };
+char g_str_es[3] = { 0 };
+char g_str_sein[5] = { 0 };
+char g_str_ihr[4] = { 0 };
+char g_str_ihn[4] = { 0 };
+char g_str_ihm[10] = { 0 };	/* "ihm", dahinter "ihnen" (ohne eigenen Verweis) */
+char g_str_seine[6] = { 0 };
+char g_str_ihre[5] = { 0 };
+char g_str_seinen[7] = { 0 };
+char g_str_ihren[6] = { 0 };
 char far *g_grammar_pronouns[7] = {
 	(char far *)&g_str_er, (char far *)&g_str_sie, (char far *)&g_str_es, (char far *)&g_str_sein, (char far *)&g_str_ihr, (char far *)&g_str_ihn, (char far *)&g_str_ihm
 };
-signed char g_grammar_pronoun_idx[24] = { 0, 1, 2, 3, 4, 3, 5, 1, 2, 6, 4, 6, 1, 1, 1, 4, 4, 4, 1, 1, 1, 7, 7, 7 };
+signed char g_grammar_pronoun_idx[24] = { 0 };
 /* Phase B: eigenes BSS (ds:c806..c80a) in Adressreihenfolge (Reihenfolge festgelegt durch die extern-Zeilen vor den #include) */
 signed char far *g_mon_genders;
 

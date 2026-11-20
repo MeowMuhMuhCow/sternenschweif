@@ -34,8 +34,8 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:6b9c..6be6, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-struct hero_ptrs7 g_hero_ptrs7_null = { { 0, 0, 0, 0, 0, 0, 0 } };
-struct hero_ptrs7 g_hero_ptrs7_null2 = { { 0, 0, 0, 0, 0, 0, 0 } };
+struct hero_ptrs7 g_hero_ptrs7_null = { 0 };
+struct hero_ptrs7 g_hero_ptrs7_null2 = { 0 };
 
 struct mon_count {			/* Gegnerart und Anzahl (fig_split_ap) */
 	signed char mon_id;

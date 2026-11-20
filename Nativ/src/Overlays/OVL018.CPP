@@ -33,13 +33,9 @@
 /* Phase B: eigene Daten des Moduls (ds:0f34..0fa6, dsana) - initialisierte Daten in Adressreihenfolge */
 signed short g_fight_use_ems = 0;
 signed short g_file3_marked = 0;
-signed short g_fight_pic_keys[46] = {
-	8229, 8230, 8263, 8264, 8265, 8266, 8269, 8267, 8268, 8270, 8330, 8331, 8332, 8333, 8335, 8698,
-	8219, 8699, 8700, 8701, 8337, 8346, 8334, 16555, 16474, 16476, 16484, 16471, 16472, 16505, 16506, 16468,
-	16473, 16507, 16504, 16467, 16508, 16483, 16461, 16469, 16501, 16513, 16482, 16493, 16470, -1
-};
-char g_fight_pic_states[12] = "";
-struct str6 g_fight_map_file = { "t.$$$" };
+signed short g_fight_pic_keys[46] = { 0 };
+char g_fight_pic_states[12] = { 0 };
+struct str6 g_fight_map_file = { 0 };
 /* Phase B: eigenes BSS (ds:8b66..8b76) in Adressreihenfolge */
 signed short g_fight_clock_save;
 signed short g_fight_rounds;

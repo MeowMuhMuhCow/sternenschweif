@@ -25,36 +25,7 @@ extern signed short g_finale_key;
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:3dc6..3e6e, dsana) - initialisierte Daten in Adressreihenfolge */
-struct finale_step g_finale_script[28] = {	/* {Zeit in Takten zu 1/10 s, Befehl, Argument} */
-	{    0, FINALE_OP_FLI,     19 },	/*   0.0 s: FLI-Animation 19 */
-	{    0, FINALE_OP_SPEECH, 1045 },	/*   0.0 s: Sprachausgabe 1045 */
-	{    5, FINALE_OP_TEXT,     0 },	/*   0.5 s: Text txt[0] */
-	{  140, FINALE_OP_SPEECH, 1049 },	/*  14.0 s: Sprachausgabe 1049 */
-	{  250, FINALE_OP_FLI,     20 },	/*  25.0 s: FLI-Animation 20 */
-	{  250, FINALE_OP_SPEECH, 1046 },	/*  25.0 s: Sprachausgabe 1046 */
-	{  255, FINALE_OP_TEXT,     1 },	/*  25.5 s: Text txt[1] */
-	{  460, FINALE_OP_SPEECH, 1051 },	/*  46.0 s: Sprachausgabe 1051 */
-	{  520, FINALE_OP_FLI,     21 },	/*  52.0 s: FLI-Animation 21 */
-	{  520, FINALE_OP_SPEECH, 1047 },	/*  52.0 s: Sprachausgabe 1047 */
-	{  525, FINALE_OP_TEXT,     2 },	/*  52.5 s: Text txt[2] */
-	{  700, FINALE_OP_FLI,     22 },	/*  70.0 s: FLI-Animation 22 */
-	{  705, FINALE_OP_TEXT,     3 },	/*  70.5 s: Text txt[3] */
-	{  880, FINALE_OP_FLI,     23 },	/*  88.0 s: FLI-Animation 23 */
-	{  885, FINALE_OP_TEXT,     4 },	/*  88.5 s: Text txt[4] */
-	{ 1000, FINALE_OP_FLI,     24 },	/* 100.0 s: FLI-Animation 24 */
-	{ 1005, FINALE_OP_TEXT,     5 },	/* 100.5 s: Text txt[5] */
-	{ 1050, FINALE_OP_SPEECH, 1050 },	/* 105.0 s: Sprachausgabe 1050 */
-	{ 1260, FINALE_OP_FLI,     25 },	/* 126.0 s: FLI-Animation 25 */
-	{ 1260, FINALE_OP_SPEECH, 1048 },	/* 126.0 s: Sprachausgabe 1048 */
-	{ 1265, FINALE_OP_TEXT,     6 },	/* 126.5 s: Text txt[6] */
-	{ 1495, FINALE_OP_FLI,     26 },	/* 149.5 s: FLI-Animation 26 */
-	{ 1500, FINALE_OP_TEXT,     7 },	/* 150.0 s: Text txt[7] */
-	{ 1600, FINALE_OP_SPEECH, 1052 },	/* 160.0 s: Sprachausgabe 1052 */
-	{ 1765, FINALE_OP_FLI,     27 },	/* 176.5 s: FLI-Animation 27 */
-	{ 1770, FINALE_OP_TEXT,     8 },	/* 177.0 s: Text txt[8] */
-	{ 1850, FINALE_OP_STOP,     0 },	/* 185.0 s: Musik aus */
-	{ 1900, FINALE_OP_END,     -1 }	/* 190.0 s: Ende */
-};
+struct finale_step g_finale_script[28] = { 0 };
 /* Phase B: eigenes BSS (ds:c794..c7a4) in Adressreihenfolge (Reihenfolge festgelegt durch die extern-Zeilen vor den #include) */
 signed short g_finale_key;
 signed short g_finale_text_nr;

@@ -45,23 +45,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:57dc..5818, dsana) - initialisierte Daten in Adressreihenfolge */
-struct camp_foe g_camp_foes[3][5] = {
-	{ { 7, 6 },
-	{ 13, 17 },
-	{ 20, 6 },
-	{ 28, 8 },
-	{ 16, 6 } },
-	{ { 5, 4 },
-	{ 6, 8 },
-	{ 18, 10 },
-	{ 25, 8 },
-	{ 14, 6 } },
-	{ { 37, 8 },
-	{ 39, 5 },
-	{ 33, 5 },
-	{ 22, 6 },
-	{ 35, 5 } }
-};
+struct camp_foe g_camp_foes[3][5] = { 0 };
 
 #define TRAVEL_OBJ	((Travel far *)g_travel)	/* Reiseobjekt in den Daten (route_find, place_reveal_dirs) */
 

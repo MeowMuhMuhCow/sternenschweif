@@ -63,31 +63,10 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:3c8c..3d8e, dsana) - initialisierte Daten in Adressreihenfolge */
-signed short g_text_block = -1;
-struct hero_ptrs7 g_hero_ptrs_null = { { 0, 0, 0, 0, 0, 0, 0 } };
-struct hero_ptrs7 g_hero_ptrs_null2 = { { 0, 0, 0, 0, 0, 0, 0 } };
-struct mouse_area g_sel_areas[20] = {
-	{ 244, 2, 278, 36, 1 },
-	{ 209, 37, 243, 71, 2 },
-	{ 244, 44, 278, 78, 3 },
-	{ 279, 32, 313, 66, 4 },
-	{ 249, 80, 283, 114, 5 },
-	{ 285, 75, 319, 109, 6 },
-	{ 166, 92, 200, 126, 7 },
-	{ 202, 102, 236, 136, 8 },
-	{ 82, 118, 116, 152, 9 },
-	{ 92, 153, 126, 187, 10 },
-	{ 57, 166, 91, 200, 11 },
-	{ 128, 166, 162, 200, 12 },
-	{ 175, 139, 209, 173, 13 },
-	{ 208, 165, 242, 199, 14 },
-	{ 240, 124, 274, 158, 15 },
-	{ 243, 159, 277, 193, 16 },
-	{ 279, 142, 313, 176, 17 },
-	{ 127, 131, 161, 165, 18 },
-	{ 0, 0, 319, 199, 0 },
-	{ -1, -1, -1, -1, -1 }
-};
+signed short g_text_block = 0;
+struct hero_ptrs7 g_hero_ptrs_null = { 0 };
+struct hero_ptrs7 g_hero_ptrs_null2 = { 0 };
+struct mouse_area g_sel_areas[20] = { 0 };
 /* Phase B: eigenes BSS (ds:c776..c794) in Adressreihenfolge */
 signed short g_select_shown;
 signed short g_select_next;

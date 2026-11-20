@@ -55,7 +55,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:00f0..0108, dsana) - initialisierte Daten in Adressreihenfolge */
-struct group_ptrs6 g_group_ptrs_null = { { 0, 0, 0, 0, 0, 0 } };
+struct group_ptrs6 g_group_ptrs_null = { 0 };
 
 void location_countdown_msgs(void);
 

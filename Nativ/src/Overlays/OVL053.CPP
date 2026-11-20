@@ -31,49 +31,24 @@
 
 /* Phase B: eigene Daten des Moduls (ds:5322..5558, dsana) - initialisierte Daten in Adressreihenfolge */
 /* begehbare Feldtypen (Liste, Ende -1) */
-char g_walk_default[] = {	/* Standard (Staedte ohne eigene Liste) */
-	1, 2, 3, 4, 5, 6, 7, 8, 9, 14, 15, 16, 17, 18, 19, 20, 21, 22, 31, 32, 102, 103, 104, 105, -123, -122, -1
-};
-char g_walk_town5[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 111, 112, -1 };	/* Stadt 5 */
-char g_walk_town4[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 111, 112, -1 };	/* Stadt 4 */
-char g_walk_dng_01[] = {	/* Dungeon 1 */
-	1, 2, 3, 4, 5, 12, 13, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 48, 49,
-	50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 65, 66, 67, 68, 69, 70, 71, -1
-};
-char g_walk_dng_02[] = { 1, 2, 3, 4, 5, 13, 14, 58, 59, 60, -1 };	/* Dungeon 2 */
-char g_walk_dng_03[] = { 1, 2, 3, 4, 5, 9, 10, 24, 25, 28, 29, 30, 54, 55, 56, -1 };	/* Dungeon 3 */
-char g_walk_dng_04[] = {	/* Dungeon 4 */
-	5, 6, 9, 10, 11, 12, 13, 21, 22, 23, 24, 26, 27, 28, 29, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, -1
-};
-char g_walk_dng_05[] = {	/* Dungeon 5 */
-	1, 2, 3, 4, 17, 18, 19, 20, 25, 26, 27, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, -1
-};
-char g_walk_dng_06[] = {	/* Dungeon 6 */
-	1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 16, 17, 18, 19, 78, 79, 80, 81, 82, 94, 95, 96, 97, 98, 100, 101, 102, 103,
-	104, 105, 106, 112, 113, 114, 115, -1
-};
-char g_walk_dng_07[] = {	/* Dungeon 7 */
-	1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 16, 17, 18, 19, 78, 79, 80, 81, 82, 94, 95, 96, 97, 98, 100, 101, 102, 103,
-	104, 105, 106, 112, 113, 114, 115, -1
-};
-char g_walk_dng_08[] = {	/* Dungeon 8 */
-	1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 16, 17, 18, 19, 78, 79, 80, 81, 82, 94, 95, 96, 97, 98, 100, 101, 102, 103,
-	104, 105, 106, 112, 113, 114, 115, -1
-};
-char g_walk_town3[] = {	/* Dungeon 9 und Stadt 3 */
-	1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 66, 67, 68, 69,
-	70, 71, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 105, 106, -1
-};
-char g_walk_dng_10[] = { 1, 2, 3, 4, 5, 20, 27, 28, 31, 37, 38, 39, 40, 41, 43, 44, -1 };	/* Dungeon 10 */
-char g_walk_dng_11[] = { 1, 2, 3, 4, 5, 23, 31, 33, 38, 39, 40, 41, 44, 45, 46, -1 };	/* Dungeon 11 */
-char g_walk_dng_12[] = {	/* Dungeon 12 */
-	1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 39, 40, 44, 47, 58, 59, -1
-};
-char g_walk_dng_13[] = { 1, 2, 3, 4, 5, 20, 21, 22, 23, 24, 35, 36, 37, 38, 39, 40, 41, -1 };	/* Dungeon 13 */
-char g_walk_dng_14[] = {	/* Dungeon 14/15 */
-	1, 2, 3, 4, 5, 9, 10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, -1
-};
-char g_walk_dng_16[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 14, 15, 32, 33, 34, 46, -1 };	/* Dungeon 16 */
+char g_walk_default[27] = { 0 };
+char g_walk_town5[13] = { 0 };	/* Stadt 5 */
+char g_walk_town4[14] = { 0 };	/* Stadt 4 */
+char g_walk_dng_01[49] = { 0 };
+char g_walk_dng_02[11] = { 0 };	/* Dungeon 2 */
+char g_walk_dng_03[16] = { 0 };	/* Dungeon 3 */
+char g_walk_dng_04[27] = { 0 };
+char g_walk_dng_05[22] = { 0 };
+char g_walk_dng_06[36] = { 0 };
+char g_walk_dng_07[36] = { 0 };
+char g_walk_dng_08[36] = { 0 };
+char g_walk_town3[48] = { 0 };
+char g_walk_dng_10[17] = { 0 };	/* Dungeon 10 */
+char g_walk_dng_11[16] = { 0 };	/* Dungeon 11 */
+char g_walk_dng_12[22] = { 0 };
+char g_walk_dng_13[18] = { 0 };	/* Dungeon 13 */
+char g_walk_dng_14[20] = { 0 };
+char g_walk_dng_16[17] = { 0 };	/* Dungeon 16 */
 char far *g_walk_dng[16] = {	/* je Dungeon 1..16 (Index group.dungeon - 1) */
 	g_walk_dng_01, g_walk_dng_02, g_walk_dng_03, g_walk_dng_04, g_walk_dng_05, g_walk_dng_06,
 	g_walk_dng_07, g_walk_dng_08, g_walk_town3, g_walk_dng_10, g_walk_dng_11, g_walk_dng_12,

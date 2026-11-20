@@ -40,7 +40,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:579a..579e, dsana) - initialisierte Daten in Adressreihenfolge */
-struct hero far *g_dng12_cart_hero = 0;
+struct hero far *g_dng12_cart_hero = { 0 };
 
 /* automap_cell_write mit short als letztem Parameter (wie im Original deklariert; mit signed char legt BCC
  * die Register anders) */

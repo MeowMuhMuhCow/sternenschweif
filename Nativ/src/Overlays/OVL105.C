@@ -42,8 +42,8 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:6124..613e, dsana) - initialisierte Daten in Adressreihenfolge */
-char g_str_diary_dat5[10] = "DIARY.DAT";
-char g_str_diary_txt2[16] = "..\\DIARY.TXT\0\r\n";	/* Dateiname, dahinter STR_CRLF */
+char g_str_diary_dat5[10] = { 0 };
+char g_str_diary_txt2[16] = { 0 };	/* Dateiname, dahinter STR_CRLF */
 
 #define STAR_NAME	(*(char far * far *)g_names_star_idx)	/* Dateiname der Arbeitsdatei 0 */
 #define FILE_NAMES	0x334		/* Namensliste (struct sel_rec, Ende id == -1) */

@@ -45,7 +45,7 @@
 
 /* Phase B: eigene Daten des Moduls (ds:5974..5988, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
 signed short g_name_buf_no = 0;
-struct mr_table g_mr_modificators = { { 0, 2, 0, 0, 2, -2, 2, 2, 2, 2, 3, 4, 3 } };
+struct mr_table g_mr_modificators = { 0 };
 
 char far *hero_name_gen(struct hero far *h, signed short gen)
 {
@@ -82,7 +82,7 @@ void sub_ae_splash(struct hero far *h, register signed short ae)
 		if (h->type == 9 && h->staffspell_lvl >= 4)
 			if ((ae -= 2) < 0)
 				ae = 0;
-		screen_mark_portrait(g_screen, h->slot_pos, 1);
+		screen_mark_portrait((signed char *)g_screen, h->slot_pos, 1);
 		if ((h->ae -= ae) < 0)
 			h->ae = 0;
 	}
@@ -108,7 +108,7 @@ void sub_hero_le(struct hero far *h, register signed short le)
 		h->le -= le;
 		if (h->asleep)
 			h->asleep = 0;
-		screen_mark_portrait(g_screen, h->slot_pos, 0);
+		screen_mark_portrait((signed char *)g_screen, h->slot_pos, 0);
 		if (h->le <= 0) {
 			if (!g_fight_obj || g_fight_id == FIGHT_ID_SPECIAL2)
 				snd_play(g_snd_fx, h->sex == 0 ? 0x4c : 0x4b);

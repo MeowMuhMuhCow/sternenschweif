@@ -24,8 +24,8 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:72de..731e, dsana) - initialisierte Daten in Adressreihenfolge */
-signed short g_merchant_items_posx[15] = { 30, 30, 30, 30, 30, 95, 95, 95, 95, 95, 160, 160, 160, 160, 160 };
-signed short g_merchant_items_posy[15] = { 35, 55, 75, 95, 115, 35, 55, 75, 95, 115, 35, 55, 75, 95, 115 };
+signed short g_merchant_items_posx[15] = { 0 };
+signed short g_merchant_items_posy[15] = { 0 };
 void far *g_smith = 0;
 
 #define SMITH_TXT	0x1d		/* Texte der Schmiede (0x32 Stueck) */

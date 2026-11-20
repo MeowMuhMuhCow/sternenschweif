@@ -34,25 +34,16 @@ extern struct ail_drv_desc g_blaster_desc;
 #define NR_BLASTER_TYPES 4
 
 /* Phase B: eigene Daten des Moduls (ds:731e..747a, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-char g_str_empty_731e[2] = "";
-char g_blaster_keys[5] = "AIDT";
-signed short g_blaster_bases[4] = { 16, 10, 10, 10 };
+char g_str_empty_731e[2] = { 0 };
+char g_blaster_keys[5] = { 0 };
+signed short g_blaster_bases[4] = { 0 };
 signed short far *g_blaster_dest[NR_BLASTER_KEYS] = {	/* Ziel je Kennbuchstabe A, I, D, T */
 	&g_blaster_desc.io, &g_blaster_desc.irq, &g_blaster_desc.dma, &g_blaster_type
 };
-char far *g_blaster_music_drivers[NR_BLASTER_TYPES] = {	/* Musiktreiber je Kartentyp 1..4 (Index type - 1) */
-	"SBFM.ADV", "SBP1FM.ADX", "SBFM.ADV", "SBP2FM.ADX"
-};
-char far *g_blaster_digi_drivers[NR_BLASTER_TYPES] = {	/* Digitaltreiber je Kartentyp 1..4 */
-	"SBDIG.ADV", "SBPDIG.ADV", "SBDIG.ADV", "SBPDIG.ADV"
-};
-char far *g_blaster_card_names[NR_BLASTER_TYPES] = {	/* Kartenname je Kartentyp 1..4 */
-	"Sound Blaster V1.5 or earlier",
-	"Sound Blaster Pro (Yamaha YM3812 version)",
-	"Sound Blaster V2.0",
-	"Sound Blaster Pro (Yamaha YMF262/OPL3 version)"
-};
-struct ail_drv_desc g_blaster_result = { 0, 0, "", 0, 0, 0, 0, 0, 0, 0x0000 };
+char far *g_blaster_music_drivers[NR_BLASTER_TYPES] = { 0 };
+char far *g_blaster_digi_drivers[NR_BLASTER_TYPES] = { 0 };
+char far *g_blaster_card_names[NR_BLASTER_TYPES] = { 0 };
+struct ail_drv_desc g_blaster_result = { 0 };
 /* Phase B: eigenes BSS (ds:cb34..cb4e) in Adressreihenfolge (Reihenfolge festgelegt durch die extern-Zeilen vor den #include) */
 struct ail_drv_desc g_blaster_desc;
 signed short g_blaster_type;
@@ -102,7 +93,7 @@ signed short blaster_parse(SNDSETUP_PTR s, struct ail_drv_desc far *desc, char f
 	char far *env;
 	char buf[0x80];
 
-	env = getenv("BLASTER");
+	env = getenv(DS_STR(0x7461));
 	if (env == 0)
 		return 0;
 	strncpy(buf, env, 0x7f);
@@ -123,7 +114,7 @@ signed short blaster_parse(SNDSETUP_PTR s, struct ail_drv_desc far *desc, char f
 					d = buf[j];
 					j++;
 					for (m = 0; m < g_blaster_bases[k]; m++)
-						if (toupper(d) == "0123456789ABCDEF"[m])
+						if (toupper(d) == DS_STR(0x7469)[m])
 							val = val * g_blaster_bases[k] + m;
 				} while (isalnum(d));
 				*g_blaster_dest[k] = val;

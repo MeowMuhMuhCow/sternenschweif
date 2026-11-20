@@ -37,15 +37,7 @@
 /* Phase B: eigene Daten des Moduls (ds:118c..11aa, dsana) - initialisierte Daten in Adressreihenfolge */
 signed char g_sfight2_nr_right = 0;
 signed char g_sfight2_nr_wrong = 0;
-struct sfight_starts g_sfight2_starts = {
-	{ { 12, 0, 3, 0 },
-	{ 15, 0, 3, 0 },
-	{ 20, 5, 2, 0 },
-	{ 21, 7, 2, 0 },
-	{ 20, 9, 2, 0 },
-	{ 18, 12, 1, 0 },
-	{ 15, 13, 1, 0 } }
-};
+struct sfight_starts g_sfight2_starts = { 0 };
 /* Phase B: eigenes BSS (ds:8b7a..8b88) in Adressreihenfolge */
 void far *g_sfight2_txt_buf;
 char far * far *g_sfight2_txt;

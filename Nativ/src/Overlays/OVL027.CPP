@@ -32,7 +32,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:184a..1868, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-signed short g_cl_opening[13] = { -24574, -24573, -24572, -24571, -24570, -24569, -24568, -24567, -24566, -24565, 9245, 9126, -1 };
+signed short g_cl_opening[13] = { 0 };
 
 #define PAL_SIZE	0x300
 #define SCREEN_SIZE	0xfa00		/* 320 x 200 */
@@ -548,7 +548,7 @@ signed short Opening::load_files()
 	set_palette(p1, 0, 0x100);
 	pic.load(PIC_TITLE, g_vga_buf, (struct rgb far *)p2);
 	blend(p1, p2, 0x1e, 0x100, 1);
-	aborted = load_pic_list(g_cd_cache, g_cl_opening, "\xaa\xaa\xaa", 0, 1);
+	aborted = load_pic_list(g_cd_cache, g_cl_opening, (void *)"\xaa\xaa\xaa", 0, 1);
 	pal_blend(SRGB(p2), 0x19);
 	delete p2;
 	delete p1;

@@ -24,7 +24,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:78c6..78cc, dsana) - initialisierte Daten in Adressreihenfolge */
-signed short g_never_confiscated[3] = { 133, 140, -1 };
+signed short g_never_confiscated[3] = { 0 };
 
 /* jedem lebenden Helden Hose und Schuhe (Heldinnen auch ein Hemd) geben und anlegen */
 void group_give_clothes(void far *ctx)

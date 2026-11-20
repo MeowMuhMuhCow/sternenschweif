@@ -47,20 +47,12 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:5d46..5e78, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-struct map_event g_dng16_key_event1 = { 1, 0x00, 0x00 };
-struct map_event g_dng16_key_event2 = { 2, 0x00, 0x00 };
+struct map_event g_dng16_key_event1 = { 0 };
+struct map_event g_dng16_key_event2 = { 0 };
 signed short g_pick_delay = 0;
-signed short g_last_cam_cell_y = -1;
-signed short g_last_cam_cell_x = -1;
-struct cursor_areas g_view_cursor_areas = { {	/* Mausbereiche der 3D-Ansicht (x0, y0, x1, y1, Aktion) */
-	{ 64, 0, 173, 33, 0x80 },
-	{ 64, 103, 173, 135, 0x81 },
-	{ 15, 33, 64, 103, 0x82 },
-	{ 173, 33, 222, 103, 0x83 },
-	{ 15, 0, 88, 52, 0x84 },
-	{ 147, 0, 222, 52, 0x85 },
-	{ 0, 0, 319, 199, 0x86 }
-}, -1 };
+signed short g_last_cam_cell_y = 0;
+signed short g_last_cam_cell_x = 0;
+struct cursor_areas g_view_cursor_areas = { 0 };
 /* Kartenereignis-Rueckrufe (struct area_desc.handler); die Funktionen haben verschiedene Objektzeiger-Typen */
 #define AREA_HANDLER(f)	{ (signed short (far *)(void far *, void far *))(f) }
 struct area_desc g_area_descs[17] = {	/* je Dungeon (Index group.dungeon), [0] = kein Dungeon */

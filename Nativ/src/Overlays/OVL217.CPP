@@ -47,16 +47,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:7204..7254, dsana) - initialisierte Daten in Adressreihenfolge */
-struct hero_bar_areas g_hero_bar_areas = {
-	{ { 0, 0, 0, 0, 1 },
-	{ 0, 0, 0, 0, 2 },
-	{ 0, 0, 0, 0, 3 },
-	{ 0, 0, 0, 0, 4 },
-	{ 0, 0, 0, 0, 5 },
-	{ 0, 0, 0, 0, 6 },
-	{ 0, 0, 0, 0, 7 },
-	{ -1, -1, -1, -1, -1 } }
-};
+struct hero_bar_areas g_hero_bar_areas = { 0 };
 
 unsigned short travel_slow5_off(Travel far *o, register unsigned short v)
 {

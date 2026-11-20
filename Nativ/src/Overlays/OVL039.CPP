@@ -31,26 +31,10 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:3f5e..3fc0, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-char g_cl_intro[30] = {
-	0x3a, 0x23, 0x3b, 0x23, 0x3c, 0x23, 0x3d, 0x23, 0x3e, 0x23, 0x3f, 0x23, 0x40, 0x23, 0x41, 0x23,
-	0x42, 0x23, 0x43, 0x23, 0x44, 0x23, 0x45, 0x23, 0x46, 0x23, 0x47, 0x23, 0xff, 0xff
-};
-char g_cl_intro_speech[14] = { 0xe9, 0xc3, 0xee, 0xc3, 0xef, 0xc3, 0xf0, 0xc3, 0xf1, 0xc3, 0xf2, 0xc3, 0xff, 0xff };
-char g_cl_intro_st[4] = "";
-struct intro_scene g_intro_scenes[12] = {
-	{ 826, 0 },
-	{ 827, 1 },
-	{ 828, 1 },
-	{ 829, 9 },
-	{ 830, 2 },
-	{ 831, 3 },
-	{ 832, 4 },
-	{ 833, 5 },
-	{ 834, 6 },
-	{ 835, 7 },
-	{ 836, 8 },
-	{ 837, 9 }
-};
+char g_cl_intro[30] = { 0 };
+char g_cl_intro_speech[14] = { 0 };
+char g_cl_intro_st[4] = { 0 };
+struct intro_scene g_intro_scenes[12] = { 0 };
 
 #define INTRO_TXT	0xa9		/* Textliste des Vor-/Abspanns (0x32 Texte) */
 #define INTRO_TXT_N	0x32

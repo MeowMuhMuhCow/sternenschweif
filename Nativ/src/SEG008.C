@@ -20,7 +20,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:531c..5322, dsana) - initialisierte Daten in Adressreihenfolge */
-char g_fmt_col4_531c[6] = "\xf4%s\xf0";
+char g_fmt_col4_531c[6] = { 0 };
 
 /* Werte der Aufdeckkarte */
 #define MAP_SEEN	1	/* Feld gesehen */

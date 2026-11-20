@@ -40,7 +40,7 @@ extern signed char g_view_timer_busy;
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:78d2..78da, dsana) - initialisierte Daten in Adressreihenfolge */
-unsigned long g_anim_ticks = 0x00000000;
+unsigned long g_anim_ticks = 0;
 signed short g_fight_timer_ticks = 0;
 signed char g_mouse_isr_lock = 0;
 /* Phase B: eigenes BSS (ds:cb6e..cb76) in Adressreihenfolge (Reihenfolge festgelegt durch die extern-Zeilen vor den #include) */

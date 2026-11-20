@@ -35,7 +35,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:747a..7486, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-struct heal_ani_frames g_heal_ani_frames = { { 0, 1, 2, 1, 0 } };
+struct heal_ani_frames g_heal_ani_frames = { 0 };
 
 /* change_attrib mit Wort-Parameter (das Original uebergibt den Betrag als short: push 1) */
 #define change_attrib_w ((void (*)(struct hero far *, signed short, signed short))change_attrib)

@@ -28,24 +28,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:6230..6288, dsana) - initialisierte Daten in Adressreihenfolge */
-struct lock_type g_lock_types[16] = {	/* je Schlossart: Aufbrechen (KK x 2), Zuschlag Schloesser, Zuschlag Foramen */
-	{ 22, 0, 3 },	/* 0 */
-	{ 24, 3, 5 },	/* 1 */
-	{ 26, 6, 6 },	/* 2 */
-	{ 28, 4, 8 },	/* 3 */
-	{ 30, 8, 10 },	/* 4 */
-	{ 32, 12, 12 },	/* 5 */
-	{ 34, 5, 10 },	/* 6 */
-	{ 36, 10, 15 },	/* 7 */
-	{ 38, 15, 20 },	/* 8 */
-	{ 40, 6, 12 },	/* 9 */
-	{ 40, 10, 18 },	/* 10 */
-	{ 45, 18, 27 },	/* 11 */
-	{ 45, 30, 49 },	/* 12 */
-	{ 99, 99, 99 },	/* 13 */
-	{ 99, 99, 99 },	/* 14 */
-	{ 99, 99, 99 } 	/* 15 */
-};
+struct lock_type g_lock_types[16] = { 0 };
 LOCK_PMF g_lock_special[1] = { 0 };	/* Sonderbehandlung je Lock.special (keine belegt) */
 LOCK_PMF g_lock_fail[2] = { &Lock::trap, 0 };	/* Fehlschlag-Folge je Lock.fail_special */
 LOCK_PMF g_lock_special_default = 0;	/* keine Sonderbehandlung */

@@ -454,79 +454,11 @@ void globals_dtor(void)
 /* Zeigerziele, die erst weiter unten definiert werden */
 extern char g_39b5[], g_39c0[], g_39ca[], g_39d7[], g_39e3[], g_39ee[], g_39fa[], g_3a03[], g_3a0b[], g_3a12[], g_3a18[], g_3a23[], g_3a2d[], g_3a35[], g_3a3c[], g_3a47[], g_3a53[];
 /* Phase B: eigene Daten des Moduls (ds:1966..3c5e, dsana) - initialisierte Daten in Adressreihenfolge */
-signed short g_nr_raw_files = 450;
+signed short g_nr_raw_files = 0;
 signed short g_data_on_cd = 0;
-struct recipe g_recipes[14] = {
-	{ 167, { 42, 89, 122, 122, 126, 126, -1, -1, -1, -1 }, 166, 0, 8, 48 },
-	{ 169, { 41, 122, 126, -1, -1, -1, -1, -1, -1, -1 }, 168, 0, 5, 8 },
-	{ 202, { 92, 125, 125, 126, 122, -1, -1, -1, -1, -1 }, 180, 10, 5, 24 },
-	{ 203, { 92, 92, 89, 41, 41, -1, -1, -1, -1, -1 }, 239, 0, 5, 8 },
-	{ 204, { 92, 129, 126, 63, 63, -1, -1, -1, -1, -1 }, 153, 15, 8, 48 },
-	{ 205, { 92, 129, 126, 124, 128, -1, -1, -1, -1, -1 }, 147, 12, 7, 48 },
-	{ 206, { 92, 126, 126, 157, 157, 131, -1, -1, -1, -1 }, 154, 7, 8, 48 },
-	{ 186, { 92, 60, 60, 64, -1, -1, -1, -1, -1, -1 }, 145, 5, 2, 8 },
-	{ 240, { 42, 61, 61, 64, 92, 126, -1, -1, -1, -1 }, 146, 12, 5, 24 },
-	{ 242, { 91, 63, 64, -1, -1, -1, -1, -1, -1, -1 }, 237, 2, 2, 8 },
-	{ 243, { 92, 126, 126, 126, 157, 157, 157, 131, -1, -1 }, 155, 15, 12, 120 },
-	{ 244, { 92, 157, 128, 122, 126, -1, -1, -1, -1, -1 }, 238, 0, 6, 48 },
-	{ 241, { 92, 61, 61, 124, 123, 126, 130, -1, -1, -1 }, 236, 25, 10, 72 },
-	{ 338, { 295, 225, 181, 107, 70, 315, -1, -1, -1, -1 }, 339, 40, 15, -106 }
-};
-struct skill_attribs g_skill_attribs[NR_SKILLS] = {
-	{ 0, 0, 0, 1 },
-	{ 0, 0, 0, 1 },
-	{ 0, 0, 0, 1 },
-	{ 0, 0, 0, 1 },
-	{ 0, 0, 0, 1 },
-	{ 0, 0, 0, 1 },
-	{ 0, 0, 0, 1 },
-	{ 0, 0, 0, 1 },
-	{ 0, 0, 0, 1 },
-	{ 0, 4, 6, 2 },
-	{ 0, 4, 6, 2 },
-	{ 0, 5, 4, 2 },
-	{ 2, 4, 6, 2 },
-	{ 0, 5, 4, 2 },
-	{ 0, 4, 6, 2 },
-	{ 0, 6, 6, 2 },
-	{ 0, 5, 4, 2 },
-	{ 2, 4, 4, 2 },
-	{ 1, 5, 6, 2 },
-	{ 1, 5, 2, 2 },
-	{ 5, 2, 2, 2 },
-	{ 0, 1, 2, 2 },
-	{ 1, 5, 2, 2 },
-	{ 0, 5, 2, 2 },
-	{ 1, 5, 2, 2 },
-	{ 1, 5, 5, 2 },
-	{ 1, 5, 4, 2 },
-	{ 3, 4, 6, 2 },
-	{ 1, 5, 3, 2 },
-	{ 1, 5, 5, 2 },
-	{ 0, 1, 5, 2 },
-	{ 5, 3, 4, 2 },
-	{ 0, 1, 3, 3 },
-	{ 1, 1, 5, 3 },
-	{ 1, 1, 5, 3 },
-	{ 1, 1, 5, 3 },
-	{ 1, 5, 2, 3 },
-	{ 0, 1, 2, 3 },
-	{ 1, 1, 3, 3 },
-	{ 1, 1, 3, 3 },
-	{ 1, 5, 2, 3 },
-	{ 0, 5, 2, 2 },
-	{ 5, 2, 3, 2 },
-	{ 0, 2, 3, 2 },
-	{ 0, 1, 5, 2 },
-	{ 0, 1, 2, 2 },
-	{ 1, 2, 3, 2 },
-	{ 1, 5, 3, 2 },
-	{ 5, 3, 3, 2 },
-	{ 0, 5, 3, 2 },
-	{ 1, 5, 5, 1 },
-	{ 1, 5, 5, 1 }
-};
-struct range_idx g_skills_index[7] = { { 0, 9 }, { 9, 10 }, { 19, 7 }, { 26, 6 }, { 32, 9 }, { 41, 9 }, { 50, 2 } };
+struct recipe g_recipes[14] = { 0 };
+struct skill_attribs g_skill_attribs[NR_SKILLS] = { 0 };
+struct range_idx g_skills_index[7] = { 0 };
 CAST_PMF g_spell_handlers[86] = {	/* Zauberroutine je Zauber SP_* ([0] = keiner) */
 	0,
 	&Cast::spell_beherrschung_brechen,	/* SP_BEHERRSCHUNG_BRECHEN */
@@ -615,130 +547,12 @@ CAST_PMF g_spell_handlers[86] = {	/* Zauberroutine je Zauber SP_* ([0] = keiner)
 	&Cast::spell_silentium,	/* SP_SILENTIUM */
 	&Cast::spell_sturmgebruell	/* SP_STURMGEBRUELL */
 };
-struct staffspell_desc g_staffspell_descriptions[7] = {
-	{ 1, 1, 2, 1, 21, 1 },
-	{ 1, 1, 2, 0, 23, 0 },
-	{ 1, 2, 2, 3, 19, 0 },
-	{ 1, 2, 2, 4, 27, 0 },
-	{ 0, 1, 1, 99, 30, 0 },
-	{ 0, 2, 2, 99, 26, 0 },
-	{ 0, 1, 2, 99, 21, 2 }
-};
-struct spell_desc g_spell_descriptions[87] = {
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-	{ 0, 1, 5, 2, -1, 0, 1, 2, 0, 0, 155 },
-	{ 1, 1, 5, 3, -1, -1, 0, 0, 0, 0, 144 },
-	{ 1, 5, 2, 6, -1, 1, 1, 0, 0, 0, 155 },
-	{ 1, 1, 5, 2, -1, 1, 0, 1, 1, 0, 155 },
-	{ 2, 0, 1, 2, -1, 0, 1, 2, 0, 0, 155 },
-	{ 5, 1, 2, 6, 12, 1, 0, 3, 0, 1, 146 },
-	{ 3, 5, 2, 2, 8, 1, 0, 1, 0, 1, 146 },
-	{ 0, 0, 2, 2, 8, 1, 0, 1, 0, 1, 146 },
-	{ 2, 1, 5, 2, 8, 1, 0, 1, 0, 1, 146 },
-	{ 0, 1, 1, 2, 8, 1, 0, 1, 0, 1, 146 },
-	{ 0, 0, 0, 2, -1, 1, 0, 1, 0, 1, 146 },
-	{ 1, 0, 5, 2, 7, 1, 0, 1, 0, 1, 101 },
-	{ 0, 0, 1, 6, 6, -1, 0, 2, 0, 0, 146 },
-	{ 1, 1, 5, 2, 5, -1, 1, 0, 0, 1, 146 },
-	{ 2, 0, 2, 2, -1, 1, 1, 1, 0, 1, 146 },
-	{ 5, 1, 2, 2, 8, 1, 0, 3, 1, 1, 146 },
-	{ 0, 0, 1, 2, 6, 1, 0, 1, 1, 1, 146 },
-	{ 1, 0, 0, 2, -1, 1, 7, 4, 0, 0, 147 },
-	{ 0, 0, 0, 2, 13, -1, 0, 0, 0, 0, 147 },
-	{ 0, 0, 0, 2, 11, -1, 0, 0, 0, 0, 147 },
-	{ 1, 0, 0, 2, -1, 1, 7, 4, 0, 0, 147 },
-	{ 2, 0, 2, 2, 13, 1, 2, 3, 1, 0, 147 },
-	{ 1, 0, 0, 2, 15, 1, 5, 1, 0, 0, 147 },
-	{ 0, 0, 1, 2, -1, 1, 8, 4, 0, 0, 156 },
-	{ 1, 1, 6, 6, -1, -1, 0, 0, 0, 0, 156 },
-	{ 4, 5, 4, 6, -1, -1, 0, 0, 0, 0, 156 },
-	{ 5, 1, 4, 6, 7, 1, 1, 2, 0, 0, 145 },
-	{ 1, 1, 1, 3, 6, -1, 0, 0, 0, 0, 145 },
-	{ 1, 1, 3, 6, -1, -1, 0, 0, 0, 0, 145 },
-	{ 5, 5, 4, 4, 7, -1, 0, 0, 0, 0, 145 },
-	{ 1, 1, 1, 6, -1, -1, 0, 0, 0, 0, 149 },
-	{ 4, 1, 4, 6, 5, -1, 0, 0, 0, 0, 145 },
-	{ 3, 1, 5, 2, -1, 0, 1, 2, 0, 0, 153 },
-	{ 2, 5, 2, 3, -1, 0, 1, 2, 0, 0, 153 },
-	{ 1, 1, 1, 2, -1, 0, 1, 2, 0, 0, 153 },
-	{ 4, 1, 2, 6, 7, -1, 1, 2, 0, 0, 153 },
-	{ 2, 0, 5, 2, -1, -1, 1, 0, 0, 0, 153 },
-	{ 3, 1, 5, 3, 5, 0, 1, 0, 0, 0, 149 },
-	{ 1, 1, 1, 5, 10, -1, 0, 0, 0, 0, 149 },
-	{ 3, 1, 5, 2, 7, 1, 1, 1, 1, 1, 149 },
-	{ 5, 1, 1, 5, 5, 1, 1, 0, 0, 0, 149 },
-	{ 3, 1, 5, 2, 5, -1, 1, 0, 0, 0, 149 },
-	{ 1, 1, 1, 6, 5, -1, 1, 0, 0, 0, 149 },
-	{ 3, 1, 5, 2, 5, -1, 1, 0, 0, 1, 149 },
-	{ 5, 5, 2, 4, 5, 1, 1, 0, 0, 0, 151 },
-	{ 1, 1, 2, 4, 8, 1, 1, 2, 0, 0, 151 },
-	{ 2, 1, 2, 4, 6, -1, 1, 0, 0, 0, 151 },
-	{ 2, 1, 5, 2, 4, 1, 3, 4, 0, 0, 151 },
-	{ 5, 1, 5, 4, 5, 1, 0, 3, 1, 0, 143 },
-	{ 1, 0, 1, 6, -1, 1, 0, 0, 0, 0, 154 },
-	{ 1, 1, 2, 4, 5, 1, 0, 3, 0, 0, 154 },
-	{ 3, 1, 4, 6, -1, 1, 0, 3, 1, 0, 154 },
-	{ 1, 1, 4, 3, -1, 1, 0, 3, 1, 0, 154 },
-	{ 1, 2, 4, 6, 5, 1, 0, 3, 1, 1, 154 },
-	{ 2, 0, 5, 2, 4, 1, 0, 3, 1, 0, 154 },
-	{ 1, 0, 5, 2, -1, 1, 1, 2, 0, 0, 154 },
-	{ 5, 5, 4, 3, 5, 1, 1, 2, 0, 0, 154 },
-	{ 2, 5, 5, 2, 2, -1, 1, 0, 0, 0, 152 },
-	{ 1, 0, 1, 2, 11, -1, 1, 0, 0, 0, 152 },
-	{ 5, 0, 5, 4, 7, -1, 1, 0, 0, 0, 148 },
-	{ 1, 0, 1, 2, 7, 1, 1, 2, 1, 0, 148 },
-	{ 3, 5, 4, 6, -1, 1, 1, 0, 0, 0, 148 },
-	{ 1, 1, 2, 2, 7, 0, 1, 2, 0, 0, 148 },
-	{ 2, 0, 0, 6, 7, 0, 1, 0, 0, 0, 148 },
-	{ 5, 1, 2, 3, 7, 0, 1, 2, 0, 0, 148 },
-	{ 3, 1, 2, 4, 7, 0, 1, 2, 0, 0, 148 },
-	{ 4, 1, 5, 2, 7, 0, 1, 2, 0, 0, 148 },
-	{ 4, 1, 2, 6, 7, 0, 1, 2, 0, 0, 148 },
-	{ 1, 1, 1, 2, 7, 0, 1, 2, 0, 0, 148 },
-	{ 4, 0, 1, 2, 7, 0, 1, 2, 0, 0, 148 },
-	{ 1, 1, 4, 6, -1, -1, 0, 0, 0, 0, 148 },
-	{ 1, 5, 2, 6, 13, 1, 0, 3, 1, 1, 148 },
-	{ 1, 1, 5, 2, -1, 1, 4, 1, 0, 1, 150 },
-	{ 3, 0, 1, 6, -1, -1, 1, 0, 0, 0, 148 },
-	{ 3, 1, 1, 4, -1, -1, 1, 0, 0, 0, 148 },
-	{ 5, 1, 1, 3, 5, -1, 0, 0, 0, 0, 157 },
-	{ 4, 1, 2, 6, 5, -1, 0, 0, 0, 0, 158 },
-	{ 1, 0, 1, 6, -1, -1, 0, 0, 0, 0, 157 },
-	{ 1, 1, 3, 6, -1, -1, 0, 0, 0, 0, 157 },
-	{ 0, 1, 1, 3, 3, 1, 1, 0, 0, 0, 157 },
-	{ 1, 0, 1, 6, -1, -1, 0, 0, 0, 0, 157 },
-	{ 4, 1, 1, 3, 1, -1, 0, 0, 0, 0, 157 },
-	{ 1, 0, 1, 6, -1, -1, 0, 0, 0, 0, 157 },
-	{ 3, 1, 1, 2, -1, -1, 0, 0, 0, 0, 157 },
-	{ 4, 1, 2, 6, 5, -1, 0, 0, 0, 0, 157 },
-	{ -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
-};
-struct range_idx g_spells_index[8] = { { 1, 5 }, { 6, 12 }, { 18, 6 }, { 24, 3 }, { 27, 6 }, { 33, 5 }, { 38, 7 }, { 45, 4 } };
-struct range_idx g_spells_index2[4] = { { 49, 9 }, { 58, 2 }, { 60, 16 }, { 76, 10 } };
-struct mon_spell_desc g_mon_spell_descriptions[15] = {
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-	{ 20, 1, 0, 0, 1, 2, 0, 1, 148 },
-	{ 8, 2, 0, 5, 2, 2, 1, 0, 146 },
-	{ 8, 2, 0, 0, 2, 2, 1, 0, 146 },
-	{ 7, 2, 0, 0, 5, 2, 1, 0, 101 },
-	{ 7, 1, 0, 1, 4, 6, 0, 1, 145 },
-	{ -1, 1, 0, 1, 5, 2, 0, 1, 153 },
-	{ 5, 3, 1, 1, 5, 4, 1, 0, 143 },
-	{ 5, 2, 1, 1, 2, 4, 0, 0, 157 },
-	{ -1, 3, 1, 1, 4, 6, 1, 0, 154 },
-	{ -1, 3, 1, 1, 4, 3, 1, 0, 154 },
-	{ 5, 3, 1, 2, 4, 6, 1, 0, 146 },
-	{ -1, 1, 0, 0, 5, 2, 0, 1, 153 },
-	{ -1, 0, 0, 5, 4, 6, 0, 1, 154 },
-	{ 13, 3, 0, 5, 2, 6, 1, 0, 146 }
-};
-signed char g_mon_spell_repertoire[65] = {
-	1, 7, 8, -1, -1, 1, 7, 3, 4, -1, 1, 7, 4, 2, 9, 9,
-	14, 10, -1, -1, 9, 10, 12, 13, -1, 9, 10, 12, 11, 7, 9, 14,
-	7, -1, -1, 9, 14, 7, 12, 4, 6, 1, 8, -1, -1, 6, 1, 5,
-	7, -1, 6, 14, 5, 12, 9, 7, 9, 6, -1, -1, 7, 9, 6, 4,
-	10
-};
+struct staffspell_desc g_staffspell_descriptions[7] = { 0 };
+struct spell_desc g_spell_descriptions[87] = { 0 };
+struct range_idx g_spells_index[8] = { 0 };
+struct range_idx g_spells_index2[4] = { 0 };
+struct mon_spell_desc g_mon_spell_descriptions[15] = { 0 };
+signed char g_mon_spell_repertoire[65] = { 0 };
 SPELL_PMF g_mon_spell_handlers[15] = {	/* Zauberroutine je Gegnerzauber MSP_* ([0] = keiner) */
 	0,
 	&Spell::mon_spell_verwandlung_beenden,	/* MSP_VERWANDLUNG_BEENDEN */
@@ -756,17 +570,12 @@ SPELL_PMF g_mon_spell_handlers[15] = {	/* Zauberroutine je Gegnerzauber MSP_* ([
 	&Spell::mon_spell_armatrutz,	/* MSP_ARMATRUTZ */
 	&Spell::mon_spell_paralue	/* MSP_PARALUE */
 };
-signed short g_spells_own_test[20] = { 3, 33, 34, 37, 50, 53, 25, 26, 30, 62, 74, 75, 78, 79, 8, 21, 24, 18, 49, -1 };
-signed short g_spells_no_sfight[16] = { 6, 7, 8, 9, 10, 12, 16, 17, 18, 21, 24, 40, 54, 72, 73, -1 };
-char g_save_runv[1] = "";
-signed long g_ingame_timers[50] = {
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0
-};
-char g_save_runv_end[1] = "";
-char g_save_play[1] = "";
+signed short g_spells_own_test[20] = { 0 };
+signed short g_spells_no_sfight[16] = { 0 };
+char g_save_runv[1] = { 0 };
+signed long g_ingame_timers[50] = { 0 };
+char g_save_runv_end[1] = { 0 };
+char g_save_play[1] = { 0 };
 signed char g_anims_on = 0;
 signed char g_free_move = 0;
 char g_playflags_2[1] = { 0 };   /* ds:253a = g_playflags[2] (O011 PSET/PVIEW greift per Index zu) */
@@ -791,7 +600,7 @@ signed char g_print_page_len = 0;
 char g_unused_254e[1] = { 0 };   /* ds:254e, unbenutzt */
 signed char g_inv_show_body = 0;
 char g_unused_2550[26] = { 0 };   /* ds:2550, unbenutzt */
-signed char g_flags[1] = "";
+signed char g_flags[1] = { 0 };
 signed char g_topic_kvirasim = 0;
 signed char g_topic_gashok = 0;
 signed char g_topic_lowangen = 0;
@@ -841,8 +650,8 @@ char g_unused_2598[1] = { 0 };   /* ds:2598, unbenutzt */
 signed char g_tev066_cub_killed = 0;
 signed char g_finsterkopp_entered = 0;
 signed char g_low_tunnel_known = 0;
-signed char g_guest_lock[7] = "";
-signed char g_guest_lock2[3] = "";
+signed char g_guest_lock[7] = { 0 };
+signed char g_guest_lock2[3] = { 0 };
 signed char g_topic_binge = 0;
 char g_unused_25a7[1] = { 0 };   /* ds:25a7, unbenutzt */
 signed char g_topic_salamander_stone = 0;
@@ -1342,11 +1151,11 @@ signed char g_dng11_air_counter = 0;
 signed char g_reward_given = 0;
 signed char g_reward2_given = 0;
 char g_unused_279b[39] = { 0 };   /* ds:279b, unbenutzt */
-char g_save_play_end[1] = "";
-char g_save_glob[1] = "";
+char g_save_play_end[1] = { 0 };
+char g_save_glob[1] = { 0 };
 signed char g_inn_room = 0;
-signed char g_group_sizes[6] = "";
-signed long g_god_favor[2] = { 0, 0 };
+signed char g_group_sizes[6] = { 0 };
+signed long g_god_favor[2] = { 0 };
 signed long g_god_favor_rondra = 0;
 char g_unused_27d7[8] = { 0 };   /* ds:27d7, unbenutzt */
 signed long g_god_favor_boron = 0;
@@ -1357,429 +1166,163 @@ char g_god_favor_9_10[8] = { 0 };   /* ds:27ef = g_god_favor[9..10] (O007 greift
 signed long g_god_favor_ingerimm = 0;
 char g_unused_27fb[12] = { 0 };   /* ds:27fb, unbenutzt */
 signed char g_npc_months = 0;
-char g_loc_saved_flag[1] = "";   /* ds:2808, nur O030 enter_location (dort g_2808): beim Betreten gesichert und 0, danach zurueck - Bedeutung offen */
-signed short g_nr_groups = 1;
+char g_loc_saved_flag[1] = { 0 };   /* ds:2808, nur O030 enter_location (dort g_2808): beim Betreten gesichert und 0, danach zurueck - Bedeutung offen */
+signed short g_nr_groups = 0;
 signed short g_group_no = 0;
 signed short g_inn_days = 0;
 signed short g_inn_town = 0;
 signed short g_inn_loc = 0;
 signed short g_inn_price = 0;
-signed short g_camp_food_mod = 5;
+signed short g_camp_food_mod = 0;
 signed short g_camp_herb_mod = 0;
 signed short g_rest_mod = 0;
-char g_absent_hero1[16] = "";
-char g_absent_hero2[16] = "";
+char g_absent_hero1[16] = { 0 };
+char g_absent_hero2[16] = { 0 };
 signed long g_dng06_alarm_delay = 0;
 signed short g_loc_id = 0;
 signed short g_loc_name = 0;
-signed long g_dng10_altar_coins = 3530;
-signed long g_dng16_chest_coins = 500000;
+signed long g_dng10_altar_coins = 0;
+signed long g_dng16_chest_coins = 0;
 char g_unused_284b[20] = { 0 };   /* ds:284b, unbenutzt */
 signed short g_exit_dir = 0;
-signed short g_house_hint_seen[17] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+signed short g_house_hint_seen[17] = { 0 };
 signed char g_area_type = 0;
-struct hero far *g_dng01_hook_hero = 0;
-char g_camp_job_names[6][16] = { "", "", "", "", "", "" };
+struct hero far *g_dng01_hook_hero = { 0 };
+char g_camp_job_names[6][16] = { 0 };
 signed char g_camp_herb_hours = 0;
 signed short g_dng05_offered_ducats = 0;
 signed short g_dng05_poltergeist_ticks = 0;
-char g_save_glob_end[1] = "";
-char g_save_mons[1] = "";
-signed char g_mon_known[123] = "";
-char g_save_mons_end[1] = "";
-char g_save_locs[1] = "";
-struct smith_repair g_smith_repairs[12] = {
-	{ 0, "" },
-	{ 0, "" },
-	{ 0, "" },
-	{ 0, "" },
-	{ 0, "" },
-	{ 0, "" },
-	{ 0, "" },
-	{ 0, "" },
-	{ 0, "" },
-	{ 0, "" },
-	{ 0, "" },
-	{ 0, "" }
-};
-signed char g_temple_desecrated[29] = "";
-signed char g_inn_closed[27] = "";
-signed char g_tavern_banned[26] = "";
-signed char g_smith_banned[21] = "";
-signed char g_shop_banned[24] = "";
+char g_save_glob_end[1] = { 0 };
+char g_save_mons[1] = { 0 };
+signed char g_mon_known[123] = { 0 };
+char g_save_mons_end[1] = { 0 };
+char g_save_locs[1] = { 0 };
+struct smith_repair g_smith_repairs[12] = { 0 };
+signed char g_temple_desecrated[29] = { 0 };
+signed char g_inn_closed[27] = { 0 };
+signed char g_tavern_banned[26] = { 0 };
+signed char g_smith_banned[21] = { 0 };
+signed char g_shop_banned[24] = { 0 };
 signed char g_peddler_banned = 0;
 signed char g_peddler3_banned = 0;
-signed char g_lodging_banned[5] = "";
-signed char g_inn_has_room[4] = "";
-signed char g_inn_room_rolls[1] = "";
-signed char g_shop_sells_food[8] = "";
-signed char g_shop_food_rolls[5] = "";
+signed char g_lodging_banned[5] = { 0 };
+signed char g_inn_has_room[4] = { 0 };
+signed char g_inn_room_rolls[1] = { 0 };
+signed char g_shop_sells_food[8] = { 0 };
+signed char g_shop_food_rolls[5] = { 0 };
 signed char g_shed_free_today = 0;
 signed char g_dragan_room_today = 0;
 char g_market_rolls_head[2] = { 0 };   /* ds:2a72, Anfang von g_market_rolls (O005; g_markets = dieselbe Tabelle ab +2) */
-struct market g_markets[3] = { { 0, "", 0, 0, "", { 5, 0 } }, { 0, { 1, 0 }, 5, 0, "", { 8, 0 } }, { 0, { 6, 0 }, 8, 0, "", { -1, -1 } } };
+struct market g_markets[3] = { 0 };
 char g_unused_2a95[9] = { 0 };   /* ds:2a95, unbenutzt */
-char g_save_locs_end[1] = "";
-signed short g_items_plural2[29] = {
-	89, 90, 55, 56, 57, 58, 59, 141, 142, 143, 144, 41, 166, 168, 180, 189,
-	82, 84, 83, 238, 239, 39, 74, 275, 314, 315, 322, 247, -1
-};
-signed short g_items_plural[13] = { 35, 50, 51, 52, 90, 189, 250, 288, 287, 192, 221, 312, -1 };
+char g_save_locs_end[1] = { 0 };
+signed short g_items_plural2[29] = { 0 };
+signed short g_items_plural[13] = { 0 };
 /* je Heldentyp: Gegenstaende, die er nicht benutzen kann (Liste, Ende -1; can_use_item) */
-signed short g_forbidden_items_01[] = {	/* HERO_TYPE_JUGGLER */
-	0x050, ITEM_BATTLE_AXE, 0x071, 0x067, ITEM_TWO_HANDED_SWORD, 0x014, ITEM_CROSSBOW, 0x065, 0x06f, 0x036, 0x06a,
-	0x052, 0x077, 0x072, 0x09e, 0x0b2, 0x0c5, 0x0c6, 0x116, ITEM_HEAVY_CROSSBOW, ITEM_SILVER_MACE, ITEM_MACE,
-	0x13d, ITEM_MAGE_STAFF, ITEM_WITCHES_BROOM, 0x069, 0x02b, ITEM_MACE_12A, 0x15c, -1
-};
-signed short g_forbidden_items_02[] = {	/* HERO_TYPE_HUNTER */
-	ITEM_BATTLE_AXE, 0x071, 0x067, 0x050, ITEM_TWO_HANDED_SWORD, 0x014, ITEM_CROSSBOW, 0x065, 0x06f, 0x052, 0x036,
-	0x06a, 0x077, 0x072, 0x09e, 0x0b2, 0x0c5, 0x0c6, 0x116, ITEM_HEAVY_CROSSBOW, ITEM_SILVER_MACE, ITEM_MACE,
-	0x13d, ITEM_MAGE_STAFF, ITEM_WITCHES_BROOM, 0x069, 0x02b, ITEM_MACE_12A, 0x15c, 0x11b, 0x11d, -1
-};
-signed short g_forbidden_items_03[] = {	/* HERO_TYPE_WARRIOR */
-	ITEM_ANGST_POISON, ITEM_SHURIN_POISON, ITEM_LOTUS_POISON, ITEM_KROETEN_POISON, ITEM_ARAX_POISON,
-	ITEM_SLEEP_POISON, ITEM_GOLDLEIM, ITEM_BANNSTAUB, ITEM_KUKRIS, ITEM_WITCHES_BROOM, ITEM_KUKRIS_DAGGER,
-	ITEM_KUKRIS_MENGBILAR, 0x13d, ITEM_MAGE_STAFF, 0x11b, 0x11d, -1
-};
-signed short g_forbidden_items_04[] = {	/* HERO_TYPE_ESTRAY */
-	ITEM_BATTLE_AXE, 0x071, 0x067, 0x050, ITEM_TWO_HANDED_SWORD, 0x014, 0x065, 0x06f, 0x052, 0x06a, 0x036, 0x077,
-	0x072, 0x09e, 0x0b2, 0x0c5, 0x0c6, 0x116, ITEM_HEAVY_CROSSBOW, ITEM_SILVER_MACE, ITEM_MACE, 0x13d,
-	ITEM_MAGE_STAFF, ITEM_WITCHES_BROOM, 0x069, 0x02b, ITEM_MACE_12A, 0x15c, 0x11b, 0x11d, -1
-};
-signed short g_forbidden_items_05[] = {	/* HERO_TYPE_THORWALIAN */
-	0x071, 0x067, ITEM_TWO_HANDED_SWORD, 0x014, 0x065, 0x06f, 0x06a, 0x077, 0x072, 0x09e, 0x0b2, ITEM_BATTLE_AXE,
-	ITEM_SILVER_MACE, ITEM_MACE, 0x13d, 0x09e, ITEM_MAGE_STAFF, ITEM_WITCHES_BROOM, 0x069, ITEM_MACE_12A, 0x11b,
-	0x11d, -1
-};
-signed short g_forbidden_items_06[] = {	/* HERO_TYPE_DWARF */
-	0x06f, 0x077, ITEM_TWO_HANDED_SWORD, 0x072, ITEM_PIKE, 0x067, 0x06a, 0x068, ITEM_HEAVY_CROSSBOW,
-	ITEM_BATTLE_AXE, 0x13d, 0x071, 0x0b2, 0x09e, ITEM_MAGE_STAFF, ITEM_WITCHES_BROOM, 0x069, 0x15c, 0x11b, 0x11d,
-	-1
-};
-signed short g_forbidden_items_07[] = {	/* HERO_TYPE_WITCH */
-	ITEM_SPEAR, 0x002, ITEM_SWORD, ITEM_SABRE, 0x070, ITEM_SKRAJA, 0x006, ITEM_MACE, ITEM_WAR_AXE, 0x088,
-	ITEM_SHORTBOW, ITEM_BATTLE_AXE, 0x044, 0x043, 0x068, 0x071, 0x089, ITEM_CROSSBOW, ITEM_RAPIER, ITEM_PIKE,
-	0x067, 0x010, 0x063, 0x064, ITEM_TWO_HANDED_SWORD, ITEM_LONGBOW, 0x014, 0x065, 0x066, 0x076, 0x06f, 0x06a,
-	0x074, 0x073, 0x077, 0x072, 0x069, ITEM_SEAL_KILLER, 0x08b, ITEM_WAR_AXE_8, ITEM_LEATHER_ARMOR, 0x007, 0x051,
-	0x00f, 0x050, 0x052, 0x054, 0x053, ITEM_POT_HELMET, 0x04e, 0x02b, 0x036, 0x09e, 0x0a1, 0x09f, 0x0a0, 0x0b2,
-	ITEM_SABER_MAGIC, 0x0c7, 0x0c5, 0x0c6, ITEM_SILVER_MACE, ITEM_SPEAR_D8, ITEM_ARTHERION_SWORD,
-	ITEM_ARTHERION_BOW, ITEM_HEAVY_CROSSBOW, 0x102, ITEM_ORC_SABRE, 0x114, 0x115, 0x116, 0x11c,
-	ITEM_ASTHENIL_SWORD, ITEM_MACE_12A, 0x13d, ITEM_MAGE_STAFF, 0x021, 0x0c4, 0x15c, 0x11b, 0x11d, -1
-};
-signed short g_forbidden_items_08[] = {	/* HERO_TYPE_DRUID */
-	ITEM_SPEAR, ITEM_SWORD, ITEM_SABRE, 0x070, ITEM_SKRAJA, 0x006, ITEM_MACE, ITEM_WAR_AXE, 0x088,
-	ITEM_BATTLE_AXE, 0x044, 0x043, 0x071, 0x089, ITEM_CROSSBOW, ITEM_RAPIER, ITEM_PIKE, 0x067, 0x010, 0x063,
-	0x064, ITEM_TWO_HANDED_SWORD, 0x014, 0x065, 0x066, 0x076, 0x06f, 0x06a, 0x074, 0x073, 0x077, 0x072, 0x069,
-	ITEM_SEAL_KILLER, 0x08b, ITEM_WAR_AXE_8, 0x007, 0x00f, 0x050, 0x06b, 0x06c, 0x052, 0x053, ITEM_POT_HELMET,
-	0x02b, ITEM_MENGBILAR, 0x036, 0x09e, 0x09f, 0x0a1, 0x0a0, 0x0b2, ITEM_SABER_MAGIC, 0x0c7, 0x0c5, 0x0c6,
-	ITEM_SILVER_MACE, ITEM_SPEAR_D8, ITEM_ARTHERION_SWORD, ITEM_HEAVY_CROSSBOW, 0x102, ITEM_ORC_SABRE, 0x114,
-	0x115, 0x116, 0x11c, ITEM_ASTHENIL_SWORD, ITEM_MACE_12A, 0x13d, ITEM_MAGE_STAFF, ITEM_WITCHES_BROOM,
-	ITEM_DAGGER, 0x011, 0x021, ITEM_HEAVY_DAGGER, 0x0da, 0x0e0, ITEM_KUKRIS_DAGGER, ITEM_KUKRIS_MENGBILAR, 0x15c,
-	0x11b, 0x11d, ITEM_SHORTBOW, ITEM_LONGBOW, ITEM_ORNATE_SWORD, 0x15d, ITEM_ARTHERION_BOW, -1
-};
-signed short g_forbidden_items_09[] = {	/* HERO_TYPE_MAGE */
-	ITEM_SPEAR, 0x002, ITEM_SWORD, ITEM_SABRE, 0x070, ITEM_SKRAJA, 0x006, ITEM_MACE, ITEM_WAR_AXE, 0x088,
-	ITEM_SHORTBOW, ITEM_BATTLE_AXE, 0x044, 0x043, 0x068, 0x071, 0x089, ITEM_CROSSBOW, ITEM_RAPIER, ITEM_PIKE,
-	0x067, 0x010, 0x063, 0x064, ITEM_TWO_HANDED_SWORD, ITEM_LONGBOW, 0x014, 0x065, 0x066, 0x076, 0x06f, 0x06a,
-	0x074, 0x073, 0x077, 0x072, 0x069, ITEM_SEAL_KILLER, 0x08b, ITEM_WAR_AXE_8, ITEM_LEATHER_ARMOR, 0x007, 0x051,
-	0x00f, 0x050, 0x052, 0x054, 0x053, ITEM_POT_HELMET, 0x04e, 0x02b, 0x036, 0x09e, 0x09f, 0x0a0, 0x0a1, 0x0b2,
-	ITEM_SABER_MAGIC, 0x0c7, 0x0c5, 0x0c6, ITEM_SILVER_MACE, ITEM_SPEAR_D8, ITEM_ARTHERION_SWORD,
-	ITEM_HEAVY_CROSSBOW, ITEM_ORC_SABRE, 0x114, 0x115, 0x116, 0x11c, ITEM_ASTHENIL_SWORD, ITEM_MACE_12A, 0x0c4,
-	ITEM_ARTHERION_BOW, 0x13d, ITEM_WITCHES_BROOM, 0x021, 0x102, 0x15c, 0x11b, 0x11d, ITEM_HEAVY_DAGGER, 0x15d,
-	0x06b, 0x06c, ITEM_MENGBILAR, ITEM_KUKRIS_MENGBILAR, ITEM_ORNATE_SWORD, 0x047, ITEM_FIGHTING_STAFF,
-	ITEM_WITCHES_BROOM, -1
-};
-signed short g_forbidden_items_10[] = {	/* HERO_TYPE_GREEN_ELF */
-	ITEM_BATTLE_AXE, 0x071, 0x067, ITEM_TWO_HANDED_SWORD, 0x014, 0x065, 0x06f, 0x06a, 0x052, 0x036, 0x077, 0x072,
-	0x09e, 0x050, 0x053, 0x0c5, 0x0c6, 0x0b2, 0x116, 0x13d, ITEM_MAGE_STAFF, ITEM_WITCHES_BROOM, 0x069,
-	ITEM_MACE_12A, ITEM_MACE, ITEM_SILVER_MACE, 0x15c, 0x11b, 0x11d, -1
-};
-signed short g_forbidden_items_11[] = {	/* HERO_TYPE_ICE_ELF */
-	ITEM_BATTLE_AXE, 0x071, 0x067, ITEM_TWO_HANDED_SWORD, 0x014, 0x065, 0x06f, 0x06a, 0x052, 0x036, 0x077, 0x072,
-	0x050, 0x053, 0x09e, 0x0b2, 0x0c5, 0x0c6, 0x116, 0x13d, ITEM_MAGE_STAFF, ITEM_WITCHES_BROOM, 0x069, 0x02b,
-	ITEM_MACE_12A, ITEM_MACE, ITEM_SILVER_MACE, 0x15c, 0x11b, 0x11d, -1
-};
-signed short g_forbidden_items_12[] = {	/* HERO_TYPE_SYLVAN_ELF */
-	ITEM_BATTLE_AXE, 0x071, 0x067, ITEM_TWO_HANDED_SWORD, 0x014, 0x065, 0x06f, 0x06a, 0x052, 0x036, 0x077, 0x072,
-	0x050, 0x053, 0x09e, 0x0b2, 0x0c5, 0x0c6, 0x116, 0x13d, ITEM_MAGE_STAFF, ITEM_WITCHES_BROOM, 0x069, 0x02b,
-	ITEM_MACE_12A, ITEM_MACE, ITEM_SILVER_MACE, 0x15c, 0x11b, 0x11d, -1
-};
+signed short g_forbidden_items_01[30] = { 0 };
+signed short g_forbidden_items_02[32] = { 0 };
+signed short g_forbidden_items_03[17] = { 0 };
+signed short g_forbidden_items_04[31] = { 0 };
+signed short g_forbidden_items_05[23] = { 0 };
+signed short g_forbidden_items_06[21] = { 0 };
+signed short g_forbidden_items_07[82] = { 0 };
+signed short g_forbidden_items_08[88] = { 0 };
+signed short g_forbidden_items_09[92] = { 0 };
+signed short g_forbidden_items_10[30] = { 0 };
+signed short g_forbidden_items_11[31] = { 0 };
+signed short g_forbidden_items_12[31] = { 0 };
 signed short far *g_forbidden_item_lists[12] = {	/* je Heldentyp 1..12 (Index type - 1) */
 	g_forbidden_items_01, g_forbidden_items_02, g_forbidden_items_03, g_forbidden_items_04,
 	g_forbidden_items_05, g_forbidden_items_06, g_forbidden_items_07, g_forbidden_items_08,
 	g_forbidden_items_09, g_forbidden_items_10, g_forbidden_items_11, g_forbidden_items_12
 };
-struct ranged_weapon g_ranged_weapons_table[12] = {
-	{ { 1, 0, 0, -1, -99, -99, -99 }, 6 },
-	{ { 1, 1, 0, 0, -1, -99, -99 }, 6 },
-	{ { 2, 1, 0, 0, 0, -99, -99 }, 7 },
-	{ { 1, 1, 0, 0, 0, -1, -99 }, 4 },
-	{ { 2, 2, 1, 0, 0, -1, -2 }, 4 },
-	{ { 2, 2, 1, 0, -1, -2, -3 }, 3 },
-	{ { 2, 2, 1, 1, 0, 0, -1 }, 4 },
-	{ { 9, 9, 9, 9, 9, 9, 9 }, 2 },
-	{ { 5, 5, 4, 3, 3, 2, 1 }, 4 },
-	{ { 3, 3, 2, 1, 0, -1, -2 }, 3 },
-	{ { 1, 1, 0, 0, 0, -1, -99 }, 4 },
-	{ { -1, -1, -1, -1, -1, -1, -1 }, -1 }
-};
-struct weapon_desc g_weapons_table[78] = {
-	{ 1, 4, 14, 2, -1, 0, 0, 2 },
-	{ 1, 1, 14, 6, -1, -1, -3, 1 },
-	{ 1, 3, 15, 2, -1, 0, 0, 2 },
-	{ 1, 0, 16, 4, -1, -3, -4, 0 },
-	{ 1, 3, 99, 5, 1, 0, -3, 6 },
-	{ 1, 2, 15, 1, -1, 0, -1, 2 },
-	{ 1, 4, 14, 5, -1, 0, -3, 3 },
-	{ 1, 3, 99, 0, 3, 0, 0, 4 },
-	{ 2, 4, 14, 3, -1, -1, -4, 3 },
-	{ 1, 6, 99, 0, 5, 0, 0, 4 },
-	{ 1, 1, 15, 3, -1, -2, -3, 0 },
-	{ 1, 3, 99, 4, 2, -1, -3, 5 },
-	{ 1, 1, 99, 0, 0, 0, 0, 5 },
-	{ 2, 4, 14, 3, -1, -2, -3, 2 },
-	{ 1, 4, 99, 0, 4, 0, 0, 4 },
-	{ 1, 5, 15, 5, -1, -1, -3, 1 },
-	{ 1, 0, 16, 6, -1, -2, -3, 0 },
-	{ 1, 3, 99, 4, 2, -1, -4, 5 },
-	{ 1, 3, 19, 7, -1, -1, -4, 1 },
-	{ 1, 4, 13, 1, -1, 0, -2, 1 },
-	{ 1, 3, 16, 3, -1, 0, -1, 2 },
-	{ 1, 3, 16, 3, -1, 0, -1, 2 },
-	{ 1, 1, 15, 5, -1, 0, -1, 1 },
-	{ 1, 0, 19, 2, -1, 0, -6, 1 },
-	{ 1, 0, 99, 4, 0, -3, -4, 5 },
-	{ 1, 2, 17, 5, -1, -3, -4, 2 },
-	{ 1, 3, 17, 6, -1, -3, -4, 2 },
-	{ 2, 3, 15, 2, -1, -2, -4, 1 },
-	{ 1, 3, 15, 3, -1, 0, -3, 2 },
-	{ 1, 4, 15, 5, -1, -1, -3, 1 },
-	{ 1, 2, 13, 6, -1, -2, -3, 1 },
-	{ 1, 3, 18, 4, -1, -1, -1, 2 },
-	{ 3, 3, 17, 4, -1, -3, -4, 1 },
-	{ 1, 1, 16, 4, -1, -2, -3, 2 },
-	{ 1, 2, 15, 4, -1, -2, -3, 2 },
-	{ 1, 1, 16, 7, -1, -3, -4, 2 },
-	{ 1, 2, 15, 2, -1, -1, -2, 2 },
-	{ 2, 2, 15, 3, -1, -2, -2, 2 },
-	{ 1, 3, 15, 2, -1, 0, -1, 2 },
-	{ 1, 5, 14, 2, -1, -1, -2, 2 },
-	{ 1, 6, 15, 1, -1, -2, -2, 2 },
-	{ 1, 4, 16, 3, -1, -1, -3, 1 },
-	{ 1, 5, 14, 1, -1, -1, -2, 1 },
-	{ 1, 3, 16, 4, -1, 0, -1, 2 },
-	{ 1, 4, 14, 2, -1, 0, -1, 2 },
-	{ 1, 6, 15, 3, -1, -1, -3, 2 },
-	{ 1, 2, 99, 0, 1, 0, 0, 5 },
-	{ 1, 3, 13, 4, -1, 0, -2, 2 },
-	{ 1, 4, 13, 2, -1, -2, -4, 3 },
-	{ 1, 5, 14, 2, -1, -1, -3, 3 },
-	{ 1, 4, 99, 0, -1, 0, 0, 5 },
-	{ 1, 3, 15, 2, -1, 0, 0, 2 },
-	{ 1, 3, 15, 2, -1, 0, -1, 0 },
-	{ 0, 0, 99, 0, -1, 0, 0, 4 },
-	{ 1, 5, 14, -5, -1, -2, -3, 2 },
-	{ 1, 10, 14, -99, -1, -2, -8, 3 },
-	{ 1, 2, 15, -99, -1, 2, -1, 2 },
-	{ 1, 3, 15, 0, -1, 0, 0, 2 },
-	{ 2, 4, 14, -99, -1, -3, -4, 2 },
-	{ 1, 4, 14, -99, -1, 2, 2, 2 },
-	{ 1, 4, 14, 0, -1, 2, 0, 2 },
-	{ 1, 3, 99, 5, 6, 1, 1, 6 },
-	{ 1, 0, 99, 4, 7, -3, -4, 5 },
-	{ 1, 1, 15, -99, -1, 0, 0, 1 },
-	{ 1, 5, 14, -5, -1, 3, -1, 2 },
-	{ 1, 6, 99, 0, 8, 0, 0, 4 },
-	{ 1, 7, 99, 0, 9, 0, 0, 4 },
-	{ 1, 3, 99, 2, 2, -1, -4, 5 },
-	{ 1, 4, 14, 4, -1, -5, -5, 2 },
-	{ 1, 5, 14, 4, -1, -5, -5, 3 },
-	{ 1, 6, 15, 2, -1, -2, -4, 3 },
-	{ 1, 2, 99, 4, 10, -1, -3, 5 },
-	{ 1, 4, 13, -99, -1, 0, -1, 1 },
-	{ 1, 0, 16, 0, -1, -3, -4, 0 },
-	{ 1, 1, 15, 0, -1, -2, -3, 0 },
-	{ 1, 4, 14, 0, -1, 0, 0, 2 },
-	{ 1, 3, 15, -99, -1, -2, -4, 2 },
-	{ -1, -1, -1, -1, -1, -1, -1, -1 }
-};
-struct armor_desc g_armors_table[27] = {
-	{ 1, 0 },
-	{ 2, 1 },
-	{ 3, 2 },
-	{ 1, 0 },
-	{ 0, 0 },
-	{ 0, 0 },
-	{ 0, 0 },
-	{ 0, 0 },
-	{ 3, 3 },
-	{ 5, 4 },
-	{ 0, 0 },
-	{ 0, 0 },
-	{ 2, 1 },
-	{ 1, 0 },
-	{ 2, 2 },
-	{ 4, 4 },
-	{ 3, 3 },
-	{ 2, 1 },
-	{ 1, 1 },
-	{ 1, 0 },
-	{ 1, 1 },
-	{ 1, 0 },
-	{ 2, 4 },
-	{ 5, 3 },
-	{ 4, 3 },
-	{ 3, 0 },
-	{ -1, -1 }
-};
+struct ranged_weapon g_ranged_weapons_table[12] = { 0 };
+struct weapon_desc g_weapons_table[78] = { 0 };
+struct armor_desc g_armors_table[27] = { 0 };
 char g_unused_3221[1] = { 0 };   /* ds:3221, unbenutzt */
-struct usable_desc g_usable_table[19] = {
-	{ 0, 0, 2 },
-	{ 5, 1, 0 },
-	{ 1, 2, 0 },
-	{ 1, 3, 2 },
-	{ 3, 4, 0 },
-	{ 6, 5, 0 },
-	{ 1, 6, 0 },
-	{ 3, 7, 0 },
-	{ 1, 8, 0 },
-	{ 1, 9, 0 },
-	{ 1, 10, 0 },
-	{ 1, 11, 0 },
-	{ 1, 12, 0 },
-	{ 10, 13, 0 },
-	{ 10, 14, 0 },
-	{ 1, 15, 0 },
-	{ 1, 16, 0 },
-	{ 1, 17, 0 },
-	{ 1, 18, 0 }
-};
-char g_unused_325b[2] = { 0x01, 0x13 };   /* ds:325b, unbenutzt */
-signed short g_poison_potions[10] = { 55, 56, 57, 58, 59, 141, 142, 143, 144, -1 };
-signed short g_items_ask_use[7] = { 55, 56, 57, 58, 142, 144, -1 };
-signed short g_herbs_toxic[5] = { 122, 126, 132, 62, -1 };
-signed short g_herbs_uneatable[7] = { 128, 129, 130, 157, 156, 124, -1 };
-signed short g_elixir_potions[8] = { 147, 148, 149, 150, 151, 152, 153, -1 };
-signed short g_bad_elixirs[8] = { 226, 227, 228, 229, 230, 231, 232, -1 };
-signed short g_items_attack[7] = { 239, 238, 251, 59, 141, 143, -1 };
-signed short g_teleport_spin = -1;
+struct usable_desc g_usable_table[19] = { 0 };
+char g_unused_325b[2] = { 0 };   /* ds:325b, unbenutzt */
+signed short g_poison_potions[10] = { 0 };
+signed short g_items_ask_use[7] = { 0 };
+signed short g_herbs_toxic[5] = { 0 };
+signed short g_herbs_uneatable[7] = { 0 };
+signed short g_elixir_potions[8] = { 0 };
+signed short g_bad_elixirs[8] = { 0 };
+signed short g_items_attack[7] = { 0 };
+signed short g_teleport_spin = 0;
 signed short g_vis_start = 0;
-signed short g_ems_cur_page = 32767;
+signed short g_ems_cur_page = 0;
 char far *g_file_names[14] = {
 	(char far *)&g_39b5, (char far *)&g_39c0, (char far *)&g_39ca, (char far *)&g_39d7, (char far *)&g_39e3, (char far *)&g_39ee, (char far *)&g_39fa, (char far *)&g_3a03, (char far *)&g_3a0b, (char far *)&g_3a12, (char far *)&g_3a18, (char far *)&g_3a23, (char far *)&g_3a2d, (char far *)&g_3a35
 };
-struct rect g_clip_rect = { 0, 0, 319, 199 };
-struct mouse_range g_mouse_range = { 0, 0, 319, 199 };
-char g_cursor_bmp[10] = "";
-char g_cursor_bg_bmp[10] = "";
-char g_3327[10] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };   /* ds:3327, Speicher von g_bmp_mark_le (struct Bmp, Konstruktor in globals_ctor) */
-char g_3331[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3f, 0x3f, 0x3f };   /* ds:3331, Speicher von g_bmp_mark_ae (struct Bmp, Konstruktor in globals_ctor) */
-struct point g_gui_buttons_pos[9] = {
-	{ 241, 57 },
-	{ 268, 57 },
-	{ 295, 57 },
-	{ 241, 84 },
-	{ 268, 84 },
-	{ 295, 84 },
-	{ 241, 111 },
-	{ 268, 111 },
-	{ 295, 111 }
-};
-char g_gui_buttons_rest[280] = {
-	0xf0, 0x00, 0x00, 0x00, 0x40, 0x01, 0x1c, 0x00, 0xfd, 0x00, 0xf0, 0x00, 0x1e, 0x00, 0x40, 0x01,
-	0x38, 0x00, 0xe3, 0x00, 0xd0, 0x00, 0x6d, 0x00, 0xe2, 0x00, 0x88, 0x00, 0xe1, 0x00, 0xcc, 0x00,
-	0x76, 0x00, 0xcf, 0x00, 0x88, 0x00, 0xe1, 0x00, 0xc8, 0x00, 0x81, 0x00, 0xcb, 0x00, 0x88, 0x00,
-	0xe1, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x04, 0x00, 0xe0, 0x00, 0x10, 0x00, 0x24, 0x00,
-	0x43, 0x00, 0x60, 0x00, 0x00, 0x4b, 0xac, 0x00, 0x24, 0x00, 0xdf, 0x00, 0x60, 0x00, 0x00, 0x4d,
-	0x44, 0x00, 0x04, 0x00, 0xab, 0x00, 0x33, 0x00, 0x00, 0x48, 0x44, 0x00, 0x59, 0x00, 0xab, 0x00,
-	0x88, 0x00, 0x00, 0x50, 0xf1, 0x00, 0x39, 0x00, 0x08, 0x01, 0x50, 0x00, 0x81, 0x00, 0x0c, 0x01,
-	0x39, 0x00, 0x23, 0x01, 0x50, 0x00, 0x82, 0x00, 0x27, 0x01, 0x39, 0x00, 0x3e, 0x01, 0x50, 0x00,
-	0x83, 0x00, 0xf1, 0x00, 0x54, 0x00, 0x08, 0x01, 0x6b, 0x00, 0x84, 0x00, 0x0c, 0x01, 0x54, 0x00,
-	0x23, 0x01, 0x6b, 0x00, 0x85, 0x00, 0x27, 0x01, 0x54, 0x00, 0x3e, 0x01, 0x6b, 0x00, 0x86, 0x00,
-	0xf1, 0x00, 0x6f, 0x00, 0x08, 0x01, 0x86, 0x00, 0x87, 0x00, 0x0c, 0x01, 0x6f, 0x00, 0x23, 0x01,
-	0x86, 0x00, 0x88, 0x00, 0x27, 0x01, 0x6f, 0x00, 0x3e, 0x01, 0x86, 0x00, 0x89, 0x00, 0x03, 0x00,
-	0x9d, 0x00, 0x2d, 0x00, 0xc5, 0x00, 0xf1, 0x00, 0x2e, 0x00, 0x9d, 0x00, 0x58, 0x00, 0xc5, 0x00,
-	0xf2, 0x00, 0x59, 0x00, 0x9d, 0x00, 0x83, 0x00, 0xc5, 0x00, 0xf3, 0x00, 0x84, 0x00, 0x9d, 0x00,
-	0xae, 0x00, 0xc5, 0x00, 0xf4, 0x00, 0xaf, 0x00, 0x9d, 0x00, 0xd9, 0x00, 0xc5, 0x00, 0xf5, 0x00,
-	0xda, 0x00, 0x9d, 0x00, 0x04, 0x01, 0xc5, 0x00, 0xf6, 0x00, 0x13, 0x01, 0x9d, 0x00, 0x3d, 0x01,
-	0xc5, 0x00, 0xf7, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3f, 0x01, 0xc7, 0x00, 0xfe, 0x00, 0xff, 0xff,
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
-};   /* ds:3365 Fortsetzung der Knopftabelle (O188 liest ds:3365 = g_gui_buttons_pos_y + 0x22) */
-struct mouse_area g_fig_mouse_areas[2] = { { 0, 0, 319, 199, 254 }, { -1, -1, -1, -1, -1 } };
-signed short g_portrait_x[7] = { 3, 46, 89, 132, 175, 218, 277 };
-struct mouse_area g_dlg_areas[14] = {
-	{ 0, 0, 319, 199, 1 },
-	{ 0, 0, 319, 199, 2 },
-	{ 0, 0, 319, 199, 3 },
-	{ 0, 0, 319, 199, 4 },
-	{ 0, 0, 319, 199, 5 },
-	{ 0, 0, 319, 199, 6 },
-	{ 0, 0, 319, 199, 7 },
-	{ 0, 0, 319, 199, 8 },
-	{ 0, 0, 319, 199, 9 },
-	{ 0, 0, 319, 199, 10 },
-	{ 0, 0, 319, 199, 11 },
-	{ 0, 0, 319, 199, 12 },
-	{ 0, 0, 319, 199, 13 },
-	{ -1, -1, -1, -1, -1 }
-};
-struct mouse_area g_action_table_merchant[2] = { { 16, 4, 223, 138, 144 }, { -1, -1, -1, -1, -1 } };
-signed short g_disease_prices[8] = { 0, 6, 4, 9, 8, 8, 7, 10 };
-signed short g_disease_delays[8] = { 0, -10, 20, -20, -30, -20, 0, -30 };
-signed short g_poison_prices[10] = { 0, 6, 5, 4, 5, 5, 4, 10, 12, 15 };
-signed short g_poison_delays[10] = { 0, -30, -25, -20, -25, -25, -20, -50, -60, -75 };
+struct rect g_clip_rect = { 0 };
+struct mouse_range g_mouse_range = { 0 };
+char g_cursor_bmp[10] = { 0 };
+char g_cursor_bg_bmp[10] = { 0 };
+char g_3327[10] = { 0 };   /* ds:3327, Speicher von g_bmp_mark_le (struct Bmp, Konstruktor in globals_ctor) */
+char g_3331[16] = { 0 };   /* ds:3331, Speicher von g_bmp_mark_ae (struct Bmp, Konstruktor in globals_ctor) */
+struct point g_gui_buttons_pos[9] = { 0 };
+char g_gui_buttons_rest[280] = { 0 };   /* ds:3365 Fortsetzung der Knopftabelle (O188 liest ds:3365 = g_gui_buttons_pos_y + 0x22) */
+struct mouse_area g_fig_mouse_areas[2] = { 0 };
+signed short g_portrait_x[7] = { 0 };
+struct mouse_area g_dlg_areas[14] = { 0 };
+struct mouse_area g_action_table_merchant[2] = { 0 };
+signed short g_disease_prices[8] = { 0 };
+signed short g_disease_delays[8] = { 0 };
+signed short g_poison_prices[10] = { 0 };
+signed short g_poison_delays[10] = { 0 };
 char far *g_path_fmts[3] = { (char far *)&g_3a3c, (char far *)&g_3a47, (char far *)&g_3a53 };
-char g_dsa_version_string[18] = "DSA VERSION\0V0.01";
+char g_dsa_version_string[18] = { 0 };
 signed char g_version_a = 0;
-signed char g_version_b = 1;
-signed char g_version_c = 2;
-signed char g_version_d = 1;
-signed short g_portrait_marks[14] = { 0, 0, 0, 0, 0, 0, 0, 18499, 17221, 17995, 20041, 17732, -13230, 267 };
+signed char g_version_b = 0;
+signed char g_version_c = 0;
+signed char g_version_d = 0;
+signed short g_portrait_marks[14] = { 0 };
 char g_unused_35c5[1] = { 0 };   /* ds:35c5, unbenutzt */
-char g_file_main[56] = "";
-char g_file_3[92] = "";
-char g_file_fx[56] = "";
-char g_arc_fx[92] = "";
-char g_file_speech[56] = "";
-char g_file_raw[56] = "";
-char g_file_cd[56] = "";
-char g_file_speech_ext[56] = "";
-char g_cd_cache[22] = "";
-char g_font[16] = "";
+char g_file_main[56] = { 0 };
+char g_file_3[92] = { 0 };
+char g_file_fx[56] = { 0 };
+char g_arc_fx[92] = { 0 };
+char g_file_speech[56] = { 0 };
+char g_file_raw[56] = { 0 };
+char g_file_cd[56] = { 0 };
+char g_file_speech_ext[56] = { 0 };
+char g_cd_cache[22] = { 0 };
+char g_font[16] = { 0 };
 void far *g_font_dst = 0;
 char g_font_rest[39] = { 0 };   /* ds:37f8 Rest des Schriftobjekts g_font (SEG020 liest ds:3819) */
 signed short g_font_tab0 = 0;
 char g_font_tabs_rest[12] = { 0 };   /* ds:3821 g_font.tabs[1..6] hinter g_font_tab0 (O009 Dlg::layout) */
-char g_snd_music[36] = "";
+char g_snd_music[36] = { 0 };
 char g_unused_3851[41] = { 0 };	/* ds:3851, unbenutzt; zugleich die gefaltete Basis g_fight_defs_ab - 0xab (O140) */
 signed short g_music_off = 0;
 signed short g_music_ready = 0;
 char g_unused_387e[20] = { 0 };   /* ds:387e, unbenutzt */
 signed short g_music_id_req = 0;
 char g_unused_3894[34] = { 0 };   /* ds:3894, unbenutzt */
-char g_snd_fx[77] = "";
+char g_snd_fx[77] = { 0 };
 signed short g_speech_off = 0;
 signed short g_sound_ready = 0;
 char g_snd_fx_rest[20] = { 0 };   /* ds:3907 Teil des Klangobjekts (SEG004 liest ds:3919) */
 signed short g_speech_pos = 0;
 char g_unused_391d[34] = { 0 };   /* ds:391d, unbenutzt */
-signed short g_sheet_enabled = 1;
-signed short g_portrait_drag = 1;
+signed short g_sheet_enabled = 0;
+signed short g_portrait_drag = 0;
 char g_unused_3943[2] = { 0 };   /* ds:3943, unbenutzt */
 signed short g_paused = 0;
-signed short g_temple_visited = 1;
-signed short g_temple_visited2 = 1;
+signed short g_temple_visited = 0;
+signed short g_temple_visited2 = 0;
 signed short g_game_state = 0;
-char g_unused_394d[2] = { 0xff, 0xff };   /* ds:394d, unbenutzt */
+char g_unused_394d[2] = { 0 };   /* ds:394d, unbenutzt */
 signed long g_fight_xms = 0;
 signed short g_input_preset = 0;
-signed char g_hero_excluded = -1;
-signed char g_sheet_hunger_shown = -1;
-signed char g_sheet_thirst_shown = -1;
+signed char g_hero_excluded = 0;
+signed char g_sheet_hunger_shown = 0;
+signed char g_sheet_thirst_shown = 0;
 signed short g_dialog_depth = 0;
 signed char g_loaded_dungeon = 0;
 signed char g_loaded_town = 0;
-char g_loc_exit_mark[1] = "";   /* ds:395c, nur O030 enter_location (dort g_395c) setzt am Ende -1 - Bedeutung offen */
+char g_loc_exit_mark[1] = { 0 };   /* ds:395c, nur O030 enter_location (dort g_395c) setzt am Ende -1 - Bedeutung offen */
 signed char g_fight_screen_on = 0;
 signed char g_fight_flag = 0;
 signed short g_fight_end = 0;
@@ -1797,52 +1340,52 @@ signed short g_at_0800 = 0;
 signed short g_at_1400 = 0;
 signed short g_at_2000_2200 = 0;
 signed short g_at_0600_0900 = 0;
-unsigned short g_idle_ticks = 0x0000;
+unsigned short g_idle_ticks = 0;
 signed short g_saver_due = 0;
-unsigned char g_loc_herb = 0xff;
+unsigned char g_loc_herb = 0;
 signed short g_resting = 0;
 signed short g_leave_location = 0;
 signed short g_speech_ext_avail = 0;
 signed short g_cd_music = 0;
 signed long g_disk_free = 0;
-char g_unused_39a0[4] = { 0x40, 0x1f, 0x08, 0x07 };   /* ds:39a0, unbenutzt */
+char g_unused_39a0[4] = { 0 };   /* ds:39a0, unbenutzt */
 signed short g_mem_too_low = 0;
 signed short g_first_start = 0;
-signed long g_disk_needed = 10485760;
-char g_str_temp_dir[9] = "\\..\\TEMP";
-char g_39b5[11] = "STARCD.DAT";   /* ds:39b5, Zeigerziel */
-char g_39c0[10] = "STARCD.FN";   /* ds:39c0, Zeigerziel */
-char g_39ca[13] = "SPEECHCD.DAT";   /* ds:39ca, Zeigerziel */
-char g_39d7[12] = "SPEECHCD.FN";   /* ds:39d7, Zeigerziel */
-char g_39e3[11] = "X:\\DATA\\%s";   /* ds:39e3, Zeigerziel */
-char g_39ee[12] = "..\\CTEMP\\%s";   /* ds:39ee, Zeigerziel */
-char g_39fa[9] = "STAR.DAT";   /* ds:39fa, Zeigerziel */
-char g_3a03[8] = "STAR.FN";   /* ds:3a03, Zeigerziel */
-char g_3a0b[7] = "FX.DAT";   /* ds:3a0b, Zeigerziel */
-char g_3a12[6] = "FX.FN";   /* ds:3a12, Zeigerziel */
-char g_3a18[11] = "SPEECH.DAT";   /* ds:3a18, Zeigerziel */
-char g_3a23[10] = "SPEECH.FN";   /* ds:3a23, Zeigerziel */
-char g_3a2d[8] = "RAW.DAT";   /* ds:3a2d, Zeigerziel */
-char g_3a35[7] = "RAW.FN";   /* ds:3a35, Zeigerziel */
-char g_3a3c[11] = "..\\TEMP\\%s";   /* ds:3a3c, Zeigerziel */
-char g_3a47[12] = "..\\GAMES\\%s";   /* ds:3a47, Zeigerziel */
-char g_3a53[6] = "\\DATA";   /* ds:3a53, Zeigerziel */
-char g_str_files_low[76] = "\nBitte erh\x94hen Sie Ihren Files-Eintrag in der CONFIG.SYS auf mindestens 20!";
-char g_str_version[31] = "\nSternenschweif Version C1.02\n";
-char g_str_lastgame_3ac4[9] = "LASTGAME";
-char g_str_lastgame_3acd[9] = "LASTGAME";
-char g_str_gam_3ad6[5] = ".GAM";
-char g_str_gam_3adb[5] = ".GAM";
-char g_str_lastgame_3ae0[9] = "LASTGAME";
-char g_str_mem_low1[19] = "Zu wenig Speicher!";
-char g_str_mem_low2[37] = "\"Das Schwarze Auge - Sternenschweif\"";
-char g_str_mem_low3[55] = "ben\x94tigt mindestens 568320 Bytes freien Hauptspeicher!";
-char g_str_mem_low4[67] = "\nDa Ihre momentane Systemkonfiguration einen stabilen Spielverlauf";
-char g_str_mem_low5[71] = "von Sternenschweif verhindert, bitten wir Sie vor einem erneuten Start";
-char g_str_mem_low6[71] = "die Hinweise im beiliegenden Faltblatt und die Beispielkonfigurationen";
-char g_str_mem_low7[44] = "in der Datei CONFIG.BSP zu ber\x81""cksichtigen.";
-char g_str_drive_root[4] = "X:\\";
-char g_str_all_3c59[5] = "*.*";
+signed long g_disk_needed = 0;
+char g_str_temp_dir[9] = { 0 };
+char g_39b5[11] = { 0 };   /* ds:39b5, Zeigerziel */
+char g_39c0[10] = { 0 };   /* ds:39c0, Zeigerziel */
+char g_39ca[13] = { 0 };   /* ds:39ca, Zeigerziel */
+char g_39d7[12] = { 0 };   /* ds:39d7, Zeigerziel */
+char g_39e3[11] = { 0 };   /* ds:39e3, Zeigerziel */
+char g_39ee[12] = { 0 };   /* ds:39ee, Zeigerziel */
+char g_39fa[9] = { 0 };   /* ds:39fa, Zeigerziel */
+char g_3a03[8] = { 0 };   /* ds:3a03, Zeigerziel */
+char g_3a0b[7] = { 0 };   /* ds:3a0b, Zeigerziel */
+char g_3a12[6] = { 0 };   /* ds:3a12, Zeigerziel */
+char g_3a18[11] = { 0 };   /* ds:3a18, Zeigerziel */
+char g_3a23[10] = { 0 };   /* ds:3a23, Zeigerziel */
+char g_3a2d[8] = { 0 };   /* ds:3a2d, Zeigerziel */
+char g_3a35[7] = { 0 };   /* ds:3a35, Zeigerziel */
+char g_3a3c[11] = { 0 };   /* ds:3a3c, Zeigerziel */
+char g_3a47[12] = { 0 };   /* ds:3a47, Zeigerziel */
+char g_3a53[6] = { 0 };   /* ds:3a53, Zeigerziel */
+char g_str_files_low[76] = { 0 };
+char g_str_version[31] = { 0 };
+char g_str_lastgame_3ac4[9] = { 0 };
+char g_str_lastgame_3acd[9] = { 0 };
+char g_str_gam_3ad6[5] = { 0 };
+char g_str_gam_3adb[5] = { 0 };
+char g_str_lastgame_3ae0[9] = { 0 };
+char g_str_mem_low1[19] = { 0 };
+char g_str_mem_low2[37] = { 0 };
+char g_str_mem_low3[55] = { 0 };
+char g_str_mem_low4[67] = { 0 };
+char g_str_mem_low5[71] = { 0 };
+char g_str_mem_low6[71] = { 0 };
+char g_str_mem_low7[44] = { 0 };
+char g_str_drive_root[4] = { 0 };
+char g_str_all_3c59[5] = { 0 };
 /* Phase B: eigenes BSS (ds:8b96..c776) in Adressreihenfolge */
 char g_init[1];
 struct mouse_bg g_mouse_bg;

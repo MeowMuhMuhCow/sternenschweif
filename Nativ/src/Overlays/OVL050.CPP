@@ -33,8 +33,8 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:514e..5158, dsana) - initialisierte Daten in Adressreihenfolge */
-char g_str_ace[4] = "ACE";
-char g_str_ace2[6] = { 'A', 'C', 'E', 0, 0xff, 0xff };	/* "ACE" (Kennung der Animationsdatei), dahinter 0xffff */
+char g_str_ace[4] = { 0 };
+char g_str_ace2[6] = { 0 };	/* "ACE" (Kennung der Animationsdatei), dahinter 0xffff */
 
 /* Kopf einer ACE-Datei (8 Bytes) */
 struct ace_header {

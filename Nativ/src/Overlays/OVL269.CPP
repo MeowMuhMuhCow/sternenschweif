@@ -32,11 +32,8 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:85e4..8664, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-unsigned short g_shade_segs[32] = {
-	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
-	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
-};
-unsigned char g_fog_table[32] = "";
+unsigned short g_shade_segs[32] = { 0 };
+unsigned char g_fog_table[32] = { 0 };
 char g_unused_8644[24] = { 0 };   /* ds:8644, unbenutzt */
 
 Pic::Pic(void far *f)

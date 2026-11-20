@@ -34,17 +34,8 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:5cb2..5d0c, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-struct col_pos8 g_spell_cols1 = {
-	{ { 5, 104, 50 },
-	{ 5, 104, 107 },
-	{ 112, 209, 50 },
-	{ 112, 209, 169 },
-	{ 112, 209, 107 },
-	{ 217, 315, 50 },
-	{ 217, 315, 107 },
-	{ 217, 315, 169 } }
-};
-struct col_pos4 g_spell_cols2 = { { { 5, 104, 50 }, { 5, 104, 130 }, { 112, 209, 50 }, { 217, 315, 50 } } };
+struct col_pos8 g_spell_cols1 = { 0 };
+struct col_pos4 g_spell_cols2 = { 0 };
 
 void Inv::draw_page1()
 {

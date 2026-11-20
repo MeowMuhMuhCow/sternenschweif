@@ -39,7 +39,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:6e4c..6e78, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-signed char g_loc_icons_loaded[10] = "\xfe\xfe\xfe\xfe\xfe\xfe\xfe\xfe\xfe";
+signed char g_loc_icons_loaded[10] = { 0 };
 
 #define FRAME		15		/* Rahmenbreite */
 #define TILE_W		0x20		/* Rahmenteil */

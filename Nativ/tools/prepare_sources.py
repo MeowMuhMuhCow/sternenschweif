@@ -13,8 +13,10 @@ import shutil
 
 PORT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ROOT = os.path.dirname(PORT_DIR)
-if not os.path.exists(os.path.join(ROOT, "Quelle", "SEG001.CPP")):
-    ROOT = os.path.dirname(ROOT)
+for _cand in [ROOT, os.path.dirname(ROOT)] + sorted(glob.glob(os.path.join(PORT_DIR, "..", "..", "..", "*"))):
+    if os.path.exists(os.path.join(_cand, "Quelle", "inc", "schweif.h")):
+        ROOT = os.path.abspath(_cand)
+        break
 QUELLE = os.path.join(ROOT, "Quelle")
 PORT_SRC = os.path.join(PORT_DIR, "src")
 
@@ -36,6 +38,11 @@ def write_latin1(path, text):
 
 
 def transform_schweif_h(txt):
+    if "DS_STR(off)" not in txt:
+        idx_end = txt.rfind("#endif")
+        if idx_end != -1:
+            txt = txt[:idx_end] + '#ifdef __cplusplus\nextern "C" {\n#endif\nextern unsigned char g_schweif_dgroup[0x8b06];\n#ifdef __cplusplus\n}\n#endif\n#ifndef DS_STR\n#define DS_STR(off) ((char far *)&g_schweif_dgroup[(off)])\n#endif\n\n' + txt[idx_end:]
+
     preamble = """#ifndef PORT_SKIP_COPYPROT
 #define PORT_SKIP_COPYPROT 1
 #endif
@@ -68,6 +75,9 @@ def transform_schweif_h(txt):
 #endif
 #ifndef _OvrInitExt
 #define _OvrInitExt(a, b) 0
+#endif
+#ifndef O_BINARY
+#define O_BINARY 0
 #endif
 #ifdef __cplusplus
 extern "C" {
@@ -433,7 +443,7 @@ def transform_source(rel_path, txt):
     # 15. OVL096.C: view_alloc_lists + view_load_palette + pal_find_nearest
     elif base == "OVL096.C":
         alloc_lists_c = """    void *p;
-    if ((p = mem_alloc(0x61c)) == 0) guru_meditation("OUT OF MEMORY", 0);
+    if ((p = mem_alloc(0x61c)) == 0) guru_meditation(DS_STR(0x5e78), 0);
     g_face_seg = 0;
     g_face_block = p;
     g_face_next = (unsigned char *)p + 0x10;
@@ -1023,6 +1033,145 @@ def transform_source(rel_path, txt):
     }"""
         txt = replace_func_body(txt, r"^void Pic::rle_fast\([^)]*\)\s*\{", rle_fast_c)
 
+    # 18. Clang / WebAssembly C++-Typkompatibilitaet
+    if base == "OVL027.CPP":
+        txt = txt.replace('load_pic_list(g_cd_cache, g_cl_opening, "\\xaa\\xaa\\xaa", 0, 1)', 'load_pic_list(g_cd_cache, g_cl_opening, (void *)"\\xaa\\xaa\\xaa", 0, 1)')
+    elif base == "OVL076.CPP":
+        txt = txt.replace("screen_mark_portrait(g_screen,", "screen_mark_portrait((signed char *)g_screen,")
+    elif base == "OVL101.CPP":
+        txt = txt.replace(": STR_EMPTY_TITLE1,", ": (char *)STR_EMPTY_TITLE1,")
+        txt = txt.replace(": STR_EMPTY_TITLE2,", ": (char *)STR_EMPTY_TITLE2,")
+    elif base == "OVL173.CPP":
+        txt = txt.replace('screen_textbar(g_screen, "", 0xff);', 'screen_textbar(g_screen, (void *)"", 0xff);')
+    elif base == "OVL199.CPP":
+        for _v in ("s1", "s2", "s3", "s4"):
+            txt = txt.replace(f", {_v});", f", (char *){_v});")
+    elif base == "OVL202.CPP":
+        txt = txt.replace("g_heroes + (signed short)h - 4", "g_heroes + (signed short)(uintptr_t)h - 4")
+    elif base == "OVL267.CPP":
+        txt = txt.replace('dlg_message(g_dialog, "Wow!");', 'dlg_message(g_dialog, (void *)"Wow!");')
+    elif base == "SEG003.CPP":
+        txt = txt.replace("set_f8((signed short)txt[0]);", "set_f8((signed short)(uintptr_t)txt[0]);")
+
+    txt = strip_dgroup_tables_for_port(base, txt)
+    return txt
+
+UNSIZED_DGROUP_ARRAYS = {'g_dng_objs_01': 87, 'g_dng_objs_02': 63, 'g_dng_objs_03': 69, 'g_dng_objs_04': 81, 'g_dng_objs_09': 66, 'g_dng_objs_05': 69, 'g_dng_objs_06': 90, 'g_dng_objs_07': 72, 'g_dng_objs_08': 75, 'g_dng_objs_10': 57, 'g_dng_objs_11': 60, 'g_dng_objs_12': 78, 'g_dng_objs_13': 66, 'g_dng_objs_14': 33, 'g_dng_objs_16': 75, 'g_type_money_01': 18, 'g_type_money_02': 12, 'g_type_money_03': 36, 'g_type_money_04': 24, 'g_type_money_05': 24, 'g_type_money_06': 24, 'g_type_money_07': 6, 'g_type_money_08': 36, 'g_type_money_09': 30, 'g_type_money_10': 30, 'g_type_money_11': 12, 'g_type_money_12': 18, 'g_forbidden_items_01': 60, 'g_forbidden_items_02': 64, 'g_forbidden_items_03': 34, 'g_forbidden_items_04': 62, 'g_forbidden_items_05': 46, 'g_forbidden_items_06': 42, 'g_forbidden_items_07': 164, 'g_forbidden_items_08': 176, 'g_forbidden_items_09': 184, 'g_forbidden_items_10': 60, 'g_forbidden_items_11': 62, 'g_forbidden_items_12': 62, 'g_town_objs_1': 75, 'g_town_objs_2': 81, 'g_town_objs_6': 72, 'g_town_objs_3': 42, 'g_town_objs_4': 87, 'g_town_objs_5': 90, 'g_walk_default': 27, 'g_walk_town5': 13, 'g_walk_town4': 14, 'g_walk_dng_01': 49, 'g_walk_dng_02': 11, 'g_walk_dng_03': 16, 'g_walk_dng_04': 27, 'g_walk_dng_05': 22, 'g_walk_dng_06': 36, 'g_walk_dng_07': 36, 'g_walk_dng_08': 36, 'g_walk_town3': 48, 'g_walk_dng_10': 17, 'g_walk_dng_11': 16, 'g_walk_dng_12': 22, 'g_walk_dng_13': 18, 'g_walk_dng_14': 20, 'g_walk_dng_16': 17, 'g_lvl_spells_witch': 6, 'g_lvl_spells_druid': 8, 'g_lvl_spells_school1': 22, 'g_lvl_spells_school2': 24, 'g_lvl_spells_school3': 24, 'g_lvl_spells_school4': 24, 'g_lvl_spells_school5': 22, 'g_lvl_spells_school6': 20, 'g_lvl_spells_school7': 30, 'g_lvl_spells_school8': 24, 'g_lvl_spells_school9': 26, 'g_lvl_spells_green_elf': 14, 'g_lvl_spells_sylvan_elf': 14, 'g_lvl_spells_ice_elf': 24}
+KEEP_PTR_TABLES = ['g_area_descs', 'g_blaster_dest', 'g_chargen_mouse_areas', 'g_chest_fail', 'g_chest_special', 'g_conv_callbacks', 'g_file_names', 'g_fmt_s_s', 'g_fmt_von_s_s', 'g_forbidden_item_lists', 'g_grammar_articles', 'g_grammar_pronouns', 'g_item_use_funcs', 'g_lock_fail', 'g_lvl_spells_school', 'g_mon_spell_handlers', 'g_path_fmts', 'g_spell_handlers', 'g_temple_god_locs', 'g_town_area_descs', 'g_type_money_ranges', 'g_walk_dng']
+ELEM_SIZES = {'char': 1, 'signed char': 1, 'unsigned char': 1, 'signed short': 2, 'unsigned short': 2, 'struct view_obj': 3, 'struct money_range': 6, 'struct dual_ammo': 4}
+D2_LINE_PATCHES = {'OVL011.CPP': [(90, 91, '\t\t\tprintf(DS_STR(0x05a2), ((signed long)g_ems_free_pages << 4) << 10);\n'), (101, 102, '\t\tprintf(DS_STR(0x05e2), dos_open_files());\n')], 'OVL043.CPP': [(148, 149, '\t\t\t\t\t\tdlg_choose(g_dialog, DS_STR(0x42ce), 1, "Weiter");\n'), (156, 157, '\t\t\t\t\tdlg_choose(g_dialog, DS_STR(0x4309), 1, "Weiter");\n'), (159, 160, '\t\t\t\t\tdlg_choose(g_dialog, DS_STR(0x432b), 1, "Weiter");\n'), (162, 163, '\t\t\t\t\tdlg_choose(g_dialog, DS_STR(0x4355), 1, "Weiter");\n'), (172, 173, '\t\t\tSND_MUSIC->init(DS_STR(0x4387), AIL_XMIDI_DRVR, music_port, music_irq);\n'), (176, 177, '\t\tSND_FX->init(DS_STR(0x4391), AIL_DSP_DRVR, digi_port, digi_irq);\n')], 'OVL084.CPP': [(320, 321, '\tsigned short gear[5];\t/* Grundausstattung jedes Helden (ds:5a16) */\n'), (322, 336, '\tsigned short by_type[12][4];\t/* je Heldentyp 1..12 (Index type - 1), -1 = Ende (ds:5a20) */\n\n\tmemcpy(gear, &g_schweif_dgroup[0x5a16], sizeof(gear));\n\tmemcpy(by_type, &g_schweif_dgroup[0x5a20], sizeof(by_type));\n')], 'OVL096.C': [(249, 250, '\tif ((p = g_shade_buf = mem_alloc(0x2010)) == 0) guru_meditation(DS_STR(0x5e86), 0);\n')], 'OVL097.CPP': [(274, 275, '\t\tguru_meditation(DS_STR(0x5eb2), 0);\n'), (277, 278, '\t\tguru_meditation(DS_STR(0x5ec3), 0);\n'), (298, 299, '\t\tguru_meditation(DS_STR(0x5ed5), 0);\n')], 'OVL106.CPP': [(113, 114, '\t\tif (_write(g_save_fd, DS_STR(0x6151), 4) != 4) good = 0;\n'), (117, 118, '\t\tif (_write(g_save_fd, DS_STR(0x6156), 4) != 4) good = 0;\n'), (121, 122, '\t\tif (_write(g_save_fd, DS_STR(0x615b), 4) != 4) good = 0;\n'), (125, 126, '\t\tif (_write(g_save_fd, DS_STR(0x6160), 4) != 4) good = 0;\n'), (129, 130, '\t\tif (_write(g_save_fd, DS_STR(0x6165), 4) != 4) good = 0;\n'), (136, 137, '\t\t_write(g_save_fd, DS_STR(0x6151), 4);\n'), (140, 141, '\t\t_write(g_save_fd, DS_STR(0x6156), 4);\n'), (144, 145, '\t\t_write(g_save_fd, DS_STR(0x615b), 4);\n'), (148, 149, '\t\t_write(g_save_fd, DS_STR(0x6160), 4);\n'), (152, 153, '\t\t_write(g_save_fd, DS_STR(0x6165), 4);\n')], 'OVL232.C': [(95, 96, '\tenv = getenv(DS_STR(0x7461));\n'), (116, 117, '\t\t\t\t\t\tif (toupper(d) == DS_STR(0x7469)[m])\n')], 'SEG005.CPP': [(77, 79, '\tchar far *msg_insert = DS_STR(0x445b);\n\tchar far *msg_esc = DS_STR(0x449f);\n'), (81, 82, '\tfd = _open(DS_STR(0x44a6), O_RDONLY | O_BINARY);\n'), (102, 104, '\t\t\t\t\t\tputs(DS_STR(0x44af));\n\t\t\t\t} else if (!strcmp(&cfg[1], DS_STR(0x44b0)) || !strcmp(&cfg[1], DS_STR(0x44bc))) {\n'), (112, 113, '\t\t\t\t\t\tputs(DS_STR(0x44c8));\n'), (116, 117, '\t\t\tputs(DS_STR(0x44c9));\n'), (120, 121, '\t\tputs(DS_STR(0x4508));\n'), (211, 213, '\t\tputs(DS_STR(0x4523));\n\t\tputs(DS_STR(0x4561));\n'), (214, 217, '\t\t\tputs(DS_STR(0x4597));\n\t\t\tputs(DS_STR(0x45ca));\n\t\t\tsprintf(buf, DS_STR(0x4612), ((signed long)g_ems_free_pages << 4) << 10);\n'), (218, 219, '\t\t\tsprintf(buf, DS_STR(0x4648), (signed long)xms_kb << 10);\n'), (220, 226, '\t\t\tputs(DS_STR(0x467a));\n\t\t\tputs(DS_STR(0x46c3));\n\t\t\tputs(DS_STR(0x46f6));\n\t\t\tputs(DS_STR(0x4739));\n\t\t\tputs(DS_STR(0x4780));\n\t\t\tputs(DS_STR(0x47c7));\n'), (227, 228, '\t\t\tsprintf(buf, DS_STR(0x47f3), (signed long)g_xms_free_kb << 10);\n'), (234, 235, '\t\t\tsprintf(buf, DS_STR(0x482a), ovr_kb);\n'), (238, 239, '\t\tputs(DS_STR(0x485e));\n'), (248, 249, '\tstrcpy(g_start_dir, DS_STR(0x488b));\n'), (264, 265, '\tsprintf(g_text_output_buf, g_path_fmts[0], DS_STR(0x488f));\n'), (288, 292, '\tfd = open(DS_STR(0x4893), O_RDONLY | O_BINARY);\n\tif (fd != -1) {\n\t\tclose(fd);\n\t\tputs(DS_STR(0x489c));\n'), (297, 298, '\t\tfd = open(DS_STR(0x48ad), O_RDONLY | O_BINARY);\n'), (303, 306, '\t\tload_ltx(DS_STR(0x48b8), &g_names_star, &g_names_star_idx);\n\t}\n\tfd = open(DS_STR(0x48c5), O_RDONLY | O_BINARY);\n'), (313, 314, '\t\tfd = open(DS_STR(0x48cc), O_RDONLY | O_BINARY);\n'), (319, 322, '\t\tload_ltx(DS_STR(0x48d7), &g_names_fx, &g_names_fx_idx);\n\t}\n\tfd = open(DS_STR(0x48e2), O_RDONLY | O_BINARY);\n'), (329, 330, '\t\tfd = open(DS_STR(0x48ed), O_RDONLY | O_BINARY);\n'), (335, 342, '\t\tfd = open(DS_STR(0x48f8), O_RDONLY | O_BINARY);\n\t\tif (fd != -1) {\n\t\t\tclose(fd);\n\t\t\tload_ltx(DS_STR(0x4904), &g_names_speech, &g_names_speech_idx);\n\t\t}\n\t}\n\tfd = open(DS_STR(0x4910), O_RDONLY | O_BINARY);\n'), (349, 350, '\t\tfd = open(DS_STR(0x4918), O_RDONLY | O_BINARY);\n'), (355, 356, '\t\tload_ltx(DS_STR(0x4923), &g_names_raw, &g_names_raw_idx);\n'), (366, 367, '\t\tfd = open(DS_STR(0x492f), O_RDONLY | O_BINARY);\n'), (386, 387, '\t\t\t\t\tsprintf(path.s, g_file_names[4], DS_STR(0x493b));\n'), (392, 393, '\t\t\t\t\t\tload_ltx(DS_STR(0x4945), &g_names_starcd, &g_names_starcd_idx);\n'), (397, 398, '\t\t\tfd = open(DS_STR(0x4951), O_RDONLY | O_BINARY);\n'), (400, 401, '\t\t\t\tload_ltx(DS_STR(0x495d), &g_names_starcd, &g_names_starcd_idx);\n'), (405, 406, '\t\t\tfd = open(DS_STR(0x4969), O_RDONLY | O_BINARY);\n'), (412, 413, '\tfd = open(DS_STR(0x4973), O_RDONLY | O_BINARY);\n'), (414, 415, '\t\tsprintf(path.s, g_file_names[4], DS_STR(0x4980));\n'), (431, 435, '\t\tfd = open(DS_STR(0x498d), O_RDONLY | O_BINARY);\n\t\tif (fd != -1) {\n\t\t\tclose(fd);\n\t\t\tload_ltx(DS_STR(0x4999), &g_names_speechcd, &g_names_speechcd_idx);\n'), (443, 444, '\tfd = open(DS_STR(0x49a5), O_RDONLY | O_BINARY);\n'), (451, 452, '\tfd = open(DS_STR(0x49b2), O_RDONLY | O_BINARY);\n')], 'SEG007.C': [(53, 54, '\t\t\tsprintf(g_text_output_buf, DS_STR(0x5158), size, farcoreleft());\n'), (92, 93, '\t\t\t\t\tguru_meditation(DS_STR(0x518c), p);\n'), (125, 126, '\t\t\t\tguru_meditation(DS_STR(0x51e3), p);\n'), (163, 164, '\tguru_meditation(DS_STR(0x5208), 0);\n'), (182, 183, '\t\t\t\t\t\tguru_meditation(DS_STR(0x522d), start);\n')], 'SEG014.C': [(61, 62, '\tcputs(DS_STR(0x5f24));\n'), (71, 72, '\tsprintf(g_portrait_buf, DS_STR(0x5f5d), g_func_trace[0], g_func_trace[1], g_func_trace[2],\n'), (75, 76, '\tsprintf(g_portrait_buf, DS_STR(0x5f95), msg, g_func_trace[0], g_func_trace[1], g_func_trace[2],\n'), (81, 82, '\t\tcprintf(DS_STR(0x5fcf), g_dbg_dest);\n'), (83, 84, '\t\tcprintf(DS_STR(0x5fdf), g_dbg_src);\n'), (89, 90, '\t\tfd = _creat(DS_STR(0x5ff1), 0);\n'), (91, 92, '\t\t\tsprintf(buf, DS_STR(0x5ffb), i, g_mem_blocks[i].start, g_mem_blocks[i].end,\n'), (102, 104, '\t\tcprintf(DS_STR(0x6028), ptr);\n\t\tsprintf(g_portrait_buf, DS_STR(0x603b), ptr);\n'), (105, 106, '\t\tdump_fd = _creat(DS_STR(0x604e), 0);\n')], 'SEG020.CPP': [(53, 54, '\t\tcode = ((unsigned char far *)DS_STR(0x75de))[i];\n')]}
+
+def strip_dgroup_tables_for_port(base, txt):
+    m = re.search(r"/\* Phase B: eigene Daten des Moduls \(ds:([0-9a-fA-F]+)\.\.([0-9a-fA-F]+).*?\*/", txt, flags=re.S)
+    if m:
+        pos = m.end()
+        rest = txt[pos:]
+        out_parts = [txt[:pos]]
+        i = 0
+        n = len(rest)
+        changed = False
+        while i < n:
+            ws_start = i
+            while i < n and rest[i] in " \t\r\n":
+                i += 1
+            out_parts.append(rest[ws_start:i])
+            if i >= n:
+                break
+            if rest.startswith("/*", i):
+                end_c = rest.find("*/", i + 2)
+                end_c = end_c + 2 if end_c != -1 else n
+                out_parts.append(rest[i:end_c]); i = end_c; continue
+            if rest.startswith("//", i):
+                end_l = rest.find("\n", i + 2)
+                end_l = end_l + 1 if end_l != -1 else n
+                out_parts.append(rest[i:end_l]); i = end_l; continue
+            if rest[i] == "#":
+                p_start = i
+                while i < n:
+                    end_l = rest.find("\n", i)
+                    if end_l == -1: i = n; break
+                    if rest[end_l - 1] == "\\": i = end_l + 1
+                    else: i = end_l + 1; break
+                out_parts.append(rest[p_start:i]); continue
+            stmt_start = i
+            paren_d = 0; brace_d = 0; in_str = False; str_ch = ""; eq_pos = -1
+            while i < n:
+                ch = rest[i]
+                if in_str:
+                    if ch == "\\": i += 2; continue
+                    if ch == str_ch: in_str = False
+                else:
+                    if ch in ("\"", "\x27"): in_str = True; str_ch = ch
+                    elif rest.startswith("/*", i):
+                        end_c = rest.find("*/", i + 2); i = end_c + 2 if end_c != -1 else n; continue
+                    elif rest.startswith("//", i):
+                        end_l = rest.find("\n", i + 2); i = end_l + 1 if end_l != -1 else n; continue
+                    elif ch == "(": paren_d += 1
+                    elif ch == ")": paren_d -= 1
+                    elif ch == "{":
+                        if paren_d == 0 and eq_pos == -1: break
+                        brace_d += 1
+                    elif ch == "}": brace_d -= 1
+                    elif ch == "=" and paren_d == 0 and brace_d == 0 and eq_pos == -1: eq_pos = i
+                    elif ch == ";" and paren_d == 0 and brace_d == 0: i += 1; break
+                i += 1
+            stmt = rest[stmt_start:i]
+            if not stmt.rstrip().endswith(";"):
+                if stmt.lstrip().startswith(("struct ", "class ", "union ", "enum ", "typedef ")):
+                    while i < n:
+                        if rest[i] == "{": brace_d += 1
+                        elif rest[i] == "}":
+                            brace_d -= 1
+                            if brace_d == 0:
+                                semi = rest.find(";", i); i = semi + 1 if semi != -1 else n; break
+                        i += 1
+                    out_parts.append(rest[stmt_start:i]); continue
+                else:
+                    out_parts.append(rest[stmt_start:]); break
+            if eq_pos == -1:
+                out_parts.append(stmt); continue
+            lhs = rest[stmt_start:eq_pos].strip()
+            rhs = rest[eq_pos + 1 : i - 1].strip()
+            m_var = re.search(r"\b(g_[A-Za-z0-9_]+)\s*(?:\[[^\]]*\])*$", lhs)
+            if not m_var:
+                out_parts.append(stmt); continue
+            var_name = m_var.group(1)
+            if var_name in KEEP_PTR_TABLES:
+                out_parts.append(stmt); continue
+            changed = True
+            if var_name == "g_dng_view_areas":
+                new_rhs = "{\n" + ",\n".join(
+                    f"\t{{ 0, 0, 0, 0, 0, 0, 0, g_dng_objs_{k} }}"
+                    for k in ["01","02","03","04","05","06","07","08","09","10","11","12","13","14","14","16"]
+                ) + "\n}"
+                out_parts.append(f"{lhs} = {new_rhs};")
+            elif var_name == "g_town_view_areas":
+                new_rhs = "{\n" + ",\n".join(
+                    f"\t{{ 0, 0, 0, 0, 0, 0, 0, g_town_objs_{k} }}" for k in range(1, 7)
+                ) + "\n}"
+                out_parts.append(f"{lhs} = {new_rhs};")
+            elif var_name == "g_fli_screen":
+                out_parts.append(f"{lhs} = {{ 0, 0, 0, 0, 0, g_fli_palette }};")
+            elif var_name == "g_opt_entries":
+                ptrs = re.findall(r"\(signed char far \*\)&g_[A-Za-z0-9_]+", rhs)
+                rows = [f"\t{{ 0, 0, 0, {p}, {{ 0, 0, 0, 0 }} }}" for p in ptrs]
+                out_parts.append(f"{lhs} = {{\n" + ",\n".join(rows) + "\n};")
+            else:
+                if "[]" in lhs:
+                    m_u = re.match(r"^(.*?)\s+(g_[A-Za-z0-9_]+)\[\]$", lhs)
+                    tp, nm = m_u.group(1).strip(), m_u.group(2)
+                    cnt = UNSIZED_DGROUP_ARRAYS[nm] // ELEM_SIZES[tp]
+                    lhs = f"{tp} {nm}[{cnt}]"
+                is_agg = ("[" in lhs) or lhs.startswith(("struct ", "union "))
+                z = "{ 0 }" if is_agg else "0"
+                out_parts.append(f"{lhs} = {z};")
+        if changed:
+            txt = "".join(out_parts)
+    if base in D2_LINE_PATCHES:
+        lines = txt.splitlines(True)
+        for i1, i2, rep_s in reversed(D2_LINE_PATCHES[base]):
+            lines[i1:i2] = [rep_s]
+        txt = "".join(lines)
     return txt
 
 

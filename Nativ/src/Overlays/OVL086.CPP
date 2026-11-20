@@ -59,90 +59,28 @@ static void stufenlog(struct hero far *h, signed short typ, signed short nr, sig
 #endif
 
 /* Phase B: eigene Daten des Moduls (ds:5a80..5c7e, dsana) in Adressreihenfolge */
-struct attrib_prio g_lvl_attrib_order[12] = {	/* je Typ 1..12 (Index type - 1): Eigenschaften in Versuchsreihenfolge */
-	{ { ATTRIB_GE, ATTRIB_FF, ATTRIB_MU, ATTRIB_KK, ATTRIB_KL, ATTRIB_CH, ATTRIB_IN },
-	  { ATTRIB_AG, ATTRIB_JZ, ATTRIB_HA, ATTRIB_RA, ATTRIB_TA, ATTRIB_GG, ATTRIB_NG } },	/* HERO_TYPE_JUGGLER */
-	{ { ATTRIB_IN, ATTRIB_GE, ATTRIB_KK, ATTRIB_FF, ATTRIB_MU, ATTRIB_KL, ATTRIB_CH },
-	  { ATTRIB_RA, ATTRIB_HA, ATTRIB_JZ, ATTRIB_TA, ATTRIB_GG, ATTRIB_AG, ATTRIB_NG } },	/* HERO_TYPE_HUNTER */
-	{ { ATTRIB_KK, ATTRIB_MU, ATTRIB_GE, ATTRIB_FF, ATTRIB_IN, ATTRIB_CH, ATTRIB_KL },
-	  { ATTRIB_JZ, ATTRIB_TA, ATTRIB_GG, ATTRIB_HA, ATTRIB_RA, ATTRIB_AG, ATTRIB_NG } },	/* HERO_TYPE_WARRIOR */
-	{ { ATTRIB_GE, ATTRIB_FF, ATTRIB_KK, ATTRIB_MU, ATTRIB_IN, ATTRIB_KL, ATTRIB_CH },
-	  { ATTRIB_GG, ATTRIB_AG, ATTRIB_RA, ATTRIB_HA, ATTRIB_TA, ATTRIB_JZ, ATTRIB_NG } },	/* HERO_TYPE_ESTRAY */
-	{ { ATTRIB_KK, ATTRIB_MU, ATTRIB_GE, ATTRIB_FF, ATTRIB_CH, ATTRIB_KL, ATTRIB_IN },
-	  { ATTRIB_AG, ATTRIB_RA, ATTRIB_NG, ATTRIB_JZ, ATTRIB_TA, ATTRIB_GG, ATTRIB_HA } },	/* HERO_TYPE_THORWALIAN */
-	{ { ATTRIB_KK, ATTRIB_FF, ATTRIB_MU, ATTRIB_KL, ATTRIB_IN, ATTRIB_GE, ATTRIB_CH },
-	  { ATTRIB_RA, ATTRIB_AG, ATTRIB_NG, ATTRIB_HA, ATTRIB_TA, ATTRIB_JZ, ATTRIB_GG } },	/* HERO_TYPE_DWARF */
-	{ { ATTRIB_IN, ATTRIB_CH, ATTRIB_KL, ATTRIB_FF, ATTRIB_GE, ATTRIB_MU, ATTRIB_KK },
-	  { ATTRIB_HA, ATTRIB_RA, ATTRIB_AG, ATTRIB_TA, ATTRIB_JZ, ATTRIB_GG, ATTRIB_NG } },	/* HERO_TYPE_WITCH */
-	{ { ATTRIB_KL, ATTRIB_MU, ATTRIB_IN, ATTRIB_FF, ATTRIB_GE, ATTRIB_KK, ATTRIB_CH },
-	  { ATTRIB_TA, ATTRIB_AG, ATTRIB_JZ, ATTRIB_GG, ATTRIB_NG, ATTRIB_HA, ATTRIB_RA } },	/* HERO_TYPE_DRUID */
-	{ { ATTRIB_KL, ATTRIB_CH, ATTRIB_IN, ATTRIB_KK, ATTRIB_FF, ATTRIB_GE, ATTRIB_MU },
-	  { ATTRIB_NG, ATTRIB_JZ, ATTRIB_TA, ATTRIB_AG, ATTRIB_HA, ATTRIB_RA, ATTRIB_GG } },	/* HERO_TYPE_MAGE */
-	{ { ATTRIB_CH, ATTRIB_KK, ATTRIB_GE, ATTRIB_IN, ATTRIB_KL, ATTRIB_MU, ATTRIB_FF },
-	  { ATTRIB_GG, ATTRIB_JZ, ATTRIB_NG, ATTRIB_AG, ATTRIB_RA, ATTRIB_HA, ATTRIB_TA } },	/* HERO_TYPE_GREEN_ELF */
-	{ { ATTRIB_CH, ATTRIB_KK, ATTRIB_GE, ATTRIB_IN, ATTRIB_KL, ATTRIB_MU, ATTRIB_FF },
-	  { ATTRIB_GG, ATTRIB_JZ, ATTRIB_NG, ATTRIB_AG, ATTRIB_RA, ATTRIB_HA, ATTRIB_TA } },	/* HERO_TYPE_ICE_ELF */
-	{ { ATTRIB_CH, ATTRIB_KK, ATTRIB_GE, ATTRIB_IN, ATTRIB_KL, ATTRIB_MU, ATTRIB_FF },
-	  { ATTRIB_GG, ATTRIB_JZ, ATTRIB_NG, ATTRIB_AG, ATTRIB_RA, ATTRIB_HA, ATTRIB_TA } }	/* HERO_TYPE_SYLVAN_ELF */
-};
-struct incs12 g_lvl_skill_incs = { { 20, 20, 20, 20, 20, 20, 20, 20, 15, 20, 20, 20 } };	/* Talentsteigerungen je Stufe, Typ 1..12 */
-struct incs6 g_lvl_spell_incs = { { 25, 25, 40, 20, 20, 20 } };	/* Zaubersteigerungen je Stufe, Typ 7..12 */
-struct incs6 g_lvl_incs_swap = { { 5, 5, 5, 0, 0, 0 } };	/* davon umverteilbar (Talente <-> Zauber), Typ 7..12 */
-signed short g_lvl_spells_witch[] = { SP_ODEM_ARCANUM, SP_BLITZ, -1 };	/* Zusatzliste Hexe (Ende -1) */
-signed short g_lvl_spells_druid[] = {	/* Zusatzliste Druide */
-	SP_ODEM_ARCANUM, SP_VERWANDLUNG_BEENDEN, SP_EXPOSAMI, -1
-};
-signed short g_lvl_spells_school1[] = {	/* Magierakademie 0 (BE MAGIC_SCHOOLS_1) */
-	SP_GEISTER_AUSTREIBEN, SP_BALSAM, SP_ARCANO_PSYCHOSTABILIS, SP_IGNIFAXIUS, SP_KLARUM_PURUM, SP_ANALUES,
-	SP_FLIM_FLAM, SP_ARMATRUTZ, SP_HEPTAGON, SP_ABVENENUM, -1
-};
-signed short g_lvl_spells_school2[] = {	/* Magierakademie 1 */
-	SP_ODEM_ARCANUM, SP_SENSIBAR, SP_IGNIFAXIUS, SP_BAND_UND_FESSEL, SP_DUPLICATUS, SP_GROSSE_VERWIRRUNG,
-	SP_BALSAM, SP_HARMLOSE_GESTALT, SP_FLIM_FLAM, SP_HERR_UEBER_DAS_TIERREICH, SP_EIGENSCHAFTEN, -1
-};
-signed short g_lvl_spells_school3[] = {	/* Magierakademie 2 */
-	SP_NIHILATIO_GRAVITAS, SP_ODEM_ARCANUM, SP_SOLIDIRID, SP_FLIM_FLAM, SP_BALSAM, SP_IGNIFAXIUS, SP_DUNKELHEIT,
-	SP_GARDIANUM, SP_ECLIPTIFACTUS, SP_GEISTER_BESCHWOEREN, SP_ANALUES, -1
-};
-signed short g_lvl_spells_school4[] = {	/* Magierakademie 3 */
-	SP_BALSAM, SP_IGNIFAXIUS, SP_FLIM_FLAM, SP_PENETRIZZEL, SP_CLAUDIBUS, SP_SOLIDIRID, SP_ODEM_ARCANUM,
-	SP_PLUMBUMBARUM, SP_IN_SEE_UND_FLUSS, SP_VISIBILI, SP_UEBER_EIS, -1
-};
-signed short g_lvl_spells_school5[] = {	/* Magierakademie 4 */
-	SP_ABVENENUM, SP_ODEM_ARCANUM, SP_EIGENSCHAFTEN, SP_ARMATRUTZ, SP_GARDIANUM, SP_BLITZ, SP_TIERE_BESPRECHEN,
-	SP_KK_STEIGERN, SP_FLIM_FLAM, SP_EISENROST, -1
-};
-signed short g_lvl_spells_school6[] = {	/* Magierakademie 5 */
-	SP_BALSAM, SP_FLIM_FLAM, SP_RESPONDAMI, SP_IGNIFAXIUS, SP_BANNBALADIN, SP_ARMATRUTZ, SP_ARCANO_PSYCHOSTABILIS,
-	SP_GARDIANUM, SP_HORRIPHOBUS, -1
-};
-signed short g_lvl_spells_school7[] = {	/* Magierakademie 6 */
-	SP_GARDIANUM, SP_BALSAM, SP_PARALUE, SP_FLIM_FLAM, SP_ECLIPTIFACTUS, SP_HORRIPHOBUS, SP_DUNKELHEIT,
-	SP_SAFT_KRAFT, SP_ODEM_ARCANUM, SP_FUROR_BLUT, SP_ARCANO_PSYCHOSTABILIS, SP_KK_STEIGERN, SP_GE_STEIGERN,
-	SP_MU_STEIGERN, -1
-};
-signed short g_lvl_spells_school8[] = {	/* Magierakademie 7 */
-	SP_BALSAM, SP_KLARUM_PURUM, SP_IGNIFAXIUS, SP_FLIM_FLAM, SP_KK_STEIGERN, SP_ARCANO_PSYCHOSTABILIS,
-	SP_GE_STEIGERN, SP_ECLIPTIFACTUS, SP_IN_SEE_UND_FLUSS, SP_ODEM_ARCANUM, SP_EIGENSCHAFTEN, -1
-};
-signed short g_lvl_spells_school9[] = {	/* Magierakademie 8 */
-	SP_PARALUE, SP_ARMATRUTZ, SP_GARDIANUM, SP_BALSAM, SP_IGNIFAXIUS, SP_PENETRIZZEL, SP_FORAMEN,
-	SP_WEICHES_ERSTARRE, SP_AEOLITUS, SP_STURMGEBRUELL, SP_PLUMBUMBARUM, SP_DESTRUCTIBO, -1
-};
+struct attrib_prio g_lvl_attrib_order[12] = { 0 };
+struct incs12 g_lvl_skill_incs = { 0 };	/* Talentsteigerungen je Stufe, Typ 1..12 */
+struct incs6 g_lvl_spell_incs = { 0 };	/* Zaubersteigerungen je Stufe, Typ 7..12 */
+struct incs6 g_lvl_incs_swap = { 0 };	/* davon umverteilbar (Talente <-> Zauber), Typ 7..12 */
+signed short g_lvl_spells_witch[3] = { 0 };	/* Zusatzliste Hexe (Ende -1) */
+signed short g_lvl_spells_druid[4] = { 0 };
+signed short g_lvl_spells_school1[11] = { 0 };
+signed short g_lvl_spells_school2[12] = { 0 };
+signed short g_lvl_spells_school3[12] = { 0 };
+signed short g_lvl_spells_school4[12] = { 0 };
+signed short g_lvl_spells_school5[11] = { 0 };
+signed short g_lvl_spells_school6[10] = { 0 };
+signed short g_lvl_spells_school7[15] = { 0 };
+signed short g_lvl_spells_school8[12] = { 0 };
+signed short g_lvl_spells_school9[13] = { 0 };
 signed short far *g_lvl_spells_school[9] = {	/* je hero.magic_school (BE MAGIC_SCHOOLS_INDEX) */
 	g_lvl_spells_school1, g_lvl_spells_school2, g_lvl_spells_school3, g_lvl_spells_school4, g_lvl_spells_school5,
 	g_lvl_spells_school6, g_lvl_spells_school7, g_lvl_spells_school8, g_lvl_spells_school9
 };
-signed short g_lvl_spells_green_elf[] = {	/* Zusatzliste Auelf */
-	SP_FLIM_FLAM, SP_BLITZ, SP_AXXELERATUS, SP_KLARUM_PURUM, SP_TIERE_BESPRECHEN, SP_DUNKELHEIT, -1
-};
-signed short g_lvl_spells_sylvan_elf[] = {	/* Zusatzliste Waldelf */
-	SP_SILENTIUM, SP_ARMATRUTZ, SP_FULMINICTUS, SP_ADLERAUG, SP_ODEM_ARCANUM, SP_FLIM_FLAM, -1
-};
-signed short g_lvl_spells_ice_elf[] = {	/* Zusatzliste Firnelf */
-	SP_BALSAM, SP_CHAMAELIONI, SP_BLITZ, SP_ADLERAUG, SP_FULMINICTUS, SP_ARMATRUTZ, SP_SILENTIUM, SP_ODEM_ARCANUM,
-	SP_BAND_UND_FESSEL, SP_AXXELERATUS, SP_EXPOSAMI, -1
-};
+signed short g_lvl_spells_green_elf[7] = { 0 };
+signed short g_lvl_spells_sylvan_elf[7] = { 0 };
+signed short g_lvl_spells_ice_elf[12] = { 0 };
 /* Phase B: eigenes BSS (ds:c842..c8f4) in Adressreihenfolge */
 char g_name_bufs[4][40];
 signed short g_sheet_dirty;

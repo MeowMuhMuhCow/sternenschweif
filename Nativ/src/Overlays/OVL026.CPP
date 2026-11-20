@@ -35,100 +35,45 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:1542..184a, dsana) - initialisierte Daten in Adressreihenfolge */
-signed short g_type_le[13] = { 0, 30, 30, 30, 30, 30, 40, 25, 30, 25, 25, 30, 25 };
-signed short g_type_ae[13] = { 0, 0, 0, 0, 0, 0, 0, 25, 25, 30, 25, 25, 25 };
-struct height_range g_type_height[13] = {	/* Koerpergroesse in cm von, bis je Heldentyp */
-	{ 0, 0 },	/* HERO_TYPE_NONE */
-	{ 150, 188 },	/* HERO_TYPE_JUGGLER */
-	{ 155, 170 },	/* HERO_TYPE_HUNTER */
-	{ 165, 205 },	/* HERO_TYPE_WARRIOR */
-	{ 156, 194 },	/* HERO_TYPE_ESTRAY */
-	{ 167, 210 },	/* HERO_TYPE_THORWALIAN */
-	{ 130, 140 },	/* HERO_TYPE_DWARF */
-	{ 154, 188 },	/* HERO_TYPE_WITCH */
-	{ 154, 188 },	/* HERO_TYPE_DRUID */
-	{ 164, 197 },	/* HERO_TYPE_MAGE */
-	{ 170, 204 },	/* HERO_TYPE_GREEN_ELF */
-	{ 160, 194 },	/* HERO_TYPE_ICE_ELF */
-	{ 170, 210 } 	/* HERO_TYPE_SYLVAN_ELF */
-};
-unsigned char g_type_weight[13] = { 0, 120, 110, 100, 110, 100, 90, 120, 110, 110, 120, 120, 120 };	/* Gewicht: (Groesse - Wert) * 40 Unzen */
-struct mouse_area g_chargen_areas_main[8] = {	/* Seite 0 (Grundwerte) */
-	{ 16, 8, 143, 191, 253 },
-	{ 272, 8, 304, 41, 98 },
-	{ 305, 7, 319, 21, 96 },
-	{ 145, 13, 175, 21, 97 },
-	{ 145, 178, 164, 192, KEY_LEFT },
-	{ 284, 178, 303, 192, KEY_RIGHT },
-	{ 0, 0, 319, 199, 254 },
-	{ -1, -1, -1, -1, -1 }
-};
-struct mouse_area g_chargen_areas_skills[4] = {	/* Seiten 1..4 (Talente, AT/PA): blaettern */
-	{ 145, 178, 164, 192, KEY_LEFT },
-	{ 284, 178, 303, 192, KEY_RIGHT },
-	{ 0, 0, 319, 199, 254 },
-	{ -1, -1, -1, -1, -1 }
-};
-struct mouse_area g_chargen_areas_spells[4] = {	/* Seiten 5..10 (Zauber): blaettern */
-	{ 16, 178, 35, 192, KEY_LEFT },
-	{ 284, 178, 303, 192, KEY_RIGHT },
-	{ 0, 0, 319, 199, 254 },
-	{ -1, -1, -1, -1, -1 }
-};
+signed short g_type_le[13] = { 0 };
+signed short g_type_ae[13] = { 0 };
+struct height_range g_type_height[13] = { 0 };
+unsigned char g_type_weight[13] = { 0 };	/* Gewicht: (Groesse - Wert) * 40 Unzen */
+struct mouse_area g_chargen_areas_main[8] = { 0 };
+struct mouse_area g_chargen_areas_skills[4] = { 0 };
+struct mouse_area g_chargen_areas_spells[4] = { 0 };
 void far *g_chargen_mouse_areas[11] = {	/* Mausbereiche je Seite (CharGen.page) */
 	g_chargen_areas_main,
 	g_chargen_areas_skills, g_chargen_areas_skills, g_chargen_areas_skills, g_chargen_areas_skills,
 	g_chargen_areas_spells, g_chargen_areas_spells, g_chargen_areas_spells, g_chargen_areas_spells,
 	g_chargen_areas_spells, g_chargen_areas_spells
 };
-struct rect g_portrait_rects[9] = {	/* Portraetfelder der Auswahl (x0, y0, x1, y1) */
-	{ 0, 12, 31, 43 }, { 34, 12, 65, 43 }, { 68, 12, 99, 43 }, { 102, 12, 133, 43 }, { 136, 12, 167, 43 },
-	{ 170, 12, 201, 43 }, { 204, 12, 235, 43 }, { 238, 12, 269, 43 }, { 272, 12, 303, 43 }
-};
+struct rect g_portrait_rects[9] = { 0 };
 
 /* Portraetbereiche je Bildtyp: maennlich m[t] .. f[t] - 1, weiblich f[t] .. m[t + 1] - 1 */
-signed char g_portrait_index_m[12] = { 0, 0, 12, 24, 36, 48, 60, 72, 83, 95, 107, 123 };
-signed char g_portrait_index_f[11] = { 0, 6, 18, 30, 42, 54, 68, 74, 91, 101, 115 };
+signed char g_portrait_index_m[12] = { 0 };
+signed char g_portrait_index_f[11] = { 0 };
 /* Startgeld je Typ: Eintraege {Grenze fuer den W20, Spanne in Silber von, bis}, letzter mit Grenze 20 */
-struct money_range g_type_money_01[] = {	/* HERO_TYPE_JUGGLER */
-	{ 14, 5, 5 }, { 19, 100, 100 }, { 20, 300, 300 }
-};
-struct money_range g_type_money_02[] = { { 1, 1, 1 }, { 20, 0, 0 } };	/* HERO_TYPE_HUNTER */
-struct money_range g_type_money_03[] = {	/* HERO_TYPE_WARRIOR */
-	{ 2, 1, 1 }, { 4, 20, 20 }, { 7, 50, 50 }, { 10, 30, 30 }, { 18, 200, 200 }, { 20, 1000, 1000 }
-};
-struct money_range g_type_money_04[] = {	/* HERO_TYPE_ESTRAY */
-	{ 10, 0, 0 }, { 17, 2, 2 }, { 18, 5, 5 }, { 20, 10, 10 }
-};
-struct money_range g_type_money_05[] = {	/* HERO_TYPE_THORWALIAN */
-	{ 9, 10, 10 }, { 13, 100, 100 }, { 19, 200, 200 }, { 20, 500, 500 }
-};
-struct money_range g_type_money_06[] = {	/* HERO_TYPE_DWARF */
-	{ 7, 100, 100 }, { 16, 200, 200 }, { 19, 300, 300 }, { 20, 1200, 1200 }
-};
-struct money_range g_type_money_07[] = { { 20, 1, 20 } };	/* HERO_TYPE_WITCH */
-struct money_range g_type_money_08[] = {	/* HERO_TYPE_DRUID */
-	{ 14, 0, 1 }, { 15, 1, 6 }, { 16, 2, 12 }, { 18, 1, 20 }, { 19, 10, 60 }, { 20, 10, 200 }
-};
-struct money_range g_type_money_09[] = {	/* HERO_TYPE_MAGE */
-	{ 3, 1, 6 }, { 13, 10, 60 }, { 16, 10, 200 }, { 19, 20, 400 }, { 20, 5, 1000 }
-};
-struct money_range g_type_money_10[] = {	/* HERO_TYPE_GREEN_ELF */
-	{ 4, 1, 6 }, { 6, 1, 20 }, { 13, 10, 60 }, { 19, 10, 200 }, { 20, 20, 400 }
-};
-struct money_range g_type_money_11[] = { { 1, 1, 6 }, { 20, 1, 20 } };	/* HERO_TYPE_ICE_ELF */
-struct money_range g_type_money_12[] = { { 14, 1, 6 }, { 19, 1, 20 }, { 20, 10, 60 } };	/* HERO_TYPE_SYLVAN_ELF */
+struct money_range g_type_money_01[3] = { 0 };
+struct money_range g_type_money_02[2] = { 0 };	/* HERO_TYPE_HUNTER */
+struct money_range g_type_money_03[6] = { 0 };
+struct money_range g_type_money_04[4] = { 0 };
+struct money_range g_type_money_05[4] = { 0 };
+struct money_range g_type_money_06[4] = { 0 };
+struct money_range g_type_money_07[1] = { 0 };	/* HERO_TYPE_WITCH */
+struct money_range g_type_money_08[6] = { 0 };
+struct money_range g_type_money_09[5] = { 0 };
+struct money_range g_type_money_10[5] = { 0 };
+struct money_range g_type_money_11[2] = { 0 };	/* HERO_TYPE_ICE_ELF */
+struct money_range g_type_money_12[3] = { 0 };	/* HERO_TYPE_SYLVAN_ELF */
 struct money_range far *g_type_money_ranges[12] = {	/* je Heldentyp 1..12 (Index type - 1) */
 	g_type_money_01, g_type_money_02, g_type_money_03, g_type_money_04, g_type_money_05, g_type_money_06,
 	g_type_money_07, g_type_money_08, g_type_money_09, g_type_money_10, g_type_money_11, g_type_money_12
 };
-signed short g_chargen_pics[22] = {
-	0x21e3, 0x21e4, 0x21e5, 0x21e6, 0x21e7, 0x21e8, 0x21e9, 0x21ea, 0x21eb, 0x21ec, 0x21ed, 0x21f9, 0x21f5,
-	0x21f8, 0x21f6, 0x21f7, 0x209c, 0x21ef, 0x21ee, 0x21e2, 0x21e1, -1
-};
-unsigned short g_chargen_pics_state[3] = { 0x0000, 0x0000, 0x0000 };
-struct str16 g_chargen_name_init = { "" };
-signed char g_chargen_type_shown = 1;
+signed short g_chargen_pics[22] = { 0 };
+unsigned short g_chargen_pics_state[3] = { 0 };
+struct str16 g_chargen_name_init = { 0 };
+signed char g_chargen_type_shown = 0;
 
 /* font_set_colors mit Wort-Parameter (das Original uebergibt die gesicherte Farbe als short: push word) */
 #define font_set_colors_w ((void (*)(void far *, signed short, signed short))font_set_colors)

@@ -13,7 +13,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:1868..186c, dsana) - initialisierte Daten in Adressreihenfolge */
-struct srgb g_opening_white = { 63, 63, 63 };
+struct srgb g_opening_white = { 0 };
 
 #define FLI_FIRST	2		/* FLI-Sequenzen des Vorspanns: 2..11 */
 #define PAL_STEPS	0x19		/* Schritte je Palettenblende */

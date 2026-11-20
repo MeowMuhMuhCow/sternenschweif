@@ -44,25 +44,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:5990..5a0c, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-struct lock_type g_chest_types[17] = {	/* je Truhenart: Aufbrechen (KK), Zuschlag Schloesser, Zuschlag Foramen */
-	{ 11, 0, 3 },	/* 0 */
-	{ 12, 3, 5 },	/* 1 */
-	{ 13, 6, 6 },	/* 2 */
-	{ 14, 4, 8 },	/* 3 */
-	{ 15, 8, 10 },	/* 4 */
-	{ 16, 12, 12 },	/* 5 */
-	{ 17, 5, 10 },	/* 6 */
-	{ 18, 10, 15 },	/* 7 */
-	{ 19, 15, 20 },	/* 8 */
-	{ 20, 6, 12 },	/* 9 */
-	{ 20, 10, 18 },	/* 10 */
-	{ 20, 18, 27 },	/* 11 */
-	{ 21, 30, 49 },	/* 12 */
-	{ 99, 99, 99 },	/* 13 */
-	{ 99, 99, 99 },	/* 14 */
-	{ 99, 99, 99 },	/* 15 */
-	{ 0, 157, 0 } 	/* 16 */
-};
+struct lock_type g_chest_types[17] = { 0 };
 CHEST_PMF g_chest_special[2] = {	/* Sonderbehandlung je Chest.special */
 	&Chest::special_key, &Chest::special_quest
 };

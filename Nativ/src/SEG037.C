@@ -14,7 +14,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:869e..86a0, dsana) - initialisierte Daten in Adressreihenfolge */
-unsigned short g_random_seed = 0x327b;
+unsigned short g_random_seed = 0;
 
 /* Zufallszahl lo..hi */
 signed short random_interval(signed short lo, signed short hi)

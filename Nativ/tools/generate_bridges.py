@@ -11,8 +11,10 @@ import sys
 
 PORT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ROOT = os.path.dirname(PORT_DIR)
-if not os.path.exists(os.path.join(ROOT, "Analyse", "Namen", "namen.tsv")):
-    ROOT = os.path.dirname(ROOT)
+for _cand in [ROOT, os.path.dirname(ROOT)] + sorted(glob.glob(os.path.join(PORT_DIR, "..", "..", "..", "*"))):
+    if os.path.exists(os.path.join(_cand, "Quelle", "inc", "schweif.h")):
+        ROOT = os.path.abspath(_cand)
+        break
 _parts = ROOT.split(os.sep)
 _win_root = os.path.join(os.sep, _parts[1], _parts[2]) if len(_parts) >= 3 and len(_parts[2]) == 1 else "/tmp"
 MINGW = os.environ.get(

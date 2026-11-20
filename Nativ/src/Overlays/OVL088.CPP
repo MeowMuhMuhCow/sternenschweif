@@ -42,7 +42,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:5c7e..5c9c, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-struct range8 g_school_spell_ranges[9] = { { 1, 5 }, { 6, 17 }, { 18, 26 }, { 27, 32 }, { 33, 37 }, { 38, 44 }, { 49, 57 }, { 60, 75 }, { 76, 85 } };
+struct range8 g_school_spell_ranges[9] = { 0 };
 /* Phase B: eigenes BSS (ds:c8f4..c910) in Adressreihenfolge */
 struct hero far *g_radio_heroes[7];
 

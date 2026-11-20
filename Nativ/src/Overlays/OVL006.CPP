@@ -38,8 +38,8 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:0108..011a, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-struct str6 g_select_skill_lvlup = { "%s~%d" };
-struct skill_list9 g_select_skill_defaults = { { 44, 45, 46, -1, -1, -1, -1, -1, -1 } };
+struct str6 g_select_skill_lvlup = { 0 };
+struct skill_list9 g_select_skill_defaults = { 0 };
 
 /* Aufrufersicht von O006: der Zuschlag geht als short (cbw / push word) an die O090-Funktionen, deren
  * Definitionen (und Prototypen) signed char nehmen -> Funktionszeiger-Cast im Aufruf (gleiche Bytes) */

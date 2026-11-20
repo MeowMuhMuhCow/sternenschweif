@@ -29,7 +29,7 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:56fc..570a, dsana) - initialisierte Daten in Adressreihenfolge */
-struct score7 g_score7_zero = { { 0, 0, 0, 0, 0, 0, 0 } };
+struct score7 g_score7_zero = { 0 };
 
 #define ITEM_SPEAR	0x05	/* Speer (BE-Nummer) */
 #define ITEM_SHORTBOW	0x09	/* Kurzbogen */

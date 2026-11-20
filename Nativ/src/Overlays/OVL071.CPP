@@ -55,27 +55,13 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:5826..5882, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-struct herb_find g_gather_herbs_table[13] = {
-	{ 0x7e, 0x05, 0x01, 15 },
-	{ 0x7b, 0x0c, 0x03, 8 },
-	{ 0x7c, 0x0a, 0x02, 9 },
-	{ 0x3f, 0x0f, 0x03, 8 },
-	{ 0x82, 0x0f, 0x01, 10 },
-	{ 0x9d, 0x01, 0x01, 18 },
-	{ 0x7a, 0x0c, 0x02, 8 },
-	{ 0x40, 0x2d, 0x05, 4 },
-	{ 0x83, 0x03, 0x01, 15 },
-	{ 0x3c, 0x28, 0x04, 8 },
-	{ 0x3d, 0x1e, 0x02, 4 },
-	{ 0x3e, 0x14, 0x02, 4 },
-	{ 0xff, 0x00, 0x00, 0 }
-};
-signed char g_camp_water_season[4] = { -9, 3, 10, 3 };
-signed char g_camp_hunt_season[4] = { 10, 5, 10, 5 };
-signed char g_camp_herb_season[4] = { 20, 5, 12, 10 };
-signed char g_camp_water_weather[6] = { -2, -2, -15, 5, 0, -3 };
-signed char g_camp_hunt_weather[6] = { -2, 0, -7, 5, 6, 2 };
-signed char g_camp_herb_weather[6] = { 5, 2, 0, 10, 8, 5 };
+struct herb_find g_gather_herbs_table[13] = { 0 };
+signed char g_camp_water_season[4] = { 0 };
+signed char g_camp_hunt_season[4] = { 0 };
+signed char g_camp_herb_season[4] = { 0 };
+signed char g_camp_water_weather[6] = { 0 };
+signed char g_camp_hunt_weather[6] = { 0 };
+signed char g_camp_herb_weather[6] = { 0 };
 
 #define DATE ((struct game_date far *)g_date)
 /* Text in die Textleiste: Farbe 0xff als int wie im Original */

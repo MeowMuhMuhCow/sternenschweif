@@ -30,50 +30,30 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:6e78..704c, dsana) - initialisierte Daten in Adressreihenfolge */
-signed short g_npc_file_ids[9] = { 0, 473, 474, 475, 476, 477, 478, 479, 480 };
-signed short g_sky_shade = 255;
+signed short g_npc_file_ids[9] = { 0 };
+signed short g_sky_shade = 0;
 signed short g_options_open = 0;
 struct opt_entry g_opt_entries[17] = {
-	{ 117, 46, 28, (signed char far *)&g_opt_music, { 1, 0, -1, -1 } },
-	{ 117, 59, 28, (signed char far *)&g_opt_sound, { 1, 0, -1, -1 } },
-	{ 117, 72, 28, (signed char far *)&g_cd_speech, { 1, 0, -1, -1 } },
-	{ 117, 85, 28, (signed char far *)&g_subtitles, { 1, 0, -1, -1 } },
-	{ 117, 98, 28, (signed char far *)&g_anims_on, { 1, 0, -1, -1 } },
-	{ 117, 111, 28, (signed char far *)&g_free_move, { 0, 1, -1, -1 } },
-	{ 117, 124, 28, (signed char far *)&g_win_centered, { 2, 3, -1, -1 } },
-	{ 117, 137, 28, (signed char far *)&g_opt_fight_keep_view, { 1, 0, -1, -1 } },
-	{ 117, 180, 85, (signed char far *)&g_game_mode, { 4, 5, -1, -1 } },
-	{ 259, 46, 50, (signed char far *)&g_vol_music, { 12, 13, -1, -1 } },
-	{ 259, 59, 50, (signed char far *)&g_vol_fx, { 12, 13, -1, -1 } },
-	{ 259, 72, 50, (signed char far *)&g_vol_speech, { 12, 13, -1, -1 } },
-	{ 259, 85, 50, (signed char far *)&g_print_to_file, { 6, 7, -1, -1 } },
-	{ 259, 98, 50, (signed char far *)&g_text_speed, { 8, 9, 10, 11 } },
-	{ 259, 111, 50, (signed char far *)&g_anim_speed, { 8, 9, 10, 11 } },
-	{ 259, 124, 50, (signed char far *)&g_fight_speed, { 8, 9, 10, 11 } },
-	{ 259, 137, 50, (signed char far *)&g_saver_level, { 17, 16, 15, 14 } }
+	{ 0, 0, 0, (signed char far *)&g_opt_music, { 0, 0, 0, 0 } },
+	{ 0, 0, 0, (signed char far *)&g_opt_sound, { 0, 0, 0, 0 } },
+	{ 0, 0, 0, (signed char far *)&g_cd_speech, { 0, 0, 0, 0 } },
+	{ 0, 0, 0, (signed char far *)&g_subtitles, { 0, 0, 0, 0 } },
+	{ 0, 0, 0, (signed char far *)&g_anims_on, { 0, 0, 0, 0 } },
+	{ 0, 0, 0, (signed char far *)&g_free_move, { 0, 0, 0, 0 } },
+	{ 0, 0, 0, (signed char far *)&g_win_centered, { 0, 0, 0, 0 } },
+	{ 0, 0, 0, (signed char far *)&g_opt_fight_keep_view, { 0, 0, 0, 0 } },
+	{ 0, 0, 0, (signed char far *)&g_game_mode, { 0, 0, 0, 0 } },
+	{ 0, 0, 0, (signed char far *)&g_vol_music, { 0, 0, 0, 0 } },
+	{ 0, 0, 0, (signed char far *)&g_vol_fx, { 0, 0, 0, 0 } },
+	{ 0, 0, 0, (signed char far *)&g_vol_speech, { 0, 0, 0, 0 } },
+	{ 0, 0, 0, (signed char far *)&g_print_to_file, { 0, 0, 0, 0 } },
+	{ 0, 0, 0, (signed char far *)&g_text_speed, { 0, 0, 0, 0 } },
+	{ 0, 0, 0, (signed char far *)&g_anim_speed, { 0, 0, 0, 0 } },
+	{ 0, 0, 0, (signed char far *)&g_fight_speed, { 0, 0, 0, 0 } },
+	{ 0, 0, 0, (signed char far *)&g_saver_level, { 0, 0, 0, 0 } }
 };
-struct mouse_area g_opt_areas[19] = {
-	{ 117, 46, 144, 58, 129 },
-	{ 117, 59, 144, 71, 130 },
-	{ 117, 72, 144, 84, 131 },
-	{ 117, 85, 144, 97, 132 },
-	{ 117, 98, 144, 110, 133 },
-	{ 117, 111, 144, 123, 134 },
-	{ 117, 124, 144, 136, 135 },
-	{ 117, 137, 201, 149, 136 },
-	{ 117, 180, 201, 192, 137 },
-	{ 259, 46, 308, 58, 138 },
-	{ 259, 59, 308, 71, 139 },
-	{ 259, 72, 308, 84, 140 },
-	{ 259, 85, 308, 97, 141 },
-	{ 259, 98, 308, 110, 142 },
-	{ 259, 111, 308, 123, 143 },
-	{ 259, 124, 308, 136, 144 },
-	{ 259, 137, 308, 149, 145 },
-	{ 259, 180, 308, 192, 146 },
-	{ -1, 0, 0, 0, 0 }
-};
-signed char g_opt_defaults[18] = { 1, 1, 1, 1, 1, 1, 0, 0, -1, 100, 100, 100, 0, 2, 2, 2, 3, 0 };
+struct mouse_area g_opt_areas[19] = { 0 };
+signed char g_opt_defaults[18] = { 0 };
 
 #define OPT_PIC		0x2e9		/* OPTIONS.AIF */
 #define OPT_NVF		0x2ea		/* OPTIONS.NVF */
@@ -364,16 +344,16 @@ signed short Opt::popup_select(signed short n, register signed short x, signed s
 			yy = y + sel * 12;
 			mouse_hide(0);
 			if (old != -1) {
-				vga_restore_row(old * 0x140, s1);
-				vga_restore_row(old * 0x140 + 0xdc0, s2);
-				vga_restore_col(x, s3);
-				vga_restore_col(x + w - 1, s4);
+				vga_restore_row(old * 0x140, (char *)s1);
+				vga_restore_row(old * 0x140 + 0xdc0, (char *)s2);
+				vga_restore_col(x, (char *)s3);
+				vga_restore_col(x + w - 1, (char *)s4);
 				old = -1;
 			}
-			vga_save_row(yy * 0x140, s1);
-			vga_save_row(yy * 0x140 + 0xdc0, s2);
-			vga_save_col(x, s3);
-			vga_save_col(x + w - 1, s4);
+			vga_save_row(yy * 0x140, (char *)s1);
+			vga_save_row(yy * 0x140 + 0xdc0, (char *)s2);
+			vga_save_col(x, (char *)s3);
+			vga_save_col(x + w - 1, (char *)s4);
 			do_border(g_vga_buf, x, yy, w, 0x0c, 0xfd);
 			mouse_show(0);
 			old = yy;
@@ -586,16 +566,16 @@ void Opt::keyboard()
 				w = e->x == 0x75 ? 0x6c : 0x64;
 				mouse_hide(0);
 				if (oy != -1) {
-					vga_restore_row(oy * 0x140, s1);
-					vga_restore_row(oy * 0x140 + 0xdc0, s2);
-					vga_restore_col(ox, s3);
-					vga_restore_col(ox + ow - 1, s4);
+					vga_restore_row(oy * 0x140, (char *)s1);
+					vga_restore_row(oy * 0x140 + 0xdc0, (char *)s2);
+					vga_restore_col(ox, (char *)s3);
+					vga_restore_col(ox + ow - 1, (char *)s4);
 					oy = -1;
 				}
-				vga_save_row(y * 0x140, s1);
-				vga_save_row(y * 0x140 + 0xdc0, s2);
-				vga_save_col(x, s3);
-				vga_save_col(x + w - 1, s4);
+				vga_save_row(y * 0x140, (char *)s1);
+				vga_save_row(y * 0x140 + 0xdc0, (char *)s2);
+				vga_save_col(x, (char *)s3);
+				vga_save_col(x + w - 1, (char *)s4);
 				do_border(g_vga_buf, x, y, w, 0x0c, 0xfd);
 				mouse_show(0);
 				oy = y;
@@ -618,10 +598,10 @@ void Opt::keyboard()
 	} while (g_action != 0x11b && g_action != 0x5100);
 	if (oy != -1) {
 		mouse_hide(0);
-		vga_restore_row(oy * 0x140, s1);
-		vga_restore_row(oy * 0x140 + 0xdc0, s2);
-		vga_restore_col(ox, s3);
-		vga_restore_col(ox + ow - 1, s4);
+		vga_restore_row(oy * 0x140, (char *)s1);
+		vga_restore_row(oy * 0x140 + 0xdc0, (char *)s2);
+		vga_restore_col(ox, (char *)s3);
+		vga_restore_col(ox + ow - 1, (char *)s4);
 		mouse_show(0);
 	}
 	delete s1;

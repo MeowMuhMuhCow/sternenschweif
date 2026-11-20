@@ -376,13 +376,13 @@ static int has_stardat_in_dir(const char *dir) {
 #endif
 
 static void try_load_spielpfad(void) {
-    if (g_gamedir_explicit && has_stardat_in_dir(g_gamedir)) return;
+    if (g_gamedir_explicit) return;
     const char *env_dir = getenv("DSA_GAMEDIR");
     if (!env_dir || !env_dir[0]) env_dir = getenv("DSA_GAME_DIR");
     if (!env_dir || !env_dir[0]) env_dir = getenv("SPIELPFAD");
     if (env_dir && env_dir[0]) {
         dsa_platform_set_gamedir(env_dir);
-        if (has_stardat_in_dir(g_gamedir)) return;
+        return;
     }
     const char *candidates[] = {
         "SPIELPFAD.txt",
@@ -1277,6 +1277,14 @@ void dsa_platform_set_gamedir(const char *path) {
 
 const char *dsa_platform_get_gamedir(void) {
     return g_gamedir;
+}
+
+int dsa_platform_is_gamedir_explicit(void) {
+    return g_gamedir_explicit;
+}
+
+void dsa_platform_resolve_gamedir(void) {
+    try_load_spielpfad();
 }
 
 int dsa_platform_resolve_path(const char *dos_path, char *out_path, size_t out_size) {

@@ -41,7 +41,7 @@
 #include "s_plog.h"	/* Probenlog (FIX_PROBENLOG) */
 
 /* Phase B: eigene Daten des Moduls (ds:5ca0..5cb2, dsana) - initialisierte Daten in Adressreihenfolge */
-struct select_spell_tmpl g_select_spell_tmpl = { { "%s~%d" }, { { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } } };
+struct select_spell_tmpl g_select_spell_tmpl = { 0 };
 
 /* Zauberwert per Byte-Index ab Heldenanfang (Index wird zuerst gerechnet, dann h addiert; h->spells[k] rechnet
  * les bx,h zuerst) */

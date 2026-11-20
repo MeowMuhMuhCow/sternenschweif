@@ -43,8 +43,8 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:0630..06b4, dsana) - initialisierte Daten in Adressreihenfolge */
-signed short g_cutscene_pics[3] = { -15341, -15340, -1 };
-struct talk_tpl g_talk_tpl = { 0, { { "", "", "", "", "", "" } }, { { 0, 0, 0, 0, 0, 0 } } };
+signed short g_cutscene_pics[3] = { 0 };
+struct talk_tpl g_talk_tpl = { 0 };
 signed short g_cutscene_sub1 = 0;
 signed short g_cutscene_sub2 = 0;
 /* Phase B: eigenes BSS (ds:8b56..8b5c) in Adressreihenfolge */

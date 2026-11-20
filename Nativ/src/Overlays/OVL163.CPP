@@ -41,8 +41,8 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:6c54..6c6c, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-signed char g_af_spell_list[16] = { 52, 12, 53, 33, 8, 27, 46, 49, 54, 56, 72, 5, 52, 53, 12, 5 };
-char g_str_dot_6c64[2] = ".";   /* ds:6c64 "." - Literal von O162 (liegt im Datenbereich von O163) */
+signed char g_af_spell_list[16] = { 0 };
+char g_str_dot_6c64[2] = { 0 };   /* ds:6c64 "." - Literal von O162 (liegt im Datenbereich von O163) */
 
 #define PIC_FERRY	0x28		/* Teilbild der Datei 0x197: Faehre */
 

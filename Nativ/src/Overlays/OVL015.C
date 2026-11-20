@@ -30,25 +30,9 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:0ede..0f22, dsana) - initialisierte Daten in Adressreihenfolge */
-struct point g_zoom_slot_xy[15] = {
-	{ 99, 57 },
-	{ 87, 76 },
-	{ 90, 106 },
-	{ 97, 125 },
-	{ 97, 144 },
-	{ 92, 163 },
-	{ 92, 182 },
-	{ 122, 104 },
-	{ 143, 55 },
-	{ 162, 71 },
-	{ 162, 90 },
-	{ 155, 109 },
-	{ 149, 128 },
-	{ 149, 147 },
-	{ 151, 179 }
-};
-signed short g_zoom_skip_items[2] = { 49, -1 };
-struct srgb g_zoom_frame_color = { 40, 20, 0 };
+struct point g_zoom_slot_xy[15] = { 0 };
+signed short g_zoom_skip_items[2] = { 0 };
+struct srgb g_zoom_frame_color = { 0 };
 
 /* g_xms_move mit Zeigern statt signed long (Zuweisung als zwei Worte) */
 struct xms_move_ptr {

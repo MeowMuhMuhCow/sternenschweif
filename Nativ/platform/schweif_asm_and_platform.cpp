@@ -97,31 +97,28 @@ void *g_scale_code = NULL;
 unsigned short g_finale_ticks = 0;
 unsigned long  g_fli_ticks = 0;
 
-/* OVL030 eigene Daten (ds:187a..1966, 232 Bytes aus SCHWEIF.EXE) */
-signed long g_187a[20] = {
-    2368548, 0, 9, 31, 42, 115, 143, 113, 0, 164,
-    165, 167, 169, 170, 172, 173, 174, 175, 176, 177
-};
-char g_18ca[20] = { 0x27,0x20,(char)0x88,0x21,0x05,0x22,0x16,0x20,0x17,0x20,0x11,0x20,0x7e,0x20,0x7f,0x20,0x47,0x40,(char)0xff,(char)0xff };
-char g_18de[4]  = { 0,0,0,0 };
-char g_18e2[22] = { 0x2c,0x20,(char)0x8f,0x21,(char)0xf4,0x21,0x1e,0x20,(char)0xaf,0x40,(char)0xb0,0x40,(char)0xb1,0x40,(char)0xb2,0x40,(char)0xb3,0x40,(char)0xb4,0x40,(char)0xff,(char)0xff };
-char g_18f8[4]  = { 0,0,0,0 };
-char g_18fc[8]  = { 0x2a,0x20,(char)0x89,0x21,0x1a,0x20,(char)0xff,(char)0xff };
-char g_1904[2]  = { 0,0 };
-char g_1906[18] = { (char)0x82,0x20,(char)0x83,0x20,(char)0x84,0x20,(char)0x85,0x20,(char)0x86,0x20,(char)0x87,0x20,(char)0xf3,0x21,0x7d,0x20,(char)0xff,(char)0xff };
-char g_1918[4]  = { 0,0,0,0 };
-char g_191c[10] = { 0x2b,0x20,(char)0x8a,0x21,0x02,0x22,0x1d,0x20,(char)0xff,(char)0xff };
-char g_1926[2]  = { 0,0 };
-char g_1928[10] = { 0x29,0x20,0x28,0x20,(char)0xff,0x21,0x19,0x20,(char)0xff,(char)0xff };
-char g_1932[2]  = { 0,0 };
-char g_1934[10] = { 0x2d,0x20,0x2e,0x20,0x2f,0x20,0x22,0x20,(char)0xff,(char)0xff };
-char g_193e[2]  = { 0,0 };
-char g_1940[8]  = { (char)0x91,0x21,(char)0xfe,0x21,(char)0x95,0x21,(char)0xff,(char)0xff };
-char g_1948[2]  = { 0,0 };
-char g_194a[18] = { (char)0xae,0x20,(char)0xaf,0x20,(char)0xb0,0x20,(char)0xb1,0x20,(char)0xb2,0x20,(char)0xa1,0x20,(char)0xa2,0x20,0x6d,0x40,(char)0xff,(char)0xff };
-char g_195c[2]  = { 0,0 };
-char g_195e[6]  = { 0x20,0x22,0x21,0x22,(char)0xff,(char)0xff };
-char g_1964[2]  = { 0,0 };
+/* OVL030 eigene Daten (ds:187a..1966, 232 Bytes, zur Laufzeit aus SCHWEIF.EXE geladen) */
+signed long g_187a[20] = { 0 };
+char g_18ca[20] = { 0 };
+char g_18de[4]  = { 0 };
+char g_18e2[22] = { 0 };
+char g_18f8[4]  = { 0 };
+char g_18fc[8]  = { 0 };
+char g_1904[2]  = { 0 };
+char g_1906[18] = { 0 };
+char g_1918[4]  = { 0 };
+char g_191c[10] = { 0 };
+char g_1926[2]  = { 0 };
+char g_1928[10] = { 0 };
+char g_1932[2]  = { 0 };
+char g_1934[10] = { 0 };
+char g_193e[2]  = { 0 };
+char g_1940[8]  = { 0 };
+char g_1948[2]  = { 0 };
+char g_194a[18] = { 0 };
+char g_195c[2]  = { 0 };
+char g_195e[6]  = { 0 };
+char g_1964[2]  = { 0 };
 
 /* =========================================================================
  * 2. ISO9660 Mode2/2352 Virtuelles Dateisystem fuer gamea.gog / gameb.gog
@@ -3636,10 +3633,9 @@ extern "C" int dsa_platform_consume_readonly_notice(void) {
     return 0;
 }
 
+#include "dsa_dgroup_loader.inc"
+
 int main(int argc, char **argv) {
-#ifdef _WIN32
-    FreeConsole();
-#endif
     init_crt_io();
     char exe_path[1024];
 #ifdef _WIN32
@@ -3692,6 +3688,7 @@ int main(int argc, char **argv) {
     static char *game_argv[32];
     int game_argc = 0;
     int has_replay = 0;
+    int is_headless = 0;
     game_argv[game_argc++] = argv[0];
 
     for (int i = 1; i < argc; ++i) {
@@ -3703,6 +3700,8 @@ int main(int argc, char **argv) {
             dsa_platform_set_replay_file(argv[++i]);
             has_replay = 1;
             g_has_replay = 1;
+        } else if (strcmp(argv[i], "--headless") == 0) {
+            is_headless = 1;
         } else if (strcmp(argv[i], "--kein-intro") == 0 || strcmp(argv[i], "--no-intro") == 0) {
             g_no_intro = 1;
         } else if (strcmp(argv[i], "--intro") == 0) {
@@ -3719,6 +3718,16 @@ int main(int argc, char **argv) {
         }
     }
     game_argv[game_argc] = NULL;
+
+    dsa_platform_resolve_gamedir();
+    const char *gamedir = dsa_platform_get_gamedir();
+    schweif_load_tables_from_user_exe(gamedir, dsa_platform_is_gamedir_explicit(), is_headless || has_replay);
+
+#ifdef _WIN32
+    if (!is_headless) {
+        FreeConsole();
+    }
+#endif
 
     {
 #ifdef _WIN32
@@ -3743,7 +3752,7 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    const char *gamedir = dsa_platform_get_gamedir();
+    gamedir = dsa_platform_get_gamedir();
     iso_init_images(gamedir);
     setup_save_dir(gamedir);
     _chdir(gamedir);

@@ -46,9 +46,9 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:60fe..6124, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-char g_fmt_diary_c[4] = "%c";
-char g_fmt_diary_c2[4] = "%c";
-char g_fmt_diary_end[6] = "@@%c";
+char g_fmt_diary_c[4] = { 0 };
+char g_fmt_diary_c2[4] = { 0 };
+char g_fmt_diary_end[6] = { 0 };
 
 #define STAR_NAME	(*(char far * far *)g_names_star_idx)	/* Dateiname der Arbeitsdatei 0 */
 #define FILE_NAMES	0x334		/* Namensliste (struct sel_rec, Ende id == -1) */

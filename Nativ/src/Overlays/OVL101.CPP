@@ -83,11 +83,11 @@ void talk(struct talk_desc far *d, signed short id, signed short partner, signed
 			d->src = d->txt[t + d->base];
 			talk_format(d);
 			if (mode == 0) {
-				ans = dlg_box(g_dialog, g_portrait_buf, d->title >= 0 ? d->txt[d->title] : STR_EMPTY_TITLE1, d->buf, n,
+				ans = dlg_box(g_dialog, g_portrait_buf, d->title >= 0 ? d->txt[d->title] : (char *)STR_EMPTY_TITLE1, d->buf, n,
 					d->txt[st->ans[0] + d->base], d->txt[st->ans[1] + d->base], d->txt[st->ans[2] + d->base]);
 			} else {
 				g_dlg_box_flag = 0;
-				ans = dlg_box_bmp(g_dialog, b, d->title >= 0 ? d->txt[d->title] : STR_EMPTY_TITLE2, d->buf, n,
+				ans = dlg_box_bmp(g_dialog, b, d->title >= 0 ? d->txt[d->title] : (char *)STR_EMPTY_TITLE2, d->buf, n,
 					d->txt[st->ans[0] + d->base], d->txt[st->ans[1] + d->base], d->txt[st->ans[2] + d->base]);
 			}
 		}

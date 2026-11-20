@@ -76,8 +76,8 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:6600..6644, dsana) - initialisierte Daten in Adressreihenfolge */
-struct point g_dng01_scatter_pos[10] = { { 6, 1 }, { 18, 3 }, { 13, 2 }, { 29, 7 }, { 6, 7 }, { 9, 8 }, { 13, 8 }, { 6, 17 }, { 7, 19 }, { 17, 17 } };
-struct hero_ptrs7 g_dng01_scatter_init = { { 0, 0, 0, 0, 0, 0, 0 } };
+struct point g_dng01_scatter_pos[10] = { 0 };
+struct hero_ptrs7 g_dng01_scatter_init = { 0 };
 
 /* automap_cell_write mit short als letztem Parameter (wie im Original deklariert) */
 #define AUTOMAP_CELL_WRITE_W \

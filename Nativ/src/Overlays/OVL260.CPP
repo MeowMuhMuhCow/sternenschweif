@@ -38,8 +38,8 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:784a..78c6, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-char far *g_script_keywords[7] = { "#", "PIC", "TOLERANCE", "TOPIC", "END", "NAME", 0 };
-char far *g_script_answer_kw[6] = { "NULL", "LIST_TRUE", "LIST_FALSE", "LIST", "NOTMORE", 0 };
+char far *g_script_keywords[7] = { 0 };
+char far *g_script_answer_kw[6] = { 0 };
 
 #define FILE_TOPICS	0x50		/* Themenliste */
 #define MAX_TEXTS	1000		/* texts[] */

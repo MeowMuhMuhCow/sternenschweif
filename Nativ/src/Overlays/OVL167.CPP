@@ -33,9 +33,9 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:6c74..6c8c, dsana) - initialisierte Daten in Adressreihenfolge */
-struct incs12 g_chargen_skill_incs = { { 20, 20, 20, 20, 20, 20, 20, 20, 15, 20, 20, 20 } };
-struct incs6 g_chargen_spell_incs = { { 25, 25, 40, 20, 20, 20 } };
-struct incs6 g_chargen_incs_swap = { { 5, 5, 5, 0, 0, 0 } };
+struct incs12 g_chargen_skill_incs = { 0 };
+struct incs6 g_chargen_spell_incs = { 0 };
+struct incs6 g_chargen_incs_swap = { 0 };
 
 void chargen_roll_attribs(CharGen far *g)
 {

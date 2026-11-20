@@ -28,9 +28,9 @@
 
 /* Phase B: eigene Daten des Moduls (ds:3d8e..3dc6, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
 signed short g_options_shown = 0;
-signed short g_cl_finale[11] = { -24557, -24556, -24555, -24554, -24553, -24552, -24551, -24550, -24549, 9137, -1 };
-signed short g_cl_finale_speech[9] = { -15339, -15338, -15337, -15336, -15335, -15334, -15333, -15332, -1 };
-unsigned char g_cl_finale_st[4] = "";
+signed short g_cl_finale[11] = { 0 };
+signed short g_cl_finale_speech[9] = { 0 };
+unsigned char g_cl_finale_st[4] = { 0 };
 
 #define PAL_SIZE	0x300
 #define SCREEN_SIZE	0xfa00

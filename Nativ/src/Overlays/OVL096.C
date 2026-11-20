@@ -46,7 +46,7 @@
 void view_alloc_lists(void)
 {
     void *p;
-    if ((p = mem_alloc(0x61c)) == 0) guru_meditation("OUT OF MEMORY", 0);
+    if ((p = mem_alloc(0x61c)) == 0) guru_meditation(DS_STR(0x5e78), 0);
     g_face_seg = 0;
     g_face_block = p;
     g_face_next = (unsigned char *)p + 0x10;
@@ -247,7 +247,7 @@ void view_load_palette(void)
 	file_open(g_file_main, 0x13d);
 	file_read(g_file_main, g_shade_table, 0x200);
 	view_init_stars();
-	if ((p = g_shade_buf = mem_alloc(0x2010)) == 0) guru_meditation("CAN'T INITIALIZE SHADOWING (OUT OF MEMORY)", 0);
+	if ((p = g_shade_buf = mem_alloc(0x2010)) == 0) guru_meditation(DS_STR(0x5e86), 0);
 	p = (unsigned char *)g_shade_buf + 8;
 	g_port_shade_base = (unsigned char *)p;
 	for (i = 0; i < 32; i++) g_shade_segs[i] = (unsigned short)(0x9000 + i);

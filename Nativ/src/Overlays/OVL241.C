@@ -41,7 +41,7 @@ extern signed short g_tavern_crowd;
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:75d2..75d8, dsana) - initialisierte Daten in Adressreihenfolge, danach der Literalpool */
-struct tavern far *g_tavern = 0;
+struct tavern far *g_tavern = { 0 };
 /* Phase B: eigenes BSS (ds:cb5a..cb6c) in Adressreihenfolge (Reihenfolge festgelegt durch die extern-Zeilen vor den #include) */
 signed short g_tavern_crowd;		/* Andrang in der Schenke */
 char g_unused_cb5c[16];			/* ds:cb5c, unbenutzt */

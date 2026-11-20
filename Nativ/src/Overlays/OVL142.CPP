@@ -42,12 +42,10 @@
 #include "schweif.h"
 
 /* Phase B: eigene Daten des Moduls (ds:6b30..6b9c, dsana) - initialisierte Daten in Adressreihenfolge */
-struct seq27 g_sfight_spell_seq1 = {
-	{ 45, 45, 45, 46, 60, 60, 72, 72, 56, 54, 52, 53, 39, 41, 43, 44, 45, 46, 45, 45, 45, 45, 45, 45, 45, 45, -1 }
-};
-struct seq25 g_sfight_spell_seq2 = { { 19, 19, 7, 8, 20, 31, 44, 44, 45, 45, 58, 73, 75, 61, 49, 36, 22, 20, 20, 20, 20, 20, 20, 20, -1 } };
-struct points7 g_sfight_pic_size = { { { 20, 12 }, { 34, 21 }, { 62, 37 }, { 91, 55 }, { 119, 70 }, { 156, 93 }, { 216, 132 } } };
-struct points7 g_sfight_pic_pos = { { { 176, 44 }, { 169, 43 }, { 154, 38 }, { 139, 36 }, { 126, 34 }, { 107, 29 }, { 78, 22 } } };
+struct seq27 g_sfight_spell_seq1 = { 0 };
+struct seq25 g_sfight_spell_seq2 = { 0 };
+struct points7 g_sfight_pic_size = { 0 };
+struct points7 g_sfight_pic_pos = { 0 };
 
 #define NVF_HEADS ((Nvf far *)g_nvf_heads)	/* NVF-Dateiobjekt (O098) */
 
