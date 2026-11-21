@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<!--
+  index.html - Web-Oberflaeche fuer DSA 2: Sternenschweif (CD-Version C1.02 de) im Browser
+  Lizenz: GNU General Public License Version 3 (GPL v3, siehe COPYING)
+
+  Funktionen:
+    - Exaktes 4:3-Seitenverhaeltnis (320x200 auf 4:3, image-rendering: pixelated, keine Grafikfilter)
+    - Sternenschweif-Farbkleid (Nachtblau / Sternensilber zur sofortigen Unterscheidung von Teil 1)
+    - Spieldaten-Ablage per Drag & Drop (Ordner oder ZIP, inkl. automatischer Extraktion aus gamea.gog)
+      sowie Knoepfe "Ordner/Zip waehlen" / "Spielordner waehlen"
+    - Knopf "Spieldaten vergessen" (loescht gespeicherte Spieldaten aus IndexedDB)
+    - Sichtbarer Hinweis: "Deine Spieldateien werden nur in diesem Browser gelesen und nie hochgeladen."
+    - Spielstaende in IDBFS (/spielstand_schweif <-> /spiel/GAMES/) mit "Spielstaende sichern (Zip)" und "Spielstaende einspielen"
+    - Fix-Stufen-Umschalter (Original / Wichtig / Alle) per Auswahlfeld und URL-Parameter (?stufe=original|wichtig|alles)
+    - Einblendbares Seitenfenster "Probenlog" (liest /spiel/PROBEN.CSV live mit) + Knopf "PROBEN.CSV herunterladen"
+    - Ton-Steuerung (CD-Audio OGG im 2,0-s-Stereo-Ringpuffer + Lautstaerke), Start nach erstem Klick
+    - Vollbild-Knopf
+-->
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DSA 2: Sternenschweif – Browser-Edition</title>
+<style>
+    :root {
+        --bg: #070b14;
+        --panel: #10192b;
+        --panel-border: #283c63;
+        --gold: #72aef5;
+        --gold-bright: #b4d7ff;
+        --text: #e2ebf7;
+        --muted: #8ea3c2;
+        --btn-bg: #17243d;
+        --btn-hover: #213457;
+        --btn-active: #2c4573;
+        --danger: #e06c75;
+        --ok: #78c988;
+        --pz: #c79bf2;
+        --bar-h: 2.65rem;
+        --foot-h: 1.45rem;
+    }
+
+    *, *::before, *::after {
+        box-sizing: border-box;
+    }
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--bg);
+        color: var(--text);
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        overflow: hidden;
+        user-select: none;
+    }
+
+    body {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* ---------- Obere Steuerleiste ---------- */
+    #kopfzeile {
+        height: var(--bar-h);
+        min-height: var(--bar-h);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.22rem;
+        padding: 0 0.38rem;
+        background: var(--panel);
+        border-bottom: 1px solid var(--panel-border);
+        z-index: 10;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+    }
+    .gruppe {
+        display: flex;
+        align-items: center;
+        gap: 0.2rem;
+        flex-shrink: 0;
+    }
+    .titel {
+        font: bold 0.82rem Georgia, "Times New Roman", serif;
+        color: var(--gold-bright);
+        letter-spacing: 0.01em;
+        margin-right: 0.12rem;
+        white-space: nowrap;
+    }
+    button, select, input[type="search"] {
+        font: inherit;
+        font-size: 0.72rem;
+        color: var(--text);
+        background: var(--btn-bg);
+        border: 1px solid var(--panel-border);
+        border-radius: 0.3rem;
+        padding: 0.18rem 0.38rem;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background 0.15s, border-color 0.15s;
+    }
+    input[type="search"] {
+        cursor: text;
+    }
+    button:hover, select:hover {
+        background: var(--btn-hover);
+        border-color: var(--gold);
+    }
+    button:active, button.aktiv-knopf {
+        background: var(--btn-active);
+        border-color: var(--gold-bright);
+        color: var(--gold-bright);
+    }
+    button:disabled {
+        opacity: 0.45;
+        cursor: default;
+    }
+    button.gefahr:hover {
+        border-color: var(--danger);
+        color: #ffd6d6;
+    }
+    label.inline {
+        display: flex;
+        align-items: center;
+        gap: 0.18rem;
+        font-size: 0.72rem;
+        color: var(--muted);
+        white-space: nowrap;
+    }
+    input[type="range"] {
+        width: 2.6rem;
+        accent-color: var(--gold);
+        cursor: pointer;
+    }
+    #ton-badge {
+        font-size: 0.7rem;
+        padding: 0.15rem 0.32rem;
+        border-radius: 0.3rem;
+        border: 1px solid var(--panel-border);
+        background: #0b111e;
+        color: var(--muted);
+        white-space: nowrap;
+        cursor: pointer;
+    }
+    #ton-badge.aktiv {
+        color: var(--ok);
+        border-color: #366b46;
+    }
+    #meldung-kurz {
+        font-size: 0.72rem;
+        color: var(--gold-bright);
+        white-space: nowrap;
+    }
+
+    /* ---------- Hauptbereich: 4:3-Buehne + einblendbares Probenlog-Seitenfenster ---------- */
+    #arbeitsbereich {
+        flex: 1;
+        min-height: 0;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        overflow: hidden;
+        background: #000;
+    }
+
+    #buehne {
+        flex: 1;
+        min-width: 0;
+        min-height: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #000;
+        position: relative;
+        overflow: hidden;
+    }
+
+    #bild-rahmen {
+        aspect-ratio: 4 / 3;
+        width: 800px;
+        height: 600px;
+        background: #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        box-shadow: 0 0 32px rgba(0, 0, 0, 0.9);
+    }
+
+    #canvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+        /* Scharfe Pixel-Skalierung ohne Grafikfilter */
+        image-rendering: pixelated;
+        image-rendering: crisp-edges;
+        outline: none;
+    }
+
+    #lade-status {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(7, 11, 20, 0.82);
+        color: var(--gold-bright);
+        font-size: 1rem;
+        pointer-events: none;
+        text-align: center;
+        padding: 1rem;
+    }
+
+    /* ---------- Einblendbares Seitenfenster: Probenlog ---------- */
+    #probenlog-fenster {
+        width: 430px;
+        max-width: 46vw;
+        height: 100%;
+        background: var(--panel);
+        border-left: 1px solid var(--panel-border);
+        display: flex;
+        flex-direction: column;
+        z-index: 9;
+        user-select: text;
+    }
+    #probenlog-fenster[hidden] {
+        display: none !important;
+    }
+    .probenlog-kopf {
+        padding: 0.45rem 0.65rem;
+        border-bottom: 1px solid var(--panel-border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.4rem;
+        background: #0b1220;
+    }
+    .probenlog-kopf h3 {
+        margin: 0;
+        font: bold 0.88rem Georgia, serif;
+        color: var(--gold-bright);
+    }
+    .probenlog-filter {
+        padding: 0.4rem 0.65rem;
+        border-bottom: 1px solid var(--panel-border);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+        align-items: center;
+    }
+    .probenlog-filter select, .probenlog-filter input[type="search"] {
+        font-size: 0.72rem;
+        padding: 0.2rem 0.38rem;
+    }
+    .probenlog-filter input[type="search"] {
+        flex: 1;
+        min-width: 90px;
+    }
+    #probenlog-karten {
+        padding: 0.4rem 0.65rem;
+        border-bottom: 1px solid var(--panel-border);
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+        gap: 0.35rem;
+        max-height: 145px;
+        overflow-y: auto;
+    }
+    .proben-karte {
+        background: #0c1424;
+        border: 1px solid var(--panel-border);
+        border-radius: 0.35rem;
+        padding: 0.3rem 0.45rem;
+        font-size: 0.7rem;
+    }
+    .proben-karte strong {
+        color: var(--gold-bright);
+        display: block;
+        font-size: 0.74rem;
+    }
+    #probenlog-tabelle-wrap {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        padding: 0;
+    }
+    #probenlog-tabelle {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.72rem;
+    }
+    #probenlog-tabelle th, #probenlog-tabelle td {
+        text-align: left;
+        padding: 0.28rem 0.45rem;
+        border-bottom: 1px solid #1c2c4a;
+        vertical-align: top;
+    }
+    #probenlog-tabelle th {
+        position: sticky;
+        top: 0;
+        background: #0c1424;
+        color: var(--muted);
+        font-weight: 600;
+        z-index: 1;
+    }
+    .wuerfe-spalte {
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+        color: var(--gold-bright);
+    }
+    .erg-ok { color: var(--ok); font-weight: 600; }
+    .erg-bad { color: var(--danger); }
+    .erg-pz { color: var(--pz); font-weight: 700; }
+    .proben-leer {
+        padding: 1.2rem 0.75rem;
+        text-align: center;
+        color: var(--muted);
+        font-size: 0.76rem;
+    }
+
+    /* ---------- Untere Datenschutz-Hinweiszeile ---------- */
+    #datenschutz-leiste {
+        height: var(--foot-h);
+        min-height: var(--foot-h);
+        background: #0b111e;
+        border-top: 1px solid var(--panel-border);
+        color: var(--muted);
+        font-size: 0.72rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 0.75rem;
+        gap: 0.75rem;
+        z-index: 10;
+    }
+    #datenschutz-leiste strong {
+        color: var(--gold-bright);
+        font-weight: 600;
+    }
+
+    /* Im Vollbildmodus Kopf- und Fusszeile ausblenden */
+    body.vollbild-aktiv #kopfzeile,
+    body.vollbild-aktiv #datenschutz-leiste {
+        display: none;
+    }
+
+    /* ---------- Spieldaten-Ablage (Drag & Drop Dialog) ---------- */
+    #spieldaten-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(5, 8, 15, 0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 50;
+        padding: 1rem;
+    }
+    #spieldaten-modal[hidden] {
+        display: none !important;
+    }
+    .modal-karte {
+        width: min(41rem, 100%);
+        background: var(--panel);
+        border: 1px solid var(--gold);
+        border-radius: 0.75rem;
+        padding: 1.35rem 1.5rem;
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.85);
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+    }
+    .modal-karte h2 {
+        margin: 0;
+        font: bold 1.2rem Georgia, "Times New Roman", serif;
+        color: var(--gold-bright);
+    }
+    .modal-karte p {
+        margin: 0;
+        font-size: 0.88rem;
+        line-height: 1.45;
+        color: var(--text);
+    }
+    .datenschutz-banner {
+        background: #0f202c;
+        border: 1px solid #2e6080;
+        color: #bce4ff;
+        border-radius: 0.45rem;
+        padding: 0.48rem 0.75rem;
+        font-size: 0.84rem;
+        font-weight: 600;
+        text-align: center;
+    }
+    #drop-zone {
+        border: 2px dashed var(--gold);
+        border-radius: 0.65rem;
+        padding: 1.35rem 1rem;
+        text-align: center;
+        background: rgba(114, 174, 245, 0.06);
+        transition: background 0.15s, border-color 0.15s, transform 0.1s;
+        cursor: pointer;
+    }
+    #drop-zone.dragover {
+        background: rgba(114, 174, 245, 0.18);
+        border-color: var(--gold-bright);
+        transform: scale(1.01);
+    }
+    #drop-zone .drop-titel {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--gold-bright);
+        margin-bottom: 0.3rem;
+    }
+    #drop-zone .hinweis {
+        font-size: 0.8rem;
+        color: var(--muted);
+    }
+    .auswahl-knoepfe {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.55rem;
+        justify-content: center;
+        margin-top: 0.75rem;
+    }
+    .auswahl-knoepfe button {
+        font-size: 0.85rem;
+        padding: 0.42rem 0.9rem;
+        border-color: var(--gold);
+    }
+    .hinweis {
+        font-size: 0.78rem;
+        color: var(--muted);
+    }
+    #spieldaten-status {
+        font-size: 0.86rem;
+        color: var(--gold-bright);
+        min-height: 1.1rem;
+    }
+    #spieldaten-fehler {
+        color: var(--danger);
+        font-weight: 600;
+        font-size: 0.86rem;
+    }
+    #spieldaten-fehler:empty, #spieldaten-status:empty {
+        display: none;
+    }
+    .modal-fuss {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+    }
+</style>
+</head>
+<body>
+
+<header id="kopfzeile">
+    <div class="gruppe">
+        <span class="titel">DSA 2: Sternenschweif</span>
+        <label class="inline" for="select-fix-stufe">Fix-Stufe:
+            <select id="select-fix-stufe" title="Fix-Stufe wählen (lädt das jeweilige WebAssembly-Build)">
+                <option value="alles">Alle Fixes (Stufe 2)</option>
+                <option value="wichtig">Wichtige Fixes (Stufe 1)</option>
+                <option value="original">Original (C1.02 de)</option>
+            </select>
+        </label>
+    </div>
+
+    <div class="gruppe">
+        <button type="button" id="btn-saves-zip" title="Alle Spielstände aus GAMES/ (*.GAM, CHARS1.DAT, LASTGAME, *.CHR) als ZIP-Archiv herunterladen">Spielstände sichern (Zip)</button>
+        <button type="button" id="btn-saves-import" title="Spielstände aus einer ZIP-Datei oder einzelnen .GAM/.CHR-Dateien einspielen">Spielstände einspielen</button>
+        <input id="input-saves-import" type="file" accept=".zip,.gam,.GAM,.chr,.CHR,.dat,.DAT" multiple hidden>
+        <button type="button" id="btn-probenlog-fenster" title="Einblendbares Seitenfenster mit dem Live-Probenlog öffnen/schließen">Probenlog</button>
+        <button type="button" id="btn-proben-csv" title="Aktuelles Würfel- und Probenprotokoll als PROBEN.CSV herunterladen">PROBEN.CSV herunterladen</button>
+    </div>
+
+    <div class="gruppe">
+        <span id="ton-badge" title="Browser starten WebAudio nach dem ersten Mausklick oder Tastendruck">Ton: Klick aktiviert</span>
+        <button type="button" id="btn-musik-modus" title="CD-Musik (OGG-Stream aus MUSIC/Track02..22.ogg)">Musik: CD (OGG)</button>
+        <label class="inline" title="Lautstärke">
+            <span>Lautst.</span>
+            <input type="range" id="input-lautstaerke" min="0" max="100" value="80">
+        </label>
+        <button type="button" id="btn-spieldaten-neu" title="Spieldaten-Dialog öffnen (Ordner oder ZIP neu einlesen)">Spieldaten</button>
+        <button type="button" id="btn-spieldaten-vergessen" class="gefahr" title="Gespeicherte Spieldaten aus dem Browser (IndexedDB) löschen">Spieldaten vergessen</button>
+        <button type="button" id="btn-vollbild" title="Vollbildmodus im exakten 4:3-Seitenverhältnis umschalten (Alt+Enter)">Vollbild</button>
+        <span id="meldung-kurz" role="status"></span>
+    </div>
+</header>
+
+<div id="arbeitsbereich">
+    <main id="buehne">
+        <div id="bild-rahmen">
+            <canvas id="canvas" width="320" height="200" tabindex="-1" oncontextmenu="event.preventDefault()"></canvas>
+            <div id="lade-status">Initialisiere …</div>
+        </div>
+    </main>
+
+    <!-- Einblendbares Seitenfenster fuer das Live-Probenlog aus /spiel/PROBEN.CSV -->
+    <aside id="probenlog-fenster" hidden aria-label="Probenlog">
+        <div class="probenlog-kopf">
+            <h3>Probenlog · Sternenschweif <span id="probenlog-anzahl" style="font-weight:normal;font-size:0.75rem;color:var(--muted)">(0)</span></h3>
+            <div class="gruppe">
+                <button type="button" id="btn-probenlog-leeren" title="Bisherige Einträge in PROBEN.CSV zurücksetzen">Leeren</button>
+                <button type="button" id="btn-probenlog-schliessen" title="Probenlog-Seitenfenster schließen">Schließen</button>
+            </div>
+        </div>
+        <div class="probenlog-filter">
+            <select id="proben-filter-held" title="Nach Held filtern">
+                <option value="">Alle Helden</option>
+            </select>
+            <select id="proben-filter-art" title="Nach Probenart filtern">
+                <option value="">Alle Proben</option>
+                <option value="eig">Eigenschaftsproben</option>
+                <option value="tal">Talentproben</option>
+                <option value="zau">Zauber</option>
+                <option value="kampf">Kampf (AT/PA)</option>
+                <option value="stg">Stufenanstieg</option>
+            </select>
+            <input type="search" id="proben-filter-suche" placeholder="Suchen (z. B. Schlösser, Sinnesschärfe) …">
+        </div>
+        <div id="probenlog-karten"></div>
+        <div id="probenlog-tabelle-wrap">
+            <table id="probenlog-tabelle">
+                <thead>
+                    <tr>
+                        <th>Zeit</th>
+                        <th>Wer</th>
+                        <th>Probe</th>
+                        <th>Würfe</th>
+                        <th>Ergebnis</th>
+                    </tr>
+                </thead>
+                <tbody id="probenlog-tbody"></tbody>
+            </table>
+        </div>
+    </aside>
+</div>
+
+<footer id="datenschutz-leiste">
+    <strong>Datenschutz-Hinweis:</strong>
+    <span>Deine Spieldateien werden nur in diesem Browser gelesen und nie hochgeladen.</span>
+</footer>
+
+<!-- Dialog zum Einlesen der GOG-/CD-Spieldaten (Ordner oder ZIP per Drag & Drop oder Dateidialog) -->
+<div id="spieldaten-modal" hidden role="dialog" aria-modal="true" aria-label="Spieldaten wählen">
+    <div class="modal-karte">
+        <h2>Spieldaten laden – DSA 2: Sternenschweif (CD-Version C1.02 de)</h2>
+        <p>Diese Browser-Fassung enthält keine urheberrechtlich geschützten Originaldaten. Bitte wähle deinen installierten Spielordner von <b>Das Schwarze Auge: Sternenschweif</b> (deutsche GOG-Fassung „Realms of Arkania 2“ oder Original-CD mit <code>SCHWEIF.EXE</code> und <code>DATA\STAR.DAT</code>) oder eine ZIP-Datei davon.</p>
+
+        <div class="datenschutz-banner" id="datenschutz-hinweis-modal">
+            Deine Spieldateien werden nur in diesem Browser gelesen und nie hochgeladen.
+        </div>
+
+        <div id="drop-zone">
+            <div class="drop-titel">Spielordner oder ZIP-Datei einfach hierher ziehen &amp; ablegen</div>
+            <p class="hinweis">Erkennt automatisch <code>SCHWEIF.EXE</code>, <code>DATA/STAR.DAT</code>, das GOG-CD-Abbild <code>gamea.gog</code> sowie <code>MUSIC/Track02..22.ogg</code>.</p>
+            <div class="auswahl-knoepfe">
+                <button type="button" id="btn-zip-waehlen">Ordner/Zip wählen …</button>
+                <button type="button" id="btn-ordner-waehlen">Spielordner wählen …</button>
+            </div>
+            <input id="spieldaten-datei" type="file" multiple hidden accept=".zip,application/zip,.DAT,.EXE,.FNT,.GAM,.CHR,.ADV,.CFG,.DRV,.GOG,.OGG,.ogg">
+            <input id="spieldaten-ordner" type="file" webkitdirectory directory multiple hidden>
+        </div>
+
+        <div id="spieldaten-status" aria-live="polite"></div>
+        <div id="spieldaten-fehler" role="alert"></div>
+
+        <div class="modal-fuss">
+            <button type="button" id="btn-modal-vergessen" class="gefahr" title="Gespeicherte Spieldaten aus IndexedDB löschen">Spieldaten vergessen</button>
+            <button type="button" id="btn-modal-schliessen" hidden>Schließen</button>
+        </div>
+    </div>
+</div>
+
+<script src="fflate.min.js"></script>
+<script src="daten.js"></script>
+<script src="spielstand_umzug.js"></script>
+<script>
+(function () {
+    'use strict';
+
+    /* ---------- 1. Fix-Stufe bestimmen (URL-Parameter ?stufe=... oder localStorage) ---------- */
+    const urlParams = new URLSearchParams(window.location.search);
+    const liesSpeicher = (k) => { try { return localStorage.getItem(k); } catch (_) { return null; } };
+    const schreibeSpeicher = (k, v) => { try { localStorage.setItem(k, v); } catch (_) {} };
+
+    function normiereStufe(wert) {
+        const s = String(wert || '').toLowerCase().trim();
+        if (s === '0' || s === 'orig' || s === 'original') return 'original';
+        if (s === '1' || s === 'wichtig') return 'wichtig';
+        return 'alles';
+    }
+
+    const aktiveStufe = urlParams.has('stufe')
+        ? normiereStufe(urlParams.get('stufe'))
+        : normiereStufe(liesSpeicher('dsa_schweif_fix_stufe') || 'alles');
+    schreibeSpeicher('dsa_schweif_fix_stufe', aktiveStufe);
+
+    const BUILD_DATEIEN = {
+        alles:    { js: 'index.js',           wasm: 'index.wasm',           label: 'Alle Fixes (Stufe 2)' },
+        wichtig:  { js: 'schweif_wichtig.js', wasm: 'schweif_wichtig.wasm', label: 'Wichtige Fixes (Stufe 1)' },
+        original: { js: 'schweif_orig.js',    wasm: 'schweif_orig.wasm',    label: 'Original (C1.02 de)' }
+    };
+    const aktivesBuild = BUILD_DATEIEN[aktiveStufe] || BUILD_DATEIEN.alles;
+
+    const selectStufe = document.getElementById('select-fix-stufe');
+    selectStufe.value = aktiveStufe;
+    selectStufe.addEventListener('change', () => {
+        const neueStufe = normiereStufe(selectStufe.value);
+        schreibeSpeicher('dsa_schweif_fix_stufe', neueStufe);
+        const zielUrl = new URL(window.location.href);
+        zielUrl.searchParams.set('stufe', neueStufe);
+        window.location.href = zielUrl.toString();
+    });
+
+    /* ---------- 2. Exakte 4:3-Skalierung der Buehne ---------- */
+    const buehneEl = document.getElementById('buehne');
+    const bildRahmenEl = document.getElementById('bild-rahmen');
+
+    function aktualisiereRahmen4zu3() {
+        const maxW = buehneEl.clientWidth;
+        const maxH = buehneEl.clientHeight;
+        if (maxW <= 0 || maxH <= 0) return;
+        let h = maxH;
+        let w = Math.round((h * 4) / 3);
+        if (w > maxW) {
+            w = maxW;
+            h = Math.round((w * 3) / 4);
+            w = Math.round((h * 4) / 3);
+        }
+        bildRahmenEl.style.width = `${w}px`;
+        bildRahmenEl.style.height = `${h}px`;
+    }
+    window.addEventListener('resize', aktualisiereRahmen4zu3);
+    aktualisiereRahmen4zu3();
+
+    /* ---------- 3. Kurzmeldungen & Status ---------- */
+    const ladeStatusEl = document.getElementById('lade-status');
+    const meldungKurzEl = document.getElementById('meldung-kurz');
+    let meldungTimer = null;
+    function zeigeKurzmeldung(text, dauerMs = 4000) {
+        meldungKurzEl.textContent = text;
+        if (meldungTimer) clearTimeout(meldungTimer);
+        if (text && dauerMs > 0) {
+            meldungTimer = setTimeout(() => { meldungKurzEl.textContent = ''; }, dauerMs);
+        }
+    }
+
+    /* ---------- 4. Drag & Drop Ordner-Helfer & Spieldaten-Dialog ---------- */
+    async function extrahiereDropDateien(dataTransfer) {
+        const ergebnis = [];
+        const items = dataTransfer?.items ? [...dataTransfer.items] : [];
+        const entries = items.map((it) => it.webkitGetAsEntry?.()).filter(Boolean);
+
+        async function leseEntry(entry, pfadPrefix) {
+            if (entry.isFile) {
+                const file = await new Promise((res, rej) => entry.file(res, rej));
+                try {
+                    Object.defineProperty(file, 'fullPath', { value: pfadPrefix + file.name });
+                } catch (_) {}
+                ergebnis.push(file);
+            } else if (entry.isDirectory) {
+                const reader = entry.createReader();
+                let batch = [];
+                do {
+                    batch = await new Promise((res, rej) => reader.readEntries(res, rej));
+                    for (const sub of batch) {
+                        await leseEntry(sub, pfadPrefix + entry.name + '/');
+                    }
+                } while (batch.length > 0);
+            }
+        }
+
+        if (entries.length > 0) {
+            for (const e of entries) {
+                await leseEntry(e, '');
+            }
+            return ergebnis;
+        }
+        return [...(dataTransfer?.files || [])];
+    }
+
+    const modalEl = document.getElementById('spieldaten-modal');
+    const dropZoneEl = document.getElementById('drop-zone');
+    const inputDateiEl = document.getElementById('spieldaten-datei');
+    const inputOrdnerEl = document.getElementById('spieldaten-ordner');
+    const btnZipWaehlen = document.getElementById('btn-zip-waehlen');
+    const btnOrdnerWaehlen = document.getElementById('btn-ordner-waehlen');
+    const btnModalSchliessen = document.getElementById('btn-modal-schliessen');
+    const statusTextEl = document.getElementById('spieldaten-status');
+    const fehlerTextEl = document.getElementById('spieldaten-fehler');
+
+    let dialogResolve = null;
+    let spielGestartet = false;
+
+    async function verarbeiteSpieldatenEingabe(eingabeListe) {
+        if (!eingabeListe || !eingabeListe.length) return;
+        btnZipWaehlen.disabled = true;
+        btnOrdnerWaehlen.disabled = true;
+        fehlerTextEl.textContent = '';
+        statusTextEl.textContent = 'Prüfe ausgewählte Dateien …';
+        try {
+            const res = await window.DSADaten.importFromFileList(
+                eingabeListe,
+                (fortschritt) => { statusTextEl.textContent = fortschritt; }
+            );
+            window.DSA_GAME_FILES = res.files;
+            statusTextEl.textContent = `${res.meta.fileCount} Dateien erfolgreich im Browser gespeichert (${res.meta.versionLabel}).`;
+            modalEl.hidden = true;
+            aktualisiereRahmen4zu3();
+            if (dialogResolve) {
+                const fn = dialogResolve;
+                dialogResolve = null;
+                fn(res.files);
+            } else if (spielGestartet) {
+                window.location.reload();
+            }
+        } catch (err) {
+            console.warn('Spieldaten-Import:', err);
+            fehlerTextEl.textContent = err?.message || String(err);
+            statusTextEl.textContent = '';
+        } finally {
+            btnZipWaehlen.disabled = false;
+            btnOrdnerWaehlen.disabled = false;
+        }
+    }
+
+    async function spieldatenVergessenAktion() {
+        try {
+            await window.DSADaten.clearSavedGameData();
+            window.DSA_GAME_FILES = {};
+            fehlerTextEl.textContent = '';
+            statusTextEl.textContent = 'Gespeicherte Spieldaten wurden aus dem Browser (IndexedDB) gelöscht.';
+            btnModalSchliessen.hidden = true;
+            modalEl.hidden = false;
+            zeigeKurzmeldung('Spieldaten aus Browser gelöscht.');
+        } catch (err) {
+            console.warn('Spieldaten löschen fehlgeschlagen:', err);
+            zeigeKurzmeldung('Fehler beim Löschen der Spieldaten.');
+        }
+    }
+
+    document.getElementById('btn-spieldaten-vergessen').addEventListener('click', spieldatenVergessenAktion);
+    document.getElementById('btn-modal-vergessen').addEventListener('click', spieldatenVergessenAktion);
+
+    btnZipWaehlen.addEventListener('click', (e) => { e.stopPropagation(); inputDateiEl.click(); });
+    btnOrdnerWaehlen.addEventListener('click', (e) => { e.stopPropagation(); inputOrdnerEl.click(); });
+
+    inputDateiEl.addEventListener('change', async () => {
+        const files = [...(inputDateiEl.files || [])];
+        inputDateiEl.value = '';
+        await verarbeiteSpieldatenEingabe(files);
+    });
+
+    inputOrdnerEl.addEventListener('change', async () => {
+        const files = [...(inputOrdnerEl.files || [])];
+        inputOrdnerEl.value = '';
+        await verarbeiteSpieldatenEingabe(files);
+    });
+
+    for (const ziel of [dropZoneEl, window]) {
+        ziel.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZoneEl.classList.add('dragover');
+        });
+        ziel.addEventListener('dragleave', (e) => {
+            if (e.target === dropZoneEl || e.target === modalEl) {
+                dropZoneEl.classList.remove('dragover');
+            }
+        });
+        ziel.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            dropZoneEl.classList.remove('dragover');
+            if (modalEl.hidden) {
+                modalEl.hidden = false;
+                btnModalSchliessen.hidden = !spielGestartet;
+            }
+            statusTextEl.textContent = 'Lese gezogenen Ordner / Archiv …';
+            fehlerTextEl.textContent = '';
+            const liste = await extrahiereDropDateien(e.dataTransfer);
+            await verarbeiteSpieldatenEingabe(liste);
+        });
+    }
+
+    function zeigeSpieldatenDialog(manuell = false) {
+        statusTextEl.textContent = '';
+        fehlerTextEl.textContent = '';
+        btnModalSchliessen.hidden = !manuell;
+        modalEl.hidden = false;
+        return new Promise((resolve) => {
+            dialogResolve = resolve;
+        });
+    }
+
+    btnModalSchliessen.addEventListener('click', () => {
+        modalEl.hidden = true;
+        if (dialogResolve) {
+            const fn = dialogResolve;
+            dialogResolve = null;
+            fn(null);
+        }
+    });
+
+    document.getElementById('btn-spieldaten-neu').addEventListener('click', () => {
+        zeigeSpieldatenDialog(true);
+    });
+
+    /* ---------- 5. Emscripten Module & Canvas-Eingabe ---------- */
+    const canvasEl = document.getElementById('canvas');
+    try { canvasEl.getContext('2d', { willReadFrequently: true }); } catch (_) {}
+
+    canvasEl.addEventListener('pointerdown', (e) => {
+        canvasEl.focus();
+        const rect = canvasEl.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0 && typeof window.Module?._dsa_web_inject_mouse === 'function') {
+            const x = Math.max(0, Math.min(319, Math.floor(((e.clientX - rect.left) * 320) / rect.width)));
+            const y = Math.max(0, Math.min(199, Math.floor(((e.clientY - rect.top) * 200) / rect.height)));
+            const btn = (e.button === 2) ? 2 : 1;
+            window.Module._dsa_web_inject_mouse(x, y, btn, 0, 0);
+        }
+    }, { capture: true });
+
+    window.addEventListener('keydown', (e) => {
+        const tag = document.activeElement?.tagName;
+        if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
+        if (
+            ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space', 'PageUp', 'PageDown', 'Tab'].includes(e.code) ||
+            (e.ctrlKey && ['KeyE', 'KeyO', 'KeyP', 'KeyQ', 'KeyS'].includes(e.code)) ||
+            /^F([1-9]|10)$/.test(e.code)
+        ) {
+            e.preventDefault();
+        }
+    }, { capture: true });
+
+    const moduleArgs = [];
+    if (urlParams.get('kein_intro') === '1') moduleArgs.push('--kein-intro');
+    if (urlParams.get('intro') === '1') moduleArgs.push('--intro');
+    if (urlParams.get('save')) moduleArgs.push(urlParams.get('save'));
+
+    window.Module = {
+        arguments: moduleArgs,
+        canvas: canvasEl,
+        locateFile: (pfad) => {
+            if (pfad.endsWith('.wasm')) return aktivesBuild.wasm;
+            return pfad;
+        },
+        print: (t) => console.log(t),
+        printErr: (t) => console.log(t),
+        setStatus: (text) => {
+            if (!text) {
+                ladeStatusEl.style.display = 'none';
+                ladeStatusEl.textContent = '';
+            } else {
+                ladeStatusEl.style.display = 'flex';
+                ladeStatusEl.textContent = text;
+            }
+        },
+        onRuntimeInitialized: () => {
+            ladeStatusEl.style.display = 'none';
+            aktualisiereRahmen4zu3();
+            const gespeicherteVol = Number(liesSpeicher('dsa_schweif_volume') ?? 80);
+            document.getElementById('input-lautstaerke').value = String(gespeicherteVol);
+            if (typeof window.Module._dsa_web_set_volume === 'function') {
+                window.Module._dsa_web_set_volume(gespeicherteVol);
+            }
+        },
+        toggleVollbild: () => schalteVollbildUm()
+    };
+
+    /* ---------- 6. Ton nach erstem Klick aktivieren ---------- */
+    const tonBadgeEl = document.getElementById('ton-badge');
+    const inputLautstaerke = document.getElementById('input-lautstaerke');
+
+    function entsperreWebAudio() {
+        const ctx = window.Module?.SDL2?.audioContext;
+        if (ctx) {
+            if (ctx.state !== 'running') {
+                ctx.resume().then(() => {
+                    tonBadgeEl.textContent = 'Ton: Aktiv';
+                    tonBadgeEl.classList.add('aktiv');
+                }).catch(() => {});
+            } else {
+                tonBadgeEl.textContent = 'Ton: Aktiv';
+                tonBadgeEl.classList.add('aktiv');
+            }
+        }
+    }
+    for (const evName of ['pointerdown', 'mousedown', 'keydown', 'touchend']) {
+        window.addEventListener(evName, entsperreWebAudio, { capture: true, passive: true });
+    }
+
+    inputLautstaerke.addEventListener('input', () => {
+        entsperreWebAudio();
+        const v = Number(inputLautstaerke.value);
+        schreibeSpeicher('dsa_schweif_volume', String(v));
+        if (typeof window.Module?._dsa_web_set_volume === 'function') {
+            window.Module._dsa_web_set_volume(v);
+        }
+    });
+
+    /* ---------- 7. Spielstaende sichern (Zip) & einspielen ---------- */
+    function istSpielstandDatei(name) {
+        if (!name || name === '.' || name === '..') return false;
+        const u = name.toUpperCase();
+        return (
+            u.endsWith('.GAM') ||
+            u.endsWith('.CHR') ||
+            u === 'CHARS1.DAT' ||
+            u === 'LASTGAME' ||
+            u === 'EMPTY' ||
+            u === 'GAMES.TMP'
+        );
+    }
+
+    document.getElementById('btn-saves-zip').addEventListener('click', async () => {
+        try {
+            if (typeof window.dsaSyncSavegames === 'function') {
+                await new Promise((res) => window.dsaSyncSavegames(res));
+            }
+            const FS = window.Module?.FS;
+            if (!FS) {
+                zeigeKurzmeldung('Dateisystem noch nicht bereit.');
+                return;
+            }
+            const zipObj = {};
+            const gesehen = new Set();
+            for (const ordner of ['/spiel/GAMES', '/spielstand_schweif']) {
+                let namen = [];
+                try { namen = FS.readdir(ordner); } catch (_) { continue; }
+                for (const n of namen) {
+                    if (!istSpielstandDatei(n)) continue;
+                    const gross = n.toUpperCase();
+                    if (gesehen.has(gross)) continue;
+                    gesehen.add(gross);
+                    const bytes = FS.readFile(`${ordner}/${n}`);
+                    zipObj[`GAMES/${gross}`] = new Uint8Array(bytes);
+                }
+            }
+            const anzahl = Object.keys(zipObj).length;
+            if (!anzahl) {
+                zeigeKurzmeldung('Keine Spielstände zum Sichern gefunden.');
+                return;
+            }
+            const zipped = fflate.zipSync(zipObj, { level: 6 });
+            const zipBlob = new Blob([zipped], { type: 'application/zip' });
+            const url = URL.createObjectURL(zipBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Sternenschweif_Spielstaende.zip';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 10000);
+            zeigeKurzmeldung(`${anzahl} Spielstand-Dateien als ZIP gesichert.`);
+        } catch (err) {
+            console.warn('Fehler beim ZIP-Export der Spielstände:', err);
+            zeigeKurzmeldung('Fehler beim Sichern der Spielstände.');
+        }
+    });
+
+    const inputSavesImport = document.getElementById('input-saves-import');
+    document.getElementById('btn-saves-import').addEventListener('click', () => {
+        inputSavesImport.value = '';
+        inputSavesImport.click();
+    });
+
+    inputSavesImport.addEventListener('change', async () => {
+        const files = [...(inputSavesImport.files || [])];
+        inputSavesImport.value = '';
+        if (!files.length) return;
+        const FS = window.Module?.FS;
+        if (!FS) {
+            zeigeKurzmeldung('Dateisystem noch nicht bereit.');
+            return;
+        }
+        try {
+            const importiert = [];
+            for (const f of files) {
+                if (/\.zip$/i.test(f.name)) {
+                    const ab = await f.arrayBuffer();
+                    const entpackt = fflate.unzipSync(new Uint8Array(ab));
+                    for (const [pfad, daten] of Object.entries(entpackt)) {
+                        if (pfad.endsWith('/') || !daten || !daten.byteLength) continue;
+                        const basis = pfad.replace(/\\/g, '/').split('/').pop().toUpperCase();
+                        if (istSpielstandDatei(basis)) {
+                            importiert.push({ name: basis, daten: daten });
+                        }
+                    }
+                } else {
+                    const basis = f.name.replace(/\\/g, '/').split('/').pop().toUpperCase();
+                    if (istSpielstandDatei(basis)) {
+                        importiert.push({ name: basis, daten: new Uint8Array(await f.arrayBuffer()) });
+                    }
+                }
+            }
+
+            if (!importiert.length) {
+                zeigeKurzmeldung('Keine gültigen Spielstände (.GAM, .CHR, CHARS1.DAT) gefunden.');
+                return;
+            }
+
+            for (const e of importiert) {
+                FS.writeFile(`/spiel/GAMES/${e.name}`, e.daten);
+                FS.writeFile(`/spielstand_schweif/${e.name}`, e.daten);
+            }
+
+            if (typeof window.dsaSyncSavegames === 'function') {
+                await new Promise((res) => window.dsaSyncSavegames(res));
+            }
+            zeigeKurzmeldung(`${importiert.length} Spielstand-Datei(en) eingespielt und gespeichert.`);
+        } catch (err) {
+            console.warn('Fehler beim Einspielen der Spielstände:', err);
+            zeigeKurzmeldung('Einspielen fehlgeschlagen: ' + (err?.message || err));
+        }
+    });
+
+    /* ---------- 8. Einblendbares Probenlog-Seitenfenster (Sternenschweif-Dekodierung) ---------- */
+    const PROBEN_STAMMDATEN = {
+        EIG: ['MU', 'KL', 'CH', 'FF', 'GE', 'IN', 'KK', 'AG', 'HA', 'RA', 'GG', 'TA', 'NG', 'JZ'],
+        TALENT: [
+            'Waffenlos', 'Hiebwaffen', 'Stichwaffen', 'Schwerter', 'Äxte', 'Speere', 'Zweihänder', 'Schusswaffen',
+            'Wurfwaffen', 'Akrobatik', 'Klettern', 'Körperbeh.', 'Reiten', 'Schleichen', 'Schwimmen', 'Selbstbeh.',
+            'Tanzen', 'Verstecken', 'Zechen', 'Bekehren', 'Betören', 'Feilschen', 'Gassenwissen', 'Lügen',
+            'Menschenkennt.', 'Schätzen', 'Fährtensuchen', 'Fesseln', 'Orientierung', 'Pflanzenkunde', 'Tierkunde',
+            'Wildnisleben', 'Alchimie', 'Alte Sprachen', 'Geographie', 'Geschichte', 'Götter/Kulte', 'Kriegskunst',
+            'Lesen', 'Magiekunde', 'Sprachen', 'Abrichten', 'Fahrzeuge', 'Falschspiel', 'Gift heilen',
+            'Krankheit heilen', 'Wunden heilen', 'Musizieren', 'Schlösser', 'Taschendieb', 'Gefahrensinn',
+            'Sinnesschärfe'
+        ],
+        ZAUBER: [
+            '-', 'Beherrschung', 'Destructibo', 'Gardianum', 'Illusionen', 'Verwandlung', 'Band und Fessel',
+            'Bannbaladin', 'Böser Blick', 'Grosse Gier', 'Gr. Verwirrung', 'Herr der Tiere', 'Horriphobus',
+            'Magischer Raub', 'Respondami', 'Sanftmut', 'Somnigravis', 'Zwingtanz', 'Furor Blut', 'Geister bannen',
+            'Geister rufen', 'Heptagon', 'Krähenruf', 'Skelettarius', 'Elementare', 'Nihilatio', 'Solidirid',
+            'Axxeleratus', 'Foramen', 'Motoricus', 'Spurlos', 'Transversalis', 'Über Eis', 'Balsam', 'Hexenspeichel',
+            'Klarum Purum', 'Ruhe Körper', 'Tiere heilen', 'Adleraug', 'Analüs', 'Eigenschaften', 'Exposami',
+            'Odem Arcanum', 'Penetrizzel', 'Sensibar', 'Chamaelioni', 'Duplicatus', 'Harmlos', 'Hexenknoten',
+            'Blitz', 'Ecliptifactus', 'Eisenrost', 'Fulminictus', 'Ignifaxius', 'Plumbumbarum', 'Radau',
+            'Saft Kraft', 'Scharfes Auge', 'Hexenblick', 'Nekropathia', 'Adler, Wolf', 'Arcano', 'Armatrutz',
+            'CH steigern', 'Feuerbann', 'FF steigern', 'GE steigern', 'IN steigern', 'KK steigern', 'KL steigern',
+            'MU steigern', 'Mutabili', 'Paralü', 'Salander', 'See und Fluss', 'Visibili', 'Abvenenum', 'Aeolitus',
+            'Brenne', 'Claudibus', 'Dunkelheit', 'Erstarre', 'Flim Flam', 'Schmelze', 'Silentium', 'Sturmgebrüll'
+        ],
+        GEGNER: [
+            '', 'Oger', 'Ork', 'Goblin', 'Heshthot', 'Säbelzahntiger', 'Skelett', 'Waldschrat', 'Mumie', 'Harpyie',
+            'Waldspinne', 'Schröter (groß)', 'Pirat', 'Steuermann', 'Kapitän', 'Streuner', 'Zombie', 'Heshthot',
+            'Druide', 'Druide', 'Thorwaler', 'Thorwaler', 'Thorwaler', 'Thorwaler', 'Goblin', 'Goblin', 'Ork', 'Ork',
+            'Pirat', 'Pirat', 'Streuner', 'Streuner', 'Streuner', 'Skelett', 'Folterknecht', 'Grimwolf', 'Grimwolf',
+            'Höhlenspinne', 'Höhlenspinne', 'Höhlenspinne', 'Krieger', 'Gardist', 'Gardist', 'Gardist', 'Krieger',
+            'Mumie', 'Magier', 'Magier', 'Zauberer', 'Zauberer', 'Zwerg', 'Arkandor', 'Mammut', 'Kultist', 'Kultist',
+            'Kultist', 'Kultist', 'Priester', 'Priester', 'Hohepriester', 'Estorik', 'Piratenboss', 'Pirat', 'Magier',
+            'Zwergenveteran', 'Räuber', 'Räuber', 'Räuber', 'Räuber', 'Räuber', 'Gorah', 'Steppenhund', 'Ork',
+            'Pirat', 'Gardist', 'Waldlöwe', 'Spinnendämon', 'Heshthot', 'Troll', 'Ghul', 'Zant', 'Sumpfrantze',
+            'Feuergeist', 'Praioskrieger', 'Kaufmann', 'Edelmann', 'Priester', 'Räuberhauptmann', 'Gardehauptmann',
+            'Bettler', 'Bettler', 'Orkveteran', 'Kriegsoger', 'Skelettkrieger', 'Kriegshund', 'Zwerg (untot)',
+            'Gargoyle', 'Gargoyle', 'Golem', 'Kampfmagier', 'Krieger', 'Streuner', 'Ritter', 'Ritter', 'Büttel',
+            'Berglöwe', 'Aventurier', 'Aventurier', 'Kampfhund', 'Krieger', 'Wolf', 'Wolf', 'Elf', 'Elfenveteran',
+            'Schlinger', 'Zombie', 'Skelett', 'Jäger', 'Jäger', 'Jäger', 'Orkveteran', 'Ork', 'Hexe', ''
+        ],
+        MONAT: ['', 'Praios', 'Rondra', 'Efferd', 'Travia', 'Boron', 'Hesinde', 'Firun', 'Tsa', 'Phex', 'Peraine', 'Ingerimm', 'Rahja', 'Namenlose Tage']
+    };
+
+    const tabName = (liste, idx) => (idx >= 0 && idx < liste.length) ? liste[idx] : `Nr. ${idx}`;
+    const gegnerName = (idx) => (idx > 0 && idx < PROBEN_STAMMDATEN.GEGNER.length && PROBEN_STAMMDATEN.GEGNER[idx]) ? PROBEN_STAMMDATEN.GEGNER[idx] : `Gegner Nr. ${idx}`;
+    const modText = (z) => z > 0 ? `erschwert um ${z}` : (z < 0 ? `erleichtert um ${-z}` : '');
+    const htmlEsc = (s) => String(s || '').replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+
+    function parsiereProbenCsv(csvText) {
+        const eintraege = [];
+        let vorspann = null;
+        for (const rohZeile of csvText.split(/\r?\n/)) {
+            const felder = rohZeile.trim().split(';');
+            if (felder.length < 6 || !/^-?\d+$/.test(felder[0])) continue;
+            const [art, tag, mon, jahr, minute] = felder.slice(0, 5).map(Number);
+            const name = felder[5];
+            const w = felder.slice(6).filter((x) => x !== '').map(Number);
+            const zeit = `${tag}. ${tabName(PROBEN_STAMMDATEN.MONAT, mon)} ${jahr} Hal, ${String(Math.floor(minute / 60)).padStart(2, '0')}:${String(minute % 60).padStart(2, '0')}`;
+            let r = null;
+
+            if (art === 1 && w.length >= 5) {
+                const e = tabName(PROBEN_STAMMDATEN.EIG, w[0]);
+                r = {
+                    zeit, held: name, typ: 'eig', titel: `${e}-Probe`, zusatz: modText(w[2]),
+                    wuerfe: `${w[3]} gegen ${e} ${w[1]}`,
+                    ok: w[4] > 0, pz: w[4] === -99,
+                    erg: w[4] === -99 ? 'Patzer (20)' : (w[4] > 0 ? `gelungen, ${w[4] - 1} übrig` : 'misslungen')
+                };
+            } else if (art === 3 && w.length >= 11) {
+                const eig = [0, 1, 2].map((i) => tabName(PROBEN_STAMMDATEN.EIG, w[i])).join('/') + ' (' + w.slice(3, 6).join('/') + ')';
+                const wu = w.slice(7, 10).filter((x) => x).join(', ');
+                const res = w[10];
+                r = {
+                    zeit, held: name, typ: 'eig', titel: `Probe auf ${eig}`, zusatz: modText(w[6]),
+                    wuerfe: wu,
+                    ok: res > 0, pz: res === -99,
+                    erg: res === -99 ? 'Patzer (zweimal 20)' : (res > 0 ? `gelungen, ${res - 1} übrig` : `misslungen, ${1 - res} zu wenig`)
+                };
+                if (vorspann && vorspann.held === name) {
+                    r.typ = vorspann.typ;
+                    r.titel = vorspann.titel;
+                    r.zusatz = vorspann.zusatz + (vorspann.zusatz ? ', ' : '') + `auf ${eig}` + (w[6] ? ` gesamt ${modText(w[6])}` : '');
+                }
+                vorspann = null;
+            } else if (art === 4 && w.length >= 6) {
+                const ta = tabName(PROBEN_STAMMDATEN.TALENT, w[0]);
+                if (w[3]) {
+                    vorspann = null;
+                    const x = w[5];
+                    r = {
+                        zeit, held: name, typ: 'tal', titel: ta, zusatz: modText(w[2]),
+                        wuerfe: `${w[4]} gegen Zielwert ${w[1]}`,
+                        ok: x > 0, pz: x === -1,
+                        erg: x === -1 ? 'Patzer (20)' : (x === 99 ? 'Glückswurf (1)' : (x > 0 ? `getroffen, ${x - 1} übrig` : 'daneben'))
+                    };
+                } else {
+                    vorspann = { held: name, typ: 'tal', titel: `${ta} (TaW ${w[1]})`, zusatz: modText(w[2]) };
+                    continue;
+                }
+            } else if (art === 5 && w.length >= 3) {
+                const sp = tabName(PROBEN_STAMMDATEN.ZAUBER, w[0]);
+                vorspann = { held: name, typ: 'zau', titel: `${sp} (ZfW ${w[1]})`, zusatz: modText(w[2]) };
+                continue;
+            } else if ((art === 6 || art === 7) && w.length >= 4) {
+                vorspann = null;
+                const [wert, wurf, monIdx, rtg] = w;
+                const ok = wurf <= wert && wurf !== 20;
+                const kurz = art === 6 ? 'AT' : 'PA';
+                let wer = '', held = '', heldOk = null;
+                if (art === 6) {
+                    if (rtg === 0) { wer = `${name} attackiert ${monIdx < 0 ? 'einen Helden' : gegnerName(monIdx)}`; held = name; heldOk = ok; }
+                    else if (rtg === 1) { wer = `${gegnerName(monIdx)} attackiert ${name}`; heldOk = !ok; }
+                    else { wer = `${gegnerName(monIdx)} attackiert einen anderen Gegner`; }
+                } else {
+                    if (rtg === 0) { wer = monIdx < 0 ? `${name} pariert` : `${gegnerName(monIdx)} pariert gegen ${name}`; heldOk = !ok; }
+                    else if (rtg === 1) { wer = `${name} pariert gegen ${gegnerName(monIdx)}`; held = name; heldOk = ok; }
+                    else { wer = `Ein Gegner pariert gegen ${gegnerName(monIdx)}`; }
+                }
+                r = {
+                    zeit, held: held || name, typ: 'kampf', kampf: kurz, eigen: Boolean(held),
+                    titel: wer, zusatz: '', wuerfe: `${wurf} gegen ${kurz} ${wert}`,
+                    ok: heldOk, pz: wurf === 20,
+                    erg: (art === 6 ? (ok ? 'trifft' : 'verfehlt') : (ok ? 'pariert' : 'pariert nicht')) + (wurf === 20 ? ' (20: Patzer möglich)' : '')
+                };
+            } else if (art === 8 && w.length >= 5) {
+                vorspann = null;
+                const [typ, nr, alt] = w;
+                let titel = `Typ ${typ}`, wu = '', ok = null, erg = '';
+                if (typ === 1 || typ === 2) {
+                    titel = typ === 1 ? `${tabName(PROBEN_STAMMDATEN.TALENT, nr)} (TaW ${alt})` : `${tabName(PROBEN_STAMMDATEN.ZAUBER, nr)} (ZfW ${alt})`;
+                    wu = `${w[3]} (${alt >= 11 ? '3–18' : '2–12'}) gegen ${alt}`;
+                    ok = Boolean(w[4]);
+                    erg = w[4] ? `gelungen, jetzt ${alt + 1}` : 'misslungen';
+                } else if (typ === 3) {
+                    titel = `${tabName(PROBEN_STAMMDATEN.EIG, nr)} +1`;
+                    erg = `${alt} → ${alt + 1}`;
+                } else if (typ === 4 && w.length >= 7) {
+                    const e = tabName(PROBEN_STAMMDATEN.EIG, nr);
+                    titel = `${e} senken (${e} ${alt})`;
+                    wu = `W20: ${w[3]}, ${w[4]}, ${w[5]} (einer ≤ ${alt})`;
+                    ok = Boolean(w[6]);
+                    erg = w[6] ? `gelungen, jetzt ${alt - 1}` : 'misslungen';
+                } else if (typ === 5) {
+                    titel = 'LE-Wurf';
+                    wu = w[4] > w[3] ? `W6 = ${w[3]} + 2` : `W6 = ${w[3]}`;
+                    erg = w[4] > w[3] ? `${w[4]} Punkte für LE und AE` : `LE ${alt} → ${alt + w[4]}`;
+                } else if (typ === 6) {
+                    titel = '10 Zaubersteigerungen gegen AE';
+                    wu = `${w[3]} (3–8)`;
+                    erg = `AE ${alt} → ${alt + w[4]}`;
+                }
+                r = {
+                    zeit, held: name, typ: 'stg', titel,
+                    zusatz: (typ === 1 || typ === 2) ? 'Steigerung beim Stufenanstieg' : 'Stufenanstieg',
+                    wuerfe: wu, ok, pz: false, erg
+                };
+            } else {
+                continue;
+            }
+            eintraege.push(r);
+        }
+        return eintraege;
+    }
+
+    const probenFensterEl = document.getElementById('probenlog-fenster');
+    const btnProbenFenster = document.getElementById('btn-probenlog-fenster');
+    const selectProbenHeld = document.getElementById('proben-filter-held');
+    const selectProbenArt = document.getElementById('proben-filter-art');
+    const inputProbenSuche = document.getElementById('proben-filter-suche');
+    const probenKartenEl = document.getElementById('probenlog-karten');
+    const probenTbodyEl = document.getElementById('probenlog-tbody');
+    const probenAnzahlEl = document.getElementById('probenlog-anzahl');
+
+    let letzteProbenCsvGroesse = -1;
+    let gecachteProben = [];
+
+    function leseAktuelleProbenCsvText() {
+        const FS = window.Module?.FS;
+        if (!FS) return '';
+        try {
+            const bytes = FS.readFile('/spiel/PROBEN.CSV');
+            return new TextDecoder('latin1').decode(bytes);
+        } catch (_) {
+            return '';
+        }
+    }
+
+    function zeichneProbenlogFenster(erzwingen = false) {
+        if (probenFensterEl.hidden) return;
+        const FS = window.Module?.FS;
+        let groesse = 0;
+        if (FS) {
+            try {
+                groesse = FS.stat('/spiel/PROBEN.CSV').size;
+            } catch (_) {
+                groesse = 0;
+            }
+        }
+        if (erzwingen || groesse !== letzteProbenCsvGroesse) {
+            letzteProbenCsvGroesse = groesse;
+            const csvText = leseAktuelleProbenCsvText();
+            gecachteProben = parsiereProbenCsv(csvText);
+
+            const bisherHeld = selectProbenHeld.value;
+            const heldenListe = [...new Set(
+                gecachteProben
+                    .filter((r) => r.held && (r.typ !== 'kampf' || r.eigen))
+                    .map((r) => r.held)
+            )].sort();
+            selectProbenHeld.innerHTML =
+                '<option value="">Alle Helden</option>' +
+                heldenListe.map((h) => `<option value="${htmlEsc(h)}"${h === bisherHeld ? ' selected' : ''}>${htmlEsc(h)}</option>`).join('');
+        }
+
+        const fHeld = selectProbenHeld.value;
+        const fArt = selectProbenArt.value;
+        const fSuche = inputProbenSuche.value.trim().toLowerCase();
+
+        const gefiltert = gecachteProben.filter((r) =>
+            (!fHeld || r.held === fHeld) &&
+            (!fArt || r.typ === fArt) &&
+            (!fSuche || `${r.titel} ${r.zusatz} ${r.held} ${r.erg}`.toLowerCase().includes(fSuche))
+        );
+
+        probenAnzahlEl.textContent = `(${gefiltert.length})`;
+
+        const heldStat = {};
+        for (const r of gefiltert) {
+            if (!r.held || r.typ === 'stg' || (r.typ === 'kampf' && !r.eigen)) continue;
+            const st = (heldStat[r.held] ??= { proben: 0, probenOk: 0, at: 0, atOk: 0, pa: 0, paOk: 0 });
+            if (r.typ === 'kampf') {
+                if (r.kampf === 'AT') { st.at++; if (r.ok) st.atOk++; }
+                else { st.pa++; if (r.ok) st.paOk++; }
+            } else {
+                st.proben++;
+                if (r.ok) st.probenOk++;
+            }
+        }
+        const heldKeys = Object.keys(heldStat).sort();
+        probenKartenEl.innerHTML = heldKeys.map((h) => {
+            const st = heldStat[h];
+            const teile = [];
+            if (st.proben) teile.push(`Proben: ${st.probenOk}/${st.proben}`);
+            if (st.at) teile.push(`AT: ${st.atOk}/${st.at}`);
+            if (st.pa) teile.push(`PA: ${st.paOk}/${st.pa}`);
+            return `<div class="proben-karte"><strong>${htmlEsc(h)}</strong><span>${teile.join(' · ') || '–'}</span></div>`;
+        }).join('');
+
+        if (!gefiltert.length) {
+            probenTbodyEl.innerHTML = '<tr><td colspan="5" class="proben-leer">Noch keine Proben für diese Auswahl protokolliert.</td></tr>';
+            return;
+        }
+        const zeilenHtml = [];
+        const ansicht = gefiltert.slice(-250).reverse();
+        for (const r of ansicht) {
+            const ergKlasse = r.pz ? 'erg-pz' : (r.ok === true ? 'erg-ok' : (r.ok === false ? 'erg-bad' : ''));
+            zeilenHtml.push(
+                `<tr>` +
+                `<td style="color:var(--muted);white-space:nowrap">${htmlEsc(r.zeit)}</td>` +
+                `<td>${r.typ === 'kampf' ? '' : htmlEsc(r.held)}</td>` +
+                `<td>${htmlEsc(r.titel)}${r.zusatz ? ` <span style="color:var(--muted)">(${htmlEsc(r.zusatz)})</span>` : ''}</td>` +
+                `<td class="wuerfe-spalte">${htmlEsc(r.wuerfe)}</td>` +
+                `<td class="${ergKlasse}">${htmlEsc(r.erg)}</td>` +
+                `</tr>`
+            );
+        }
+        probenTbodyEl.innerHTML = zeilenHtml.join('');
+    }
+
+    function schalteProbenlogFenster(offen) {
+        const zielOffen = typeof offen === 'boolean' ? offen : probenFensterEl.hidden;
+        probenFensterEl.hidden = !zielOffen;
+        btnProbenFenster.classList.toggle('aktiv-knopf', zielOffen);
+        aktualisiereRahmen4zu3();
+        if (zielOffen) {
+            zeichneProbenlogFenster(true);
+        }
+    }
+
+    btnProbenFenster.addEventListener('click', () => schalteProbenlogFenster());
+    document.getElementById('btn-probenlog-schliessen').addEventListener('click', () => schalteProbenlogFenster(false));
+    document.getElementById('btn-probenlog-leeren').addEventListener('click', () => {
+        const FS = window.Module?.FS;
+        if (FS) {
+            try {
+                FS.writeFile('/spiel/PROBEN.CSV', new Uint8Array(0));
+            } catch (_) {}
+        }
+        letzteProbenCsvGroesse = -1;
+        zeichneProbenlogFenster(true);
+        zeigeKurzmeldung('Probenlog geleert.');
+    });
+
+    selectProbenHeld.addEventListener('change', () => zeichneProbenlogFenster(true));
+    selectProbenArt.addEventListener('change', () => zeichneProbenlogFenster(true));
+    inputProbenSuche.addEventListener('input', () => zeichneProbenlogFenster(true));
+
+    setInterval(() => {
+        if (!probenFensterEl.hidden) {
+            zeichneProbenlogFenster(false);
+        }
+    }, 700);
+
+    document.getElementById('btn-proben-csv').addEventListener('click', () => {
+        const FS = window.Module?.FS;
+        if (!FS) {
+            zeigeKurzmeldung('Dateisystem noch nicht bereit.');
+            return;
+        }
+        let daten;
+        try {
+            daten = FS.readFile('/spiel/PROBEN.CSV');
+        } catch (_) {
+            daten = new Uint8Array(0);
+        }
+        const blob = new Blob([daten], { type: 'text/csv;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'PROBEN.CSV';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 10000);
+        const zeilen = new TextDecoder().decode(daten).trim().split(/\r?\n/).filter(Boolean).length;
+        zeigeKurzmeldung(`PROBEN.CSV heruntergeladen (${zeilen} Einträge).`);
+    });
+
+    /* ---------- 9. Vollbild mit exaktem 4:3-Seitenverhaeltnis ---------- */
+    const btnVollbild = document.getElementById('btn-vollbild');
+    function schalteVollbildUm() {
+        if (document.fullscreenElement) {
+            document.exitFullscreen().catch(() => {});
+        } else {
+            document.documentElement.requestFullscreen?.().catch(() => {});
+        }
+    }
+    btnVollbild.addEventListener('click', schalteVollbildUm);
+    document.addEventListener('fullscreenchange', () => {
+        const aktiv = !!document.fullscreenElement;
+        document.body.classList.toggle('vollbild-aktiv', aktiv);
+        btnVollbild.textContent = aktiv ? 'Vollbild beenden' : 'Vollbild';
+        setTimeout(aktualisiereRahmen4zu3, 50);
+    });
+
+    /* ---------- 10. Spieldaten aus IndexedDB pruefen/laden & Emscripten-Build starten ---------- */
+    async function starteAnwendung() {
+        try {
+            const meta = await window.DSADaten.checkSavedGameData();
+            if (meta && meta.fileCount > 0) {
+                ladeStatusEl.textContent = 'Lade gespeicherte Spieldaten aus Browser-Speicher …';
+                window.DSA_GAME_FILES = await window.DSADaten.loadSavedGameFiles((txt) => {
+                    ladeStatusEl.textContent = txt;
+                });
+            } else {
+                ladeStatusEl.textContent = 'Bitte Spieldaten (Ordner oder ZIP) auswählen …';
+                await zeigeSpieldatenDialog(false);
+            }
+        } catch (err) {
+            console.warn('Fehler beim Prüfen der IndexedDB-Spieldaten:', err);
+            await zeigeSpieldatenDialog(false);
+        }
+
+        spielGestartet = true;
+        ladeStatusEl.textContent = `Starte ${aktivesBuild.label} …`;
+        /* eigener Spielstand-Speicher je Spiel (seit 20.11.2026), alte gemeinsame Spielstaende einmalig uebernehmen */
+        await window.dsaSpielstandUmzug('schweif');
+        const scriptEl = document.createElement('script');
+        scriptEl.src = aktivesBuild.js;
+        scriptEl.async = true;
+        document.body.appendChild(scriptEl);
+    }
+
+    starteAnwendung();
+})();
+</script>
+</body>
+</html>
