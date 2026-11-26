@@ -4,6 +4,8 @@
 
 **Inoffizielle Bugfix-Fassung · spielbar ohne Compiler · das Original bleibt unangetastet · [gleich loslegen](#schnellstart-bugfix-fassung-spielen-ohne-compiler)**
 
+**Neu in Version 1.4: Original mit Probenlog.** Das Spiel ganz ohne Fehlerbehebungen, nur mit Probenlog, würfelgleich mit dem Original: `SCHWEIF_ORIGINAL_MIT_PROBENLOG_STARTEN.bat` nach `PATCHEN.bat` (Linux: `bash Linux/starten.sh original`). Wunsch von Andrean im Crystals-Forum, wie in der Schicksalsklinge 1.5n.
+
 **Neu in Version 1.3: Das Probenlog zeigt jetzt auch den Stufenanstieg**, also jeden Steigerungswurf für Talente und Zauber, die Eigenschaften, den LE-Wurf und beim Magier den AE-Tausch (Wunsch von Andrean im Crystals-Forum, wie in der Schicksalsklinge 1.5). Gerade beim automatischen Steigern sieht man so erstmals, was passiert.
 
 **Neu in Version 1.2: Probenlog** (wie in der Schicksalsklinge 1.3). Jede Probe, die das Spiel würfelt (Eigenschaften, Talente, Zauber, Attacke und Parade), erscheint live in einem Fenster neben dem Spiel, mit jedem einzelnen Würfel. Starten mit `SCHWEIF_FIX_WICHTIG_MIT_PROBENLOG_STARTEN.bat` (Linux: `bash Linux/starten.sh wichtig log`), hinterher ansehen mit `Probenlog/Probenlog_Sternenschweif.html`. Beschreibung: [Probenlog/LIESMICH.md](Probenlog/LIESMICH.md).
@@ -43,16 +45,16 @@ savegame compatible) behind compile-time switches. Documentation is in German.*
 
 Für alle, die nur spielen wollen. Nötig sind Windows und Sternenschweif von GOG, sonst nichts: kein Python, kein Compiler. (Linux: siehe unten.)
 
-1. Rechts unter **Releases** das Paket `…_Bugfix_1.1.1.zip` herunterladen (oder oben **Code → Download ZIP**) und irgendwohin entpacken.
+1. Rechts unter **Releases** das Paket `…_Bugfix_1.4.zip` herunterladen (oder oben **Code → Download ZIP**) und irgendwohin entpacken.
 2. **`PATCHEN.bat`** doppelklicken. Es findet den GOG-Spielordner (oder fragt danach), prüft per Prüfsumme, ob die
    eigene EXE genau die passende ist, und erzeugt daraus `Build\SCHWEIF_FIX_WICHTIG.EXE` und `Build\SCHWEIF_FIX_ALLES.EXE`.
    **Die Original-EXE wird nicht verändert**, das Spiel bleibt wie es ist.
 3. **`SCHWEIF_FIX_WICHTIG_STARTEN.bat`** (wichtige Fehler) oder **`SCHWEIF_FIX_ALLES_STARTEN.bat`** (alle) doppelklicken.
    Das Spiel startet mit den GOG-Daten. Die Spielstände landen in eigenen Ordnern unter `Build\`, die echten bleiben unberührt.
 
-**Mit Probenlog:** statt Schritt 3 `SCHWEIF_FIX_WICHTIG_MIT_PROBENLOG_STARTEN.bat` doppelklicken, dann erscheint jede Probe live in einem zweiten Fenster.
+**Mit Probenlog:** statt Schritt 3 `SCHWEIF_FIX_WICHTIG_MIT_PROBENLOG_STARTEN.bat` doppelklicken, dann erscheint jede Probe live in einem zweiten Fenster. Zum Vergleich mit dem unveränderten Spiel: `SCHWEIF_ORIGINAL_MIT_PROBENLOG_STARTEN.bat` startet das Original ohne jede Behebung, nur mit Probenlog (würfelt genau wie das Original).
 
-**Linux:** genauso mit `bash Linux/patchen.sh` und `bash Linux/starten.sh wichtig` (bzw. `alles`, mit Probenlog: `wichtig log`). Nötig sind Python 3 und DOSBox, Anleitung: [Linux/LIESMICH.md](Linux/LIESMICH.md).
+**Linux:** genauso mit `bash Linux/patchen.sh` und `bash Linux/starten.sh wichtig` (bzw. `alles`, mit Probenlog: `wichtig log`, Original mit Probenlog: `original`). Nötig sind Python 3 und DOSBox, Anleitung: [Linux/LIESMICH.md](Linux/LIESMICH.md).
 
 **Funktionieren meine Spielstände weiter?** Ja. Die Bugfix-Fassung ändert das Speicherformat nicht, kein Feld, keine
 Größe. Eure alten Spielstände aus dem GOG-Ordner erscheinen beim Laden automatisch und lassen sich weiterspielen.

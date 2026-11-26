@@ -1,6 +1,6 @@
 # Sternenschweif – Bugfix-Fassung: Änderungsliste
 
-**Version 1.3 vom 05.11.2026** · inoffiziell · zur deutschen GOG-Fassung C1.02 · **im Spiel noch ungetestet, Tester willkommen**
+**Version 1.4 vom 26.11.2026** · inoffiziell · zur deutschen GOG-Fassung C1.02 · **im Spiel noch ungetestet, Tester willkommen**
 
 ## So geht's
 
@@ -20,6 +20,17 @@ Die Spielstände der Bugfix-Fassung liegen in eigenen Ordnern unter `Build\`. Al
 |---|---|
 | **WICHTIG** (empfohlen) | kritische und mittlere Fehler: Abstürze, Hänger, verlorene Ausrüstung, falsche Preise, Fehler, die man im Spiel merkt |
 | **ALLES** | zusätzlich viele kleine Fehler ohne große Spielwirkung |
+| **ORIGINAL MIT PROBENLOG** | nichts: das unveränderte Original, nur mit Probenlog. Würfelt genau wie das Original (zum Vergleichen). Start: `SCHWEIF_ORIGINAL_MIT_PROBENLOG_STARTEN.bat`, Linux `bash Linux/starten.sh original` |
+
+## Neu in Version 1.4: Original mit Probenlog
+
+Auf Wunsch von Andrean im Crystals-Forum: **das Spiel ganz ohne Fehlerbehebungen, nur mit Probenlog.** So lässt sich das unveränderte Original beim Würfeln beobachten und mit den Bugfix-Fassungen vergleichen.
+
+- `PATCHEN.bat` erzeugt jetzt zusätzlich `Build\SCHWEIF_ORIGINAL_PROBENLOG.EXE`, gestartet wird sie mit `SCHWEIF_ORIGINAL_MIT_PROBENLOG_STARTEN.bat` (Linux: `bash Linux/starten.sh original`). Das Probenlog ist dabei immer an.
+- Sie würfelt genau wie das Original: dieselben Zufallszahlen in derselben Reihenfolge (geprüft mit zwölf Wiederholungsläufen, u. a. Kampf, Lager, Landreise und Dungeon). Alle Zusatzfunktionen und Behebungen sind aus, die CD-Prüfung bleibt wie im Original.
+- Die Fehlerbehebungen selbst sind unverändert (WICHTIG und ALLES wie in 1.3).
+
+Spielstände bleiben kompatibel, die Standard-EXE bleibt bytegleich.
 
 ## Neu in Version 1.3: Probenlog zeigt den Stufenanstieg
 

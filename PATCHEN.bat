@@ -3,7 +3,8 @@ rem ============================================================
 rem  PATCHEN.bat - erzeugt die Bugfix-Fassungen OHNE Compiler aus
 rem  der eigenen SCHWEIF.EXE der GOG-Fassung (Sternenschweif).
 rem  Die Original-EXE wird nur gelesen und NICHT veraendert.
-rem  Ergebnis: Build\SCHWEIF_FIX_WICHTIG.EXE und Build\SCHWEIF_FIX_ALLES.EXE
+rem  Ergebnis: Build\SCHWEIF_FIX_WICHTIG.EXE und Build\SCHWEIF_FIX_ALLES.EXE,
+rem  dazu Build\SCHWEIF_ORIGINAL_PROBENLOG.EXE (Original ohne Behebungen, nur Probenlog)
 rem  Danach spielen mit SCHWEIF_FIX_WICHTIG_STARTEN.bat bzw. _ALLES_STARTEN.bat
 rem  Den Spielordner findet SPIELPFAD_SUCHEN.cmd (oder fragt nach).
 rem ============================================================
@@ -18,6 +19,7 @@ if errorlevel 1 goto fehler
 echo.
 echo Jetzt spielen: SCHWEIF_FIX_WICHTIG_STARTEN.bat (kritische + mittlere Fehler behoben)
 echo          oder: SCHWEIF_FIX_ALLES_STARTEN.bat   (alle behebbaren Fehler)
+echo          oder: SCHWEIF_ORIGINAL_MIT_PROBENLOG_STARTEN.bat (Original, nur mit Probenlog)
 echo Alle Behebungen sind im Spiel noch ungetestet - Rueckmeldungen willkommen.
 echo.
 pause

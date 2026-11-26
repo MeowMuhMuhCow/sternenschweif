@@ -3,6 +3,7 @@ rem BAUEN.bat - baut SCHWEIF.EXE aus dem rekonstruierten Quelltext (Projekt Ster
 rem Sucht Python und DOSBox und startet bauen.py. Ergebnis: ..\Build\SCHWEIF.EXE und ..\Build\bau.log
 rem   BAUEN.bat wichtig   zusaetzlich ..\Build\SCHWEIF_FIX_WICHTIG.EXE (Fehlerbehebungen kritisch + mittel)
 rem   BAUEN.bat alles     zusaetzlich ..\Build\SCHWEIF_FIX_ALLES.EXE   (alle Fehlerbehebungen)
+rem   BAUEN.bat probenlog zusaetzlich ..\Build\SCHWEIF_ORIGINAL_PROBENLOG.EXE (Original ohne Behebungen, nur Probenlog)
 setlocal
 cd /d "%~dp0"
 title Sternenschweif - Bau von SCHWEIF.EXE %1

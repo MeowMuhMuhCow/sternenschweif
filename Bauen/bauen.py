@@ -13,8 +13,10 @@ Vergleich mit Original\\SCHWEIF.EXE -> Ergebnis nach Build\\SCHWEIF.EXE.
 Fix-Modus (python bauen.py wichtig | alles): nach dem Standardbau zusaetzlich die Fehlerbehebungen einschalten
 (names/inc/s_fix.h: FIX_BUGS=1 "wichtig" bzw. 2 "alles", Portierung von tools/build_fix.sh) -> Build\\SCHWEIF_FIX_WICHTIG.EXE
 bzw. Build\\SCHWEIF_FIX_ALLES.EXE. Der Standardbau (Build\\SCHWEIF.EXE) laeuft immer mit und dient als Vergleichsfassung.
+probenlog: das Original ohne jede Behebung (FIX_BUGS=0), nur mit Probenlog (FIX_PROBENLOG=1), wuerfelgleich mit
+SCHWEIF.EXE -> Build\\SCHWEIF_ORIGINAL_PROBENLOG.EXE (Start: SCHWEIF_ORIGINAL_MIT_PROBENLOG_STARTEN.bat).
 
-Aufruf:  python bauen.py [wichtig|alles] [--q004 ORDNER] [--dosbox DOSBox.exe] [--baudir ORDNER] [--nur-asm] [--sichtbar]
+Aufruf:  python bauen.py [wichtig|alles|probenlog] [--q004 ORDNER] [--dosbox DOSBox.exe] [--baudir ORDNER] [--nur-asm] [--sichtbar]
 Alle Pfade auch per Umgebung: SW_Q004, SW_DOSBOX, SW_BAUDIR."""
 import os, sys, re, glob, json, shutil, stat, tarfile, hashlib, subprocess, time, argparse
 
@@ -98,13 +100,26 @@ def finde_q004(arg):
             'Q 004 DSA Sternenschweif\\Bauen\\ - oder --q004 ORDNER angeben.')
 
 
+def dosbox_ausserhalb_spielordner(exe):
+    """DOSBox schreibt stdout.txt/stderr.txt neben seine EXE. Liegt sie im Spielordner (GOG), wird der
+    DOSBOX-Ordner einmal in den Temp-Ordner kopiert und von dort gestartet - der Spielordner bleibt unberuehrt."""
+    if 'Realms of Arkania' not in exe and 'GOG' not in exe:
+        return exe
+    import tempfile
+    ziel = os.path.join(tempfile.gettempdir(), 'sternenschweif_dosbox')
+    if not os.path.isfile(os.path.join(ziel, os.path.basename(exe))):
+        shutil.copytree(os.path.dirname(exe), ziel, dirs_exist_ok=True,
+                        ignore=shutil.ignore_patterns('stdout.txt', 'stderr.txt'))
+    return os.path.join(ziel, os.path.basename(exe))
+
+
 def finde_dosbox(arg):
     kand = [arg] if arg else []
     kand += [os.path.join(HIER, 'DOSBox', 'DOSBox.exe'), os.path.join(HIER, 'DOSBox.exe')]
     if WINDOWS: kand += GOG_DOSBOX
     else: kand += [shutil.which('dosbox') or '']
     for k in kand:
-        if k and os.path.isfile(k): return os.path.abspath(k)
+        if k and os.path.isfile(k): return dosbox_ausserhalb_spielordner(os.path.abspath(k))
     abbruch('DOSBox nicht gefunden (GOG-Ordner Realms of Arkania 2\\DOSBOX\\DOSBox.exe oder DOSBox\\DOSBox.exe '
             'neben BAUEN.bat) - oder --dosbox PFAD angeben.')
 
@@ -437,7 +452,7 @@ def stufe2(B, dos, T):
     if not os.path.exists(exe): abbruch('Stufe 2: SCHW_CD.EXE wurde nicht erzeugt')
 
 
-def stufe_fix(B, dos, T, flags, fn, ausgabe):
+def stufe_fix(B, dos, T, flags, fn, ausgabe, exename=None, cfg=False):
     """Fix-Modus (Portierung von tools/build_fix.sh): nur die Quellen mit Schaltern FIX_nnnn neu uebersetzen,
     per cobjfix --ref (Namen aus der Vergleichsfassung cbau) linkfertig machen, residente Module auf Originallaenge
     auffuellen (segpad), Assembler-Module mit IF FIX_nnnn neu assemblieren, in lnkfix linken, fixcheck."""
@@ -447,12 +462,20 @@ def stufe_fix(B, dos, T, flags, fn, ausgabe):
     cn = os.path.join(F, 'cnamen.tsv')
     T.run('cnamen', C, os.path.join(L, 'asm1'), stdout=cn)
     cbat = []; fm = []
+    cflags = flags
+    if cfg:
+        # Die DOS-Befehlszeile fasst nur 127 Zeichen; laengere Schalter (Stufe probenlog) kommen in eine TURBOC.CFG im
+        # Fix-Ordner (BCC liest sie vor der aus BIN), zusammen mit deren Zeilen (Include- und Bibliothekspfad).
+        bcfg = os.path.join(B, 'bc', 'BIN', 'TURBOC.CFG')
+        basis = open(bcfg, 'rb').read().decode('cp437').replace('\r', '').strip().split('\n') if os.path.exists(bcfg) else []
+        open(os.path.join(F, 'TURBOC.CFG'), 'w', newline='').write(crlf(basis + flags.split()))
+        cflags = ''
     for n, o, d in mods:
         m = nm(n)
         f = m + '.CPP' if os.path.exists(os.path.join(B, 'csrc', m + '.CPP')) else m + '.C'
         if not re.search(rb'FIX_([0-9]|PROBENLOG)', open(os.path.join(B, 'csrc', f), 'rb').read()): continue
         copyfile(os.path.join(B, 'csrc', f), os.path.join(F, f))
-        cbat.append(f'..\\bc\\BIN\\BCC.EXE -mlarge {o} {flags} -c -Y -I..\\names\\inc -E..\\bc\\BIN\\TASM.EXE {f} > {m}.TXT')
+        cbat.append(f'..\\bc\\BIN\\BCC.EXE -mlarge {o} {cflags} -c -Y -I..\\names\\inc -E..\\bc\\BIN\\TASM.EXE {f} > {m}.TXT')
         fm.append((n, m, d))
     if not fm:
         say('  WARNUNG: keine Quelle enthaelt Schalter FIX_nnnn (alter Stand in Quelle\\?) - die Fix-EXE gleicht dem Original')
@@ -524,18 +547,19 @@ def stufe_fix(B, dos, T, flags, fn, ausgabe):
     rc, txt = T.run('fixcheck', exe, os.path.join(B, 'orig', 'SCHWEIF.EXE'), check=False)
     for l in txt.strip().split('\n')[-12:]: say('  ' + l)
     if rc: abbruch('Fix-Modus: fixcheck meldet Fehler - die Fix-EXE wird nicht ausgegeben')
-    ziel = os.path.join(ausgabe, f'SCHWEIF_FIX_{fn}.EXE')
+    exename = exename or f'SCHWEIF_FIX_{fn}'
+    ziel = os.path.join(ausgabe, f'{exename}.EXE')
     if os.path.exists(ziel): os.chmod(ziel, stat.S_IWRITE | stat.S_IREAD)
     shutil.copyfile(exe, ziel)
-    say(f'  {md5(ziel)}  Build\\SCHWEIF_FIX_{fn}.EXE ({os.path.getsize(ziel)} Bytes)')
+    say(f'  {md5(ziel)}  Build\\{exename}.EXE ({os.path.getsize(ziel)} Bytes)')
     return ziel
 
 
 def main():
     global LOG
     ap = argparse.ArgumentParser(description='Baut SCHWEIF.EXE aus dem rekonstruierten Quelltext.')
-    ap.add_argument('fix', nargs='?', choices=['wichtig', 'alles'], type=str.lower,
-                    help='zusaetzlich die Fix-EXE bauen: wichtig (FIX_BUGS=1) oder alles (FIX_BUGS=2)')
+    ap.add_argument('fix', nargs='?', choices=['wichtig', 'alles', 'probenlog'], type=str.lower,
+                    help='zusaetzlich die Fix-EXE bauen: wichtig (FIX_BUGS=1), alles (FIX_BUGS=2) oder probenlog (Original + Probenlog)')
     ap.add_argument('--exploits-lassen', action='store_true',
                     help='Fix-Modus: Fehler, die dem Spieler nuetzen, nicht beheben (FIX_EXPLOITS=0)')
     ap.add_argument('--fixflags', default='', help='Fix-Modus: weitere Schalter fuer BCC/TASM, z. B. "-DFIX_0020=0"')
@@ -583,9 +607,14 @@ def main():
     say(f'  {dos.laeufe} DOSBox-Laeufe ({dos.zeit / 60:.1f} min), gesamt {(time.time() - t0) / 60:.1f} min')
     fixexe = None
     if a.fix:
-        flags = ('-DFIX_BUGS=1' if a.fix == 'wichtig' else '-DFIX_BUGS=2') + (' -DFIX_EXPLOITS=0' if a.exploits_lassen else '')
-        flags = (flags + ' ' + a.fixflags).strip()
-        fixexe = stufe_fix(B, dos, T, flags, a.fix.upper(), ausgabe)
+        if a.fix == 'probenlog':
+            # Original ohne Behebungen, nur das Probenlog (aendert keine Wuerfe) -> Build\SCHWEIF_ORIGINAL_PROBENLOG.EXE
+            flags = ('-DFIX_BUGS=0 -DFIX_PROBENLOG=1 ' + a.fixflags).strip()
+            fixexe = stufe_fix(B, dos, T, flags, 'PROBENLOG', ausgabe, 'SCHWEIF_ORIGINAL_PROBENLOG', cfg=True)
+        else:
+            flags = ('-DFIX_BUGS=1' if a.fix == 'wichtig' else '-DFIX_BUGS=2') + (' -DFIX_EXPLOITS=0' if a.exploits_lassen else '')
+            flags = (flags + ' ' + a.fixflags).strip()
+            fixexe = stufe_fix(B, dos, T, flags, a.fix.upper(), ausgabe)
         say(f'  {dos.laeufe} DOSBox-Laeufe ({dos.zeit / 60:.1f} min), gesamt {(time.time() - t0) / 60:.1f} min')
     say('')
     if m1 == m2:
